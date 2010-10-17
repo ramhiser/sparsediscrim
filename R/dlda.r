@@ -14,7 +14,7 @@ dlda <- function(training.df) {
 		(N - 1) * var(col) / N
 	})
 	
-	class.info <- dlply(training.df, .(labels), function(class.df) {
+	estimators <- dlply(training.df, .(labels), function(class.df) {
 		class.x <- as.matrix(class.df[,-1])
 		dimnames(class.x) <- NULL
 		
