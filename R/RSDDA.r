@@ -11,6 +11,12 @@ stop("Warning you are trying to perform RSDDA with five or fewer subjects per gr
 
 err.rate6 <- NULL
 
+# We assume that the first column contains the class label.
+# Sorts the training data frame by class.
+#training.df <- training.df[order(training.df[,1]),]
+
+#y1 <- training
+
   # class 1
   n1 <- round(sampsize*0.6)
   y1 <- rep(0,n1)
@@ -28,8 +34,8 @@ err.rate6 <- NULL
   y <- c(y1,y2)
   testy1 <- c(testy1,testy2)
 
-  x <- read.table(myfilename, header=F)
-  x <- t(as.matrix(x))
+  x <- as.matrix(read.table(myfilename, header=F))
+ # x <- t(as.matrix(x))
   dimnames(x) <- NULL
 
   lambda <- seq(0,1, length=101)
@@ -189,6 +195,8 @@ for (sim in 1:numofruns) {
 
 print("Mean Misclassification of RSDDA:");
 print(mean(err.rate6));
+print("SE of Misclassification of RSDDA:");
+print(sd(err.rate6));
 }
 diss <- function(x,mu,sigma2,n,n.total){
   D <- 0
