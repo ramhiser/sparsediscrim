@@ -11,7 +11,7 @@ dlda <- function(training.df) {
 	training.x <- as.matrix(training.df[,-1])
 	dimnames(training.x) <- NULL
 	pooled.var <-aaply(training.x, 2, function(col) {
-		(n-1) * var(col) / n
+		(N - 1) * var(col) / N
 	})
 	
 	class.info <- dlply(training.df, .(labels), function(class.df) {
