@@ -34,7 +34,7 @@ predict.dlda <- function(object, newdata) {
 	
 	predictions <- aaply(newdata, 1, function(obs) {
 		scores <- laply(object$estimators, function(class.est) {
-			sum((obs - class.est$xbar)^2 / class.est$var) + sum(log(class.est$var)) - 2 * log(class.est$p.hat)
+			sum((obs - class.est$xbar)^2 / class.est$var) - 2 * log(class.est$p.hat)
 		})
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
