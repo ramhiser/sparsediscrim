@@ -25,7 +25,6 @@ sdqda <- function(training.df, num.alphas = 5) {
 		
 		list(xbar = xbar, var = var.shrink, n = n.k, p.hat = p.hat)
 	})
-	risk.stein(nu = N - num.classes, var.by.feature = var)
 	
 	list(N = N, classes = levels(training.df$labels), estimators = estimators)
 }
