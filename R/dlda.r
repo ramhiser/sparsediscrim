@@ -10,7 +10,7 @@ dlda <- function(training.df) {
 	
 	training.x <- as.matrix(training.df[,-1])
 	dimnames(training.x) <- NULL
-	pooled.var <-aaply(training.x, 2, function(col) {
+	pooled.var <- apply(training.x, 2, function(col) {
 		(N - 1) * var(col) / N
 	})
 	
@@ -32,10 +32,11 @@ predict.dlda <- function(object, newdata) {
 	newdata <- as.matrix(newdata)
 	dimnames(newdata) <- NULL
 	
-	predictions <- aaply(newdata, 1, function(obs) {
-		scores <- laply(object$estimators, function(class.est) {
+	predictions <- apply(newdata, 1, function(obs) {
+		scores <- sapply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 / class.est$var) - 2 * log(class.est$p.hat)
 		})
+		print(scores)
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
 	})

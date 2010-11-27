@@ -14,10 +14,14 @@ sdqda <- function(training.df, num.alphas = 5) {
 	num.classes <- nlevels(training.df$labels)
 	
 	estimators <- dlply(training.df, .(labels), function(class.df) {
-		n.k <- nrow(class.df)
+		x.k <- as.matrix(class.df[, -1])
+		dimnames(x.k) <- NULL
+		
+		n.k <- nrow(x.k)
 		p.hat <- n.k / N
-		xbar <- as.vector(colMeans(class.df[, -1]))
-		var <- aaply(class.df[,-1], 2, function(col) {
+		
+		xbar <- as.vector(colMeans(x.k))
+		var <- apply(x.k, 2, function(col) {
 			(n.k - 1) * var(col) / n.k
 		})
 		
@@ -33,7 +37,7 @@ predict.sdqda <- function(object, newdata) {
 	newdata <- as.matrix(newdata)
 	dimnames(newdata) <- NULL
 	
-	predictions <- aaply(newdata, 1, function(obs) {
+	predictions <- apply(newdata, 1, function(obs) {
 		scores <- laply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 * class.est$var) - sum(log(class.est$var)) - 2 * log(class.est$p.hat)
 		})

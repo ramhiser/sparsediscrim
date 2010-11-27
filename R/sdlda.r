@@ -15,7 +15,7 @@ sdlda <- function(training.df, num.alphas = 5) {
 	
 	training.x <- as.matrix(training.df[,-1])
 	dimnames(training.x) <- NULL
-	var.pooled <- aaply(training.x, 2, function(col) {
+	var.pooled <- apply(training.x, 2, function(col) {
 		(N - 1) * var(col) / N
 	})
 	
@@ -38,7 +38,7 @@ predict.sdlda <- function(object, newdata) {
 	newdata <- as.matrix(newdata)
 	dimnames(newdata) <- NULL
 	
-	predictions <- aaply(newdata, 1, function(obs) {
+	predictions <- apply(newdata, 1, function(obs) {
 		scores <- laply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 * class.est$var) - 2 * log(class.est$p.hat)
 		})
