@@ -83,7 +83,7 @@ predict.rsdda <- function(object, newdata) {
 	dimnames(newdata) <- NULL
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- laply(object$estimators, function(class.est) {
+		scores <- sapply(object$estimators, function(class.est) {
 			var.rsdda <- (class.est$var.k)^(1 - object$lambda) * (class.est$var.pool)^(object$lambda)
 			sum((obs - class.est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class.est$p.hat)
 		})

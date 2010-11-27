@@ -38,7 +38,7 @@ predict.sdqda <- function(object, newdata) {
 	dimnames(newdata) <- NULL
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- laply(object$estimators, function(class.est) {
+		scores <- sapply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 * class.est$var) - sum(log(class.est$var)) - 2 * log(class.est$p.hat)
 		})
 		predicted.class <- object$classes[which.min(scores)]
