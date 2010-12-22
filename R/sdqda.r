@@ -9,7 +9,7 @@ library(plyr)
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdqda <- function(training.df, num.alphas = 5) {
+sdqda <- function(training.df, num.alphas = 5, jointdiag = "none") {
 	N <- nrow(training.df)
 	num.classes <- nlevels(training.df$labels)
 	

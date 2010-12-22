@@ -11,7 +11,7 @@ library(plyr)
 # which contains the class labels.
 
 # num.alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
-rsdda <- function(training.df, num.alphas = 5) {
+rsdda <- function(training.df, num.alphas = 5, jointdiag = "none") {
 	N <- nrow(training.df)
 	num.classes <- nlevels(training.df$labels)
 	

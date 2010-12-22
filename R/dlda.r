@@ -5,7 +5,7 @@ library(plyr)
 # of the pooled sample covariance matrix are set to zero.
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dlda <- function(training.df) {
+dlda <- function(training.df, jointdiag = "none") {
 	N <- nrow(training.df)
 	
 	training.x <- as.matrix(training.df[,-1])

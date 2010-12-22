@@ -8,7 +8,7 @@ library(plyr)
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dqda <- function(training.df) {
+dqda <- function(training.df, jointdiag = "none") {
 	N <- nrow(training.df)
 	
 	estimators <- dlply(training.df, .(labels), function(class.df) {
