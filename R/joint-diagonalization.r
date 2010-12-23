@@ -7,7 +7,9 @@ joint.diagonalization <- function(df, method = c("none", "general-eigen", "asfar
 	if(method == "none") {
 		B <- diag(ncol(df) - 1)
 	} else if(method == "general-eigen") {
-		warning("Generalized Eigenvalues has not been implemented yet.")
+		general.eigen.cov <- generalized.eigen.cov(df, shrink = FALSE, shrink.val = 0.01)
+		B <- diagonalize.general.eigen(general.eigen.cov[[1]], general.eigen.cov[[2]])
+		df <- joint.diagonalization.transform(df, B)
 	} else if(method == "asfari") {
 		asfari.cov <- asfari.cov(df, shrink = TRUE, shrink.val = shrink.val)
 		B <- LUJID(asfari.cov, mode = 'B', ERR = tol, RBALANCE = 3, ITER = max.iter)
