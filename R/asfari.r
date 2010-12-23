@@ -1,6 +1,3 @@
-library(plyr)
-library(MASS)
-
 ############## DIAGONALIZATION FUNCTION CODE #######
 LUJID <-function(X,mode='B', ERR=1*10^-5, RBALANCE=3, ITER=200, pseudo = TRUE, shrink.val = 0.01){
 #LU based Jacbi-like JD; This function minimizes the cost 
