@@ -48,7 +48,7 @@ rsdda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 			(n.k - 1) * var(col) / n.k
 		})
 		
-		var.shrink <- var.shrinkage(N = N, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var.shrink <- var.shrinkage(N = n.k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
 		list(xbar = xbar, var.k = var.shrink, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
 	})
