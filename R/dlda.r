@@ -5,38 +5,71 @@ library(plyr)
 # of the pooled sample covariance matrix are set to zero.
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dlda <- function(training.df, jointdiag = "none") {
-	N <- nrow(training.df)
+dlda <- function(training.df, jointdiag = "none", verbose = FALSE, ...) {
+	dlda.obj <- list()
+	dlda.obj$training <- training.df
 	
-	training.x <- as.matrix(training.df[,-1])
+	if(jointdiag != "none") {
+		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		joint.diag.out <- joint.diagonalization(dlda.obj$training, method = jointdiag)
+		dlda.obj$training <- joint.diag.out$transformed.df
+		dlda.obj$jointdiag.B <- joint.diag.out$B
+		dlda.obj$jointdiag.method <- joint.diag.out$method
+		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+	}
+
+	if(verbose) cat("Building DLDA classifier\n")
+	N <- nrow(dlda.obj$training)
+	
+	training.x <- as.matrix(dlda.obj$training[,-1])
 	dimnames(training.x) <- NULL
-	pooled.var <- apply(training.x, 2, function(col) {
-		(N - 1) * var(col) / N
-	})
 	
-	estimators <- dlply(training.df, .(labels), function(class.df) {
+	estimators <- dlply(dlda.obj$training, .(labels), function(class.df) {
 		class.x <- as.matrix(class.df[,-1])
 		dimnames(class.x) <- NULL
 		
 		n.k <- nrow(class.df)
 		p.hat <- n.k / N
 		xbar <- as.vector(colMeans(class.x))
-		var <- pooled.var
-		list(xbar = xbar, var = var, n = n.k, p.hat = p.hat)
+		
+		sum.squares <- apply(class.x, 2, function(col) {
+			(n.k - 1) * var(col)
+		})
+		
+		list(xbar = xbar, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
 	})
 	
-	list(N = N, classes = levels(training.df$labels), estimators = estimators)
+	var.pooled <- colSums(laply(estimators, function(class.est) class.est$sum.squares)) / N
+	
+	estimators <- llply(estimators, function(class.estimators) {
+		class.estimators$var <- var.pooled
+		class.estimators
+	})
+	if(verbose) cat("Building DLDA classifier...done!\n")
+	
+	dlda.obj$N <- N
+	dlda.obj$classes <- levels(dlda.obj$training$labels)
+	dlda.obj$estimators <- estimators
+	
+	class(dlda.obj) <- "dlda"
+	
+	dlda.obj
 }
 
 predict.dlda <- function(object, newdata) {
+	if (!inherits(object, "dlda"))  {
+		stop("object not of class 'dlda'")
+	}
 	newdata <- as.matrix(newdata)
 	dimnames(newdata) <- NULL
 	
 	predictions <- apply(newdata, 1, function(obs) {
+		if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
+			obs <- obs %*% t(object$jointdiag.B)
+		}
 		scores <- sapply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 / class.est$var) - 2 * log(class.est$p.hat)
 		})
-
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
 	})

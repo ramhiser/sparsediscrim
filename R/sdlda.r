@@ -9,36 +9,71 @@ library(plyr)
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdlda <- function(training.df, num.alphas = 5, jointdiag = "none") {
-	N <- nrow(training.df)
-	num.classes <- nlevels(training.df$labels)
+sdlda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+	sdlda.obj <- list()
+	sdlda.obj$training <- training.df
 	
-	training.x <- as.matrix(training.df[,-1])
+	if(jointdiag != "none") {
+		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		joint.diag.out <- joint.diagonalization(sdlda.obj$training, method = jointdiag)
+		sdlda.obj$training <- joint.diag.out$transformed.df
+		sdlda.obj$jointdiag.B <- joint.diag.out$B
+		sdlda.obj$jointdiag.method <- joint.diag.out$method
+		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+	}
+	
+	if(verbose) cat("Building SDLDA classifier\n")
+	N <- nrow(sdlda.obj$training)
+	num.classes <- nlevels(sdlda.obj$training$labels)
+	
+	training.x <- as.matrix(sdlda.obj$training[,-1])
 	dimnames(training.x) <- NULL
-	var.pooled <- apply(training.x, 2, function(col) {
-		(N - 1) * var(col) / N
-	})
 	
-	var.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var.pooled, num.alphas = num.alphas, t = -1)
-	
-	estimators <- dlply(training.df, .(labels), function(class.df) {
+	estimators <- dlply(sdlda.obj$training, .(labels), function(class.df) {
 		class.x <- as.matrix(class.df[,-1])
 		dimnames(class.x) <- NULL
 		
 		n.k <- nrow(class.df)
 		p.hat <- n.k / N
 		xbar <- as.vector(colMeans(class.x))
-		list(xbar = xbar, var = var.shrink, n = n.k, p.hat = p.hat)
+		
+		sum.squares <- apply(class.x, 2, function(col) {
+			(n.k - 1) * var(col)
+		})
+		
+		list(xbar = xbar, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
 	})
 	
-	list(N = N, classes = levels(training.df$labels), estimators = estimators)
+	var.pooled <- colSums(laply(estimators, function(class.est) class.est$sum.squares)) / N
+	var.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var.pooled, num.alphas = num.alphas, t = -1)
+	
+	estimators <- llply(estimators, function(class.estimators) {
+		class.estimators$var <- var.shrink
+		class.estimators
+	})
+	if(verbose) cat("Building SDLDA classifier...done!\n")
+	
+	sdlda.obj$N <- N
+	sdlda.obj$classes <- levels(sdlda.obj$training$labels)
+	sdlda.obj$estimators <- estimators
+	
+	class(sdlda.obj) <- "sdlda"
+	
+	sdlda.obj
 }
 
 predict.sdlda <- function(object, newdata) {
+	if (!inherits(object, "sdlda"))  {
+		stop("object not of class 'sdlda'")
+	}
+	
 	newdata <- as.matrix(newdata)
 	dimnames(newdata) <- NULL
 	
 	predictions <- apply(newdata, 1, function(obs) {
+		if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
+			obs <- obs %*% t(object$jointdiag.B)
+		}
 		scores <- sapply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 * class.est$var) - 2 * log(class.est$p.hat)
 		})
