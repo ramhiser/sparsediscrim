@@ -1,4 +1,4 @@
-generalized.eigen.cov <- function(df, shrink = FALSE, shrink.val = 0.01) {
+geneigen.cov <- function(df, shrink = FALSE, shrink.val = 0.01) {
 	K <- nlevels(factor(df$labels))
 	stopifnot(K == 2)	
 	if(shrink == FALSE) {
@@ -14,10 +14,12 @@ generalized.eigen.cov <- function(df, shrink = FALSE, shrink.val = 0.01) {
 	covs
 }
 
-generalized.eigen <- function(A, B) {
+# TODO: Implement geneigen via LAPACK. See solve and message from Peter Dalgaard
+# See: http://tolstoy.newcastle.edu.au/R/help/05/06/6995.html
+geneigen <- function(A, B) {
 	eigen(solve(A) %*% B)
 }
 
-diagonalize.general.eigen <- function(A, B) {
+diagonalize.geneigen <- function(A, B) {
 	generalized.eigen(A, B)$vectors
 }
