@@ -1,5 +1,3 @@
-library(plyr)
-
 # Shrinkage-based Diagonal Linear Discriminant Analysis (SDLDA)
 # The DLDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.

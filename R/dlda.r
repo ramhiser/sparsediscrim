@@ -1,5 +1,3 @@
-library(plyr)
-
 # Diagonalized Linear Discriminant Analysis (DLDA)
 # The DLDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.

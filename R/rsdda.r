@@ -1,5 +1,3 @@
-library(plyr)
-
 # Regularized Shrinkage-based Diagonal Discriminant Analysis (RSDDA)
 # The RSDDA classifier is a regularized version of SDQDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.

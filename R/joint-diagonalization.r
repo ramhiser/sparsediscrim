@@ -1,5 +1,3 @@
-library(jointDiag)
-
 joint.diagonalization <- function(df, method = c("none", "general-eigen", "asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
 	tol = 1e-6, max.iter = 250, shrink = TRUE, shrink.val = 0.01) {
 

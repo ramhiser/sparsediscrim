@@ -1,5 +1,3 @@
-library(plyr)
-
 # Diagonalized Quadratic Discriminant Analysis (DQDA)
 # The DQDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.

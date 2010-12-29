@@ -1,5 +1,3 @@
-library(plyr)
-
 # Shrinkage-based Diagonal Quadratic Discriminant Analysis (SDQDA)
 # The SDQDA classifier is a modification to QDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.
