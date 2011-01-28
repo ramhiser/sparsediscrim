@@ -1,10 +1,10 @@
-Package: rsdda
-Title: Regularized Shrinkage-based Diagonal Discriminant Analysis
+Package: diagdiscrim
+Title: Diagonal Discriminant Analysis and its Variants
 Version: 0.1
-Date: 2010-12-23
-Author: John A. Ramey
+Date: 2011-1-28
+Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
-Description: Regularized Shrinkage-based Diagonal Discriminant Analysis with Simultaneous Diagonalization of Covariance Matrices.
-Depends: plyr, jointDiag
+Description: Diagonal Discriminant Analysis and shrinkage-based variants. Optionally, each method can simultaneously diagonalize the covariance matrices to improve the classification rates.
+Depends: plyr
 License: GPL-2
-URL: https://github.com/ramey/rsdda, http://johnramey.net
+URL: https://github.com/ramey/diagdiscrim, http://johnramey.net

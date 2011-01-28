@@ -1,4 +1,4 @@
 library('testthat')
-#library('rsdda')
+library('diagdiscrim')
 
-test_package("rsdda")
+test_package('diagdiscrim')
