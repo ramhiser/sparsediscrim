@@ -1,4 +1,4 @@
-joint.diagonalization <- function(df, method = c("none", "general-eigen", "asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
+joint.diagonalization <- function(df, method = c("none", "general-eigen", "eigendiag", "asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
 	tol = 1e-6, max.iter = 250, shrink = TRUE, shrink.val = 0.01) {
 
 	method <- match.arg(method)
@@ -8,7 +8,13 @@ joint.diagonalization <- function(df, method = c("none", "general-eigen", "asfar
 		general.eigen.cov <- geneigen.cov(df, shrink = FALSE, shrink.val = 0.01)
 		B <- diagonalize.geneigen(general.eigen.cov[[1]], general.eigen.cov[[2]])
 		df <- joint.diagonalization.transform(df, B)
-	} else if(method == "asfari") {
+	} else if(method == "eigendiag") {
+		warning("JADE algorithm has not been implemented yet.")
+		eigendiag.cov <- eigendiag.cov(df, shrink = FALSE, shrink.val = 0.01)
+		B <- eigendiag(eigendiag.cov)$Q
+		df <- joint.diagonalization.transform(df, B)
+	}
+	else if(method == "asfari") {
 		asfari.cov <- asfari.cov(df, shrink = TRUE, shrink.val = shrink.val)
 		B <- LUJID(asfari.cov, mode = 'B', ERR = tol, RBALANCE = 3, ITER = max.iter)
 		df <- joint.diagonalization.transform(df, B)
