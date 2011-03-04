@@ -12,15 +12,15 @@ sdqda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	sdqda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(sdqda.obj$training, method = jointdiag)
 		sdqda.obj$training <- joint.diag.out$transformed.df
 		sdqda.obj$jointdiag.B <- joint.diag.out$B
 		sdqda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 	
-	if(verbose) cat("Building SDQDA classifier\n")
+	if(verbose) message("Building SDQDA classifier... ", appendLF = FALSE)
 	N <- nrow(sdqda.obj$training)
 	num.classes <- nlevels(sdqda.obj$training$labels)
 	
@@ -40,7 +40,7 @@ sdqda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 		
 		list(xbar = xbar, var = var.shrink, n = n.k, p.hat = p.hat)
 	})
-	if(verbose) cat("Building SDQDA classifier...done!\n")
+	if(verbose) message("done!")
 	
 	sdqda.obj$N <- N
 	sdqda.obj$classes <- levels(sdqda.obj$training$labels)

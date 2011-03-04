@@ -11,15 +11,15 @@ dqda <- function(training.df, jointdiag = "none", verbose = FALSE, ...) {
 	dqda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(dqda.obj$training, method = jointdiag)
 		dqda.obj$training <- joint.diag.out$transformed.df
 		dqda.obj$jointdiag.B <- joint.diag.out$B
 		dqda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 	
-	if(verbose) cat("Building DQDA classifier\n")
+	if(verbose) message("Building DQDA classifier... ", appendLF = FALSE)
 	N <- nrow(dqda.obj$training)
 	
 	estimators <- dlply(dqda.obj$training, .(labels), function(class.df) {
@@ -32,7 +32,7 @@ dqda <- function(training.df, jointdiag = "none", verbose = FALSE, ...) {
 		list(xbar = xbar, var = var, n = n.k, p.hat = p.hat)
 	})
 	
-	if(verbose) cat("Building DQDA classifier...done!\n")
+	if(verbose) message("done!")
 	
 	dqda.obj$N <- N
 	dqda.obj$classes <- levels(dqda.obj$training$labels)

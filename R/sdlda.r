@@ -12,15 +12,15 @@ sdlda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	sdlda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(sdlda.obj$training, method = jointdiag)
 		sdlda.obj$training <- joint.diag.out$transformed.df
 		sdlda.obj$jointdiag.B <- joint.diag.out$B
 		sdlda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 	
-	if(verbose) cat("Building SDLDA classifier\n")
+	if(verbose) message("Building SDLDA classifier... ", appendLF = FALSE)
 	N <- nrow(sdlda.obj$training)
 	num.classes <- nlevels(sdlda.obj$training$labels)
 	
@@ -49,7 +49,7 @@ sdlda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 		class.estimators$var <- var.shrink
 		class.estimators
 	})
-	if(verbose) cat("Building SDLDA classifier...done!\n")
+	if(verbose) message("done!")
 	
 	sdlda.obj$N <- N
 	sdlda.obj$classes <- levels(sdlda.obj$training$labels)

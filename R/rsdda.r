@@ -14,15 +14,15 @@ rsdda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	rsdda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(rsdda.obj$training, method = jointdiag)
 		rsdda.obj$training <- joint.diag.out$transformed.df
 		rsdda.obj$jointdiag.B <- joint.diag.out$B
 		rsdda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 
-	if(verbose) cat("Building RSDDA classifier\n")
+	if(verbose) message("Building RSDDA classifier... ", appendLF = FALSE)
 	N <- nrow(rsdda.obj$training)
 	num.classes <- nlevels(rsdda.obj$training$labels)
 	
@@ -59,7 +59,7 @@ rsdda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 		class.estimators
 	})
 	
-	if(verbose) cat("Building RSDDA classifier...done!\n")
+	if(verbose) message("done!")
 	
 	rsdda.obj$N <- N
 	rsdda.obj$classes <- levels(rsdda.obj$training$labels)

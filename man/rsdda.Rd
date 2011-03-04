@@ -64,12 +64,12 @@ function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) 
 	rsdda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(rsdda.obj$training, method = jointdiag)
 		rsdda.obj$training <- joint.diag.out$transformed.df
 		rsdda.obj$jointdiag.B <- joint.diag.out$B
 		rsdda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 
 	if(verbose) cat("Building RSDDA classifier\n")

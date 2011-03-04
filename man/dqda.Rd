@@ -61,12 +61,12 @@ function(training.df, jointdiag = "none", verbose = FALSE, ...) {
 	dqda.obj$training <- training.df
 	
 	if(jointdiag != "none") {
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices\n")
+		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
 		joint.diag.out <- joint.diagonalization(dqda.obj$training, method = jointdiag)
 		dqda.obj$training <- joint.diag.out$transformed.df
 		dqda.obj$jointdiag.B <- joint.diag.out$B
 		dqda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) cat("Simultaneously diagonalizing covariance matrices...done!\n")
+		if(verbose) message("done!")
 	}
 	
 	if(verbose) cat("Building DQDA classifier\n")

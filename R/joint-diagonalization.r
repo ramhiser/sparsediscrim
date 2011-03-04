@@ -1,16 +1,19 @@
-joint.diagonalization <- function(df, method = c("none", "general-eigen", "eigendiag", "asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
-	tol = 1e-6, max.iter = 250, shrink = TRUE, shrink.val = 0.01) {
+joint.diagonalization <- function(df, method = c("none", "diag-pool", "general-eigen", "eigendiag", "asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
+	tol = 1e-6, max.iter = 250, shrink = TRUE, shrink.val = 0.01, eigen_tol = 1e-6) {
 
 	method <- match.arg(method)
 	if(method == "none") {
 		B <- diag(ncol(df) - 1)
+	} else if(method == "diag-pool") {
+		pooled.cov <- pool.cov(df, shrink = FALSE, shrink.val = shrink.val)
+		B <- diagonalize.pool.cov(pooled.cov, eigen_tol = eigen_tol)
+		df <- joint.diagonalization.transform(df, B)
 	} else if(method == "general-eigen") {
-		general.eigen.cov <- geneigen.cov(df, shrink = FALSE, shrink.val = 0.01)
+		general.eigen.cov <- geneigen.cov(df, shrink = FALSE, shrink.val = shrink.val)
 		B <- diagonalize.geneigen(general.eigen.cov[[1]], general.eigen.cov[[2]])
 		df <- joint.diagonalization.transform(df, B)
 	} else if(method == "eigendiag") {
-		warning("JADE algorithm has not been implemented yet.")
-		eigendiag.cov <- eigendiag.cov(df, shrink = FALSE, shrink.val = 0.01)
+		eigendiag.cov <- eigendiag.cov(df, shrink = FALSE, shrink.val = shrink.val)
 		B <- eigendiag(eigendiag.cov)$Q
 		df <- joint.diagonalization.transform(df, B)
 	}
@@ -41,8 +44,7 @@ joint.diagonalization <- function(df, method = c("none", "general-eigen", "eigen
 # transformed by post-multiply by t(B).
 joint.diagonalization.transform <- function(df, B) {
 	transformed.df <- ddply(df, .(labels), function(class.df) {
-		x <- as.matrix(class.df[,-1])
-		dimnames(x) <- NULL
+		x <- data.matrix(class.df[,-1])
 		data.frame(x %*% t(B))
 	})
 	transformed.df
