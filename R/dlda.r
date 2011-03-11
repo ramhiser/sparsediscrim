@@ -58,13 +58,13 @@ predict.dlda <- function(object, newdata) {
 	if (!inherits(object, "dlda"))  {
 		stop("object not of class 'dlda'")
 	}
-	newdata <- as.matrix(newdata)
-	dimnames(newdata) <- NULL
+	newdata <- data.matrix(newdata)
+	
+	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
+		newdata <- newdata %*% t(object$jointdiag.B)
+	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
-			obs <- obs %*% t(object$jointdiag.B)
-		}
 		scores <- sapply(object$estimators, function(class.est) {
 			sum((obs - class.est$xbar)^2 / class.est$var) - 2 * log(class.est$p.hat)
 		})
