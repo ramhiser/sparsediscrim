@@ -13,28 +13,24 @@ dlda <- function(train_df) {
 	obj$classes <- levels(train_df$labels)
 	
 	estimators <- dlply(obj$training, .(labels), function(df_k) {
-		x_k <- data.matrix(df_k[,-1])
-		
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(x_k))
+		xbar <- as.vector(colMeans(df_k[,-1]))
 		
 		sum_squares <- apply(x_k, 2, function(col) {
 			(n_k - 1) * var(col)
 		})
 		
-		list(xbar = xbar, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, sum_squares = sum_squares, n_k = n_k, pi_k = pi_k)
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
 	
-	estimators <- llply(estimators, function(class_estimators) {
+	obj$estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var <- var_pool
 		class_estimators
 	})
 
-	obj$estimators <- estimators
-	
 	class(obj) <- "dlda"
 	
 	obj
@@ -50,8 +46,8 @@ predict.dlda <- function(object, newdata) {
 		scores <- sapply(object$estimators, function(class_est) {
 			sum((obs - class_est$xbar)^2 / class_est$var) - 2 * log(class_est$pi_k)
 		})
-		predicted.class <- object$classes[which.min(scores)]
-		predicted.class
+		prediction <- object$classes[which.min(scores)]
+		prediction
 	})
 	
 	predictions <- factor(predictions, levels = object$classes)

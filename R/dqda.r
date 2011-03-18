@@ -7,40 +7,28 @@
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
 dqda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
-	dqda.obj <- list()
-	dqda.obj$training <- train_df
+	obj <- list()
 	
-	if(jointdiag != "none") {
-		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
-		joint.diag.out <- joint.diagonalization(dqda.obj$training, method = jointdiag)
-		dqda.obj$training <- joint.diag.out$transformed.df
-		dqda.obj$jointdiag.B <- joint.diag.out$B
-		dqda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) message("done!")
-	}
+	N <- nrow(train_df)
 	
-	if(verbose) message("Building DQDA classifier... ", appendLF = FALSE)
-	N <- nrow(dqda.obj$training)
+	obj$training <- train_df
+	obj$N <- N
+	obj$classes <- levels(train_df$labels)
 	
-	estimators <- dlply(dqda.obj$training, .(labels), function(df_k) {
+	obj$estimators <- dlply(obj$training, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(df_k[, -1]))
+		xbar <- as.vector(colMeans(df_k[,-1]))
+		
 		var <- apply(df_k[,-1], 2, function(col) {
-			(n_k - 1) * var(col) / n_k
+			(n_k - 1) / n_k * var(col)
 		})
-		list(xbar = xbar, var = var, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, var = var, n_k = n_k, pi_k = pi_k)
 	})
+
+	class(obj) <- "dqda"
 	
-	if(verbose) message("done!")
-	
-	dqda.obj$N <- N
-	dqda.obj$classes <- levels(dqda.obj$training$labels)
-	dqda.obj$estimators <- estimators
-	
-	class(dqda.obj) <- "dqda"
-	
-	dqda.obj
+	obj
 }
 
 predict.dqda <- function(object, newdata) {
@@ -48,17 +36,13 @@ predict.dqda <- function(object, newdata) {
 		stop("object not of class 'dqda'")
 	}
 	newdata <- data.matrix(newdata)
-	
-	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
-		newdata <- newdata %*% t(object$jointdiag.B)
-	}
-	
+
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {
 			sum((obs - class_est$xbar)^2 / class_est$var) + sum(log(class_est$var)) - 2 * log(class_est$pi_k)
 		})
-		predicted.class <- object$classes[which.min(scores)]
-		predicted.class
+		prediction <- object$classes[which.min(scores)]
+		prediction
 	})
 	
 	predictions <- factor(predictions, levels = object$classes)

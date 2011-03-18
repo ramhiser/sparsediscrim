@@ -75,8 +75,8 @@ predict.sdlda <- function(object, newdata) {
 		scores <- sapply(object$estimators, function(class_est) {
 			sum((obs - class_est$xbar)^2 * class_est$var) - 2 * log(class_est$pi_k)
 		})
-		predicted.class <- object$classes[which.min(scores)]
-		predicted.class
+		prediction <- object$classes[which.min(scores)]
+		prediction
 	})
 	
 	predictions <- factor(predictions, levels = object$classes)

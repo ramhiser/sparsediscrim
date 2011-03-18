@@ -138,8 +138,8 @@ predict.rsdda <- function(object, newdata, num.lambdas = 5, lambda = NULL, verbo
 			sum((obs - class_est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class_est$pi_k)
 		})
 		
-		predicted.class <- object$classes[which.min(scores)]
-		predicted.class
+		prediction <- object$classes[which.min(scores)]
+		prediction
 	})
 	
 	predictions <- factor(predictions, levels = object$classes)
