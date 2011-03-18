@@ -1,0 +1,2 @@
+Run inst/tests/test-pang-sim-A.r for comparison with Pang et al. (2009)
+Run inst/tests/test-pang-sim-B.r for comparison with Pang et al. (2009)
