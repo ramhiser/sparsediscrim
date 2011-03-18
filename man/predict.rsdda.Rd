@@ -81,9 +81,9 @@ function(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE) {
 		if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
 			obs <- obs \%*\% t(object$jointdiag.B)
 		}
-		scores <- sapply(object$estimators, function(class.est) {
-			var.rsdda <- (class.est$var.k)^(1 - object$lambda) * (class.est$var.pool)^(object$lambda)
-			sum((obs - class.est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			var.rsdda <- (class_est$var.k)^(1 - object$lambda) * (class_est$var.pool)^(object$lambda)
+			sum((obs - class_est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class_est$pi_k)
 		})
 		
 		predicted.class <- object$classes[which.min(scores)]

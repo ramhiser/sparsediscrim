@@ -22,7 +22,7 @@ risk.stein <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 	
 	# The pooled variance is defined in Pang et al. (2009) as the geometric mean
 	# of the sample variances of each feature.
-	var.pooled <- prod(var.feature)^(1 / p)
+	var_pool <- prod(var.feature)^(1 / p)
 	
 	# Here we compute the average risk for the Stein loss function on page 1023
 	# for all values of alpha.
@@ -30,7 +30,7 @@ risk.stein <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 		risk <- h(nu = nu, p = p)^alpha * h(nu = nu, p = 1)^(1 - alpha)
 		risk <- risk / (h(nu = nu, p = 1, t = alpha * t / p))^(p - 1)
 		risk <- risk / h(nu = nu, p = 1, t = (1 - alpha + alpha / p) * t)
-		risk <- risk * (var.pooled)^(alpha * t)
+		risk <- risk * (var_pool)^(alpha * t)
 		risk <- risk * mean(var.feature^(-alpha * t))
 		risk <- risk - log(h(nu = nu, p = p)^alpha * h(nu = nu, p = 1)^(1 - alpha))
 		risk <- risk - t * digamma(nu / 2)
@@ -43,7 +43,7 @@ risk.stein <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 	alpha.min.risk <- alphas[which(min(risk.alphas) == risk.alphas)]
 	alpha.star <- sample(alpha.min.risk, 1)
 	
-	list(alpha = alpha.star, var.pooled = var.pooled)
+	list(alpha = alpha.star, var_pool = var_pool)
 }
 
 # This function computes the shrinkage-based estimator of variance of each feature (variable)
@@ -59,9 +59,9 @@ var.shrinkage <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 	
 	risk.stein.out <- risk.stein(N = N, K = K, var.feature = var.feature, num.alphas = num.alphas, t = t)
 
-	var.pooled <- risk.stein.out$var.pooled
+	var_pool <- risk.stein.out$var_pool
 	alpha <- risk.stein.out$alpha
 	
-	var.feature.shrink <- (h(nu = nu, p = p, t = t) * var.pooled)^alpha * (h(nu = nu, p = 1, t = t) * var.feature)^(1 - alpha)
+	var.feature.shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha * (h(nu = nu, p = 1, t = t) * var.feature)^(1 - alpha)
 	var.feature.shrink
 }

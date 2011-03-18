@@ -7,9 +7,9 @@
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdlda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+sdlda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	sdlda.obj <- list()
-	sdlda.obj$training <- training.df
+	sdlda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -24,30 +24,30 @@ sdlda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	N <- nrow(sdlda.obj$training)
 	num.classes <- nlevels(sdlda.obj$training$labels)
 	
-	training.x <- as.matrix(sdlda.obj$training[,-1])
-	dimnames(training.x) <- NULL
+	train_x <- as.matrix(sdlda.obj$training[,-1])
+	dimnames(train_x) <- NULL
 	
-	estimators <- dlply(sdlda.obj$training, .(labels), function(class.df) {
-		class.x <- as.matrix(class.df[,-1])
+	estimators <- dlply(sdlda.obj$training, .(labels), function(df_k) {
+		class.x <- as.matrix(df_k[,-1])
 		dimnames(class.x) <- NULL
 		
-		n.k <- nrow(class.df)
-		p.hat <- n.k / N
+		n_k <- nrow(df_k)
+		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(class.x))
 		
-		sum.squares <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col)
+		sum_squares <- apply(class.x, 2, function(col) {
+			(n_k - 1) * var(col)
 		})
 		
-		list(xbar = xbar, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
-	var.pooled <- colSums(laply(estimators, function(class.est) class.est$sum.squares)) / N
-	var.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var.pooled, num.alphas = num.alphas, t = -1)
+	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
+	var.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
 	
-	estimators <- llply(estimators, function(class.estimators) {
-		class.estimators$var <- var.shrink
-		class.estimators
+	estimators <- llply(estimators, function(class_estimators) {
+		class_estimators$var <- var.shrink
+		class_estimators
 	})
 	if(verbose) message("done!")
 	
@@ -72,8 +72,8 @@ predict.sdlda <- function(object, newdata) {
 	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class.est) {
-			sum((obs - class.est$xbar)^2 * class.est$var) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			sum((obs - class_est$xbar)^2 * class_est$var) - 2 * log(class_est$pi_k)
 		})
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class

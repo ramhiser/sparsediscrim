@@ -43,8 +43,8 @@ joint.diagonalization <- function(df, method = c("none", "diag-pool", "general-e
 # Returns a data.frame, where the data matrix for each class has been
 # transformed by post-multiply by t(B).
 joint.diagonalization.transform <- function(df, B) {
-	transformed.df <- ddply(df, .(labels), function(class.df) {
-		x <- data.matrix(class.df[,-1])
+	transformed.df <- ddply(df, .(labels), function(df_k) {
+		x <- data.matrix(df_k[,-1])
 		data.frame(x %*% t(B))
 	})
 	transformed.df

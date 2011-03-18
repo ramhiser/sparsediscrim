@@ -8,12 +8,12 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-rsdda(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
+rsdda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{training.df}{
-%%     ~~Describe \code{training.df} here~~
+  \item{train_df}{
+%%     ~~Describe \code{train_df} here~~
 }
   \item{num.alphas}{
 %%     ~~Describe \code{num.alphas} here~~
@@ -59,9 +59,9 @@ rsdda(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	rsdda.obj <- list()
-	rsdda.obj$training <- training.df
+	rsdda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -76,37 +76,37 @@ function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) 
 	N <- nrow(rsdda.obj$training)
 	num.classes <- nlevels(rsdda.obj$training$labels)
 	
-	training.x <- as.matrix(rsdda.obj$training[,-1])
-	dimnames(training.x) <- NULL
+	train_x <- as.matrix(rsdda.obj$training[,-1])
+	dimnames(train_x) <- NULL
 	
-	estimators <- dlply(rsdda.obj$training, .(labels), function(class.df) {
-		class.x <- as.matrix(class.df[, -1])
+	estimators <- dlply(rsdda.obj$training, .(labels), function(df_k) {
+		class.x <- as.matrix(df_k[, -1])
 		dimnames(class.x) <- NULL
 		
-		n.k <- nrow(class.x)
-		p.hat <- n.k / N
+		n_k <- nrow(class.x)
+		pi_k <- n_k / N
 		
 		xbar <- as.vector(colMeans(class.x))
 		
-		sum.squares <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col)
+		sum_squares <- apply(class.x, 2, function(col) {
+			(n_k - 1) * var(col)
 		})
 		
 		var <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n.k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var.k = var.shrink, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var.k = var.shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
-	var.pooled <- colSums(laply(estimators, function(class.est) class.est$sum.squares)) / N
-	var.pool.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var.pooled, num.alphas = num.alphas, t = -1)
+	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
+	var.pool.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
 	
-	estimators <- llply(estimators, function(class.estimators) {
-		class.estimators$var.pool <- var.pool.shrink
-		class.estimators
+	estimators <- llply(estimators, function(class_estimators) {
+		class_estimators$var.pool <- var.pool.shrink
+		class_estimators
 	})
 	
 	if(verbose) cat("Building RSDDA classifier...done!\n")

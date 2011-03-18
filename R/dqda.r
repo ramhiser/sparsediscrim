@@ -6,9 +6,9 @@
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dqda <- function(training.df, jointdiag = "none", verbose = FALSE, ...) {
+dqda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
 	dqda.obj <- list()
-	dqda.obj$training <- training.df
+	dqda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -22,14 +22,14 @@ dqda <- function(training.df, jointdiag = "none", verbose = FALSE, ...) {
 	if(verbose) message("Building DQDA classifier... ", appendLF = FALSE)
 	N <- nrow(dqda.obj$training)
 	
-	estimators <- dlply(dqda.obj$training, .(labels), function(class.df) {
-		n.k <- nrow(class.df)
-		p.hat <- n.k / N
-		xbar <- as.vector(colMeans(class.df[, -1]))
-		var <- apply(class.df[,-1], 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+	estimators <- dlply(dqda.obj$training, .(labels), function(df_k) {
+		n_k <- nrow(df_k)
+		pi_k <- n_k / N
+		xbar <- as.vector(colMeans(df_k[, -1]))
+		var <- apply(df_k[,-1], 2, function(col) {
+			(n_k - 1) * var(col) / n_k
 		})
-		list(xbar = xbar, var = var, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var = var, n = n_k, pi_k = pi_k)
 	})
 	
 	if(verbose) message("done!")
@@ -54,8 +54,8 @@ predict.dqda <- function(object, newdata) {
 	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class.est) {
-			sum((obs - class.est$xbar)^2 / class.est$var) + sum(log(class.est$var)) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			sum((obs - class_est$xbar)^2 / class_est$var) + sum(log(class_est$var)) - 2 * log(class_est$pi_k)
 		})
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class

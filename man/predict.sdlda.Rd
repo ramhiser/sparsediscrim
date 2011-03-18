@@ -62,8 +62,8 @@ function(object, newdata) {
 		if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
 			obs <- obs \%*\% t(object$jointdiag.B)
 		}
-		scores <- sapply(object$estimators, function(class.est) {
-			sum((obs - class.est$xbar)^2 * class.est$var) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			sum((obs - class_est$xbar)^2 * class_est$var) - 2 * log(class_est$pi_k)
 		})
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class

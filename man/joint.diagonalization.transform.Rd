@@ -51,8 +51,8 @@ joint.diagonalization.transform(df, B)
 
 ## The function is currently defined as
 function(df, B) {
-	transformed.df <- ddply(df, .(labels), function(class.df) {
-		x <- as.matrix(class.df[,-1])
+	transformed.df <- ddply(df, .(labels), function(df_k) {
+		x <- as.matrix(df_k[,-1])
 		dimnames(x) <- NULL
 		data.frame(x \%*\% t(B))
 	})

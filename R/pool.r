@@ -3,10 +3,10 @@ pool.cov <- function(df, shrink = FALSE, shrink.val = 0.01) {
 		shrink.val <- 0
 	}
 	N <- nrow(df)
-	p <- ncol(class.df) - 1
-	covs <- dlply(df, .(labels), function(class.df) {
-		n.k <- nrow(class.df)
-		cov.k <- (n.k - 1) * data.matrix(cov(class.df[,-1]))
+	p <- ncol(df_k) - 1
+	covs <- dlply(df, .(labels), function(df_k) {
+		n_k <- nrow(df_k)
+		cov.k <- (n_k - 1) * data.matrix(cov(df_k[,-1]))
 		cov.k
 	})
 	cov_pool <- (1 - shrink.val) * Reduce("+", covs) / N + shrink.val * diag(p)

@@ -9,9 +9,9 @@
 # which contains the class labels.
 
 # num.alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
-rsdda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+rsdda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	rsdda.obj <- list()
-	rsdda.obj$training <- training.df
+	rsdda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -26,37 +26,37 @@ rsdda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	N <- nrow(rsdda.obj$training)
 	num.classes <- nlevels(rsdda.obj$training$labels)
 	
-	training.x <- as.matrix(rsdda.obj$training[,-1])
-	dimnames(training.x) <- NULL
+	train_x <- as.matrix(rsdda.obj$training[,-1])
+	dimnames(train_x) <- NULL
 	
-	estimators <- dlply(rsdda.obj$training, .(labels), function(class.df) {
-		class.x <- as.matrix(class.df[, -1])
+	estimators <- dlply(rsdda.obj$training, .(labels), function(df_k) {
+		class.x <- as.matrix(df_k[, -1])
 		dimnames(class.x) <- NULL
 		
-		n.k <- nrow(class.x)
-		p.hat <- n.k / N
+		n_k <- nrow(class.x)
+		pi_k <- n_k / N
 		
 		xbar <- as.vector(colMeans(class.x))
 		
-		sum.squares <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col)
+		sum_squares <- apply(class.x, 2, function(col) {
+			(n_k - 1) * var(col)
 		})
 		
 		var <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n.k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var.k = var.shrink, sum.squares = sum.squares, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var.k = var.shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
-	var.pooled <- colSums(laply(estimators, function(class.est) class.est$sum.squares)) / N
-	var.pool.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var.pooled, num.alphas = num.alphas, t = -1)
+	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
+	var.pool.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
 	
-	estimators <- llply(estimators, function(class.estimators) {
-		class.estimators$var.pool <- var.pool.shrink
-		class.estimators
+	estimators <- llply(estimators, function(class_estimators) {
+		class_estimators$var.pool <- var.pool.shrink
+		class_estimators
 	})
 	
 	if(verbose) message("done!")
@@ -133,9 +133,9 @@ predict.rsdda <- function(object, newdata, num.lambdas = 5, lambda = NULL, verbo
 	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class.est) {
-			var.rsdda <- (class.est$var.k)^(1 - object$lambda) * (class.est$var.pool)^(object$lambda)
-			sum((obs - class.est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			var.rsdda <- (class_est$var.k)^(1 - object$lambda) * (class_est$var.pool)^(object$lambda)
+			sum((obs - class_est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class_est$pi_k)
 		})
 		
 		predicted.class <- object$classes[which.min(scores)]

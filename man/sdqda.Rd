@@ -8,12 +8,12 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-sdqda(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
+sdqda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{training.df}{
-%%     ~~Describe \code{training.df} here~~
+  \item{train_df}{
+%%     ~~Describe \code{train_df} here~~
 }
   \item{num.alphas}{
 %%     ~~Describe \code{num.alphas} here~~
@@ -59,9 +59,9 @@ sdqda(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	sdqda.obj <- list()
-	sdqda.obj$training <- training.df
+	sdqda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -76,21 +76,21 @@ function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) 
 	N <- nrow(sdqda.obj$training)
 	num.classes <- nlevels(sdqda.obj$training$labels)
 	
-	estimators <- dlply(sdqda.obj$training, .(labels), function(class.df) {
-		class.x <- as.matrix(class.df[, -1])
+	estimators <- dlply(sdqda.obj$training, .(labels), function(df_k) {
+		class.x <- as.matrix(df_k[, -1])
 		dimnames(class.x) <- NULL
 		
-		n.k <- nrow(class.x)
-		p.hat <- n.k / N
+		n_k <- nrow(class.x)
+		pi_k <- n_k / N
 		
 		xbar <- as.vector(colMeans(class.x))
 		var <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n.k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var = var.shrink, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var = var.shrink, n = n_k, pi_k = pi_k)
 	})
 	if(verbose) cat("Building SDQDA classifier...done!\n")
 	

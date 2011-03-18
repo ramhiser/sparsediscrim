@@ -8,12 +8,12 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-dqda(training.df, jointdiag = "none", verbose = FALSE, ...)
+dqda(train_df, jointdiag = "none", verbose = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{training.df}{
-%%     ~~Describe \code{training.df} here~~
+  \item{train_df}{
+%%     ~~Describe \code{train_df} here~~
 }
   \item{jointdiag}{
 %%     ~~Describe \code{jointdiag} here~~
@@ -56,9 +56,9 @@ dqda(training.df, jointdiag = "none", verbose = FALSE, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(training.df, jointdiag = "none", verbose = FALSE, ...) {
+function(train_df, jointdiag = "none", verbose = FALSE, ...) {
 	dqda.obj <- list()
-	dqda.obj$training <- training.df
+	dqda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -72,14 +72,14 @@ function(training.df, jointdiag = "none", verbose = FALSE, ...) {
 	if(verbose) cat("Building DQDA classifier\n")
 	N <- nrow(dqda.obj$training)
 	
-	estimators <- dlply(dqda.obj$training, .(labels), function(class.df) {
-		n.k <- nrow(class.df)
-		p.hat <- n.k / N
-		xbar <- as.vector(colMeans(class.df[, -1]))
-		var <- apply(class.df[,-1], 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+	estimators <- dlply(dqda.obj$training, .(labels), function(df_k) {
+		n_k <- nrow(df_k)
+		pi_k <- n_k / N
+		xbar <- as.vector(colMeans(df_k[, -1]))
+		var <- apply(df_k[,-1], 2, function(col) {
+			(n_k - 1) * var(col) / n_k
 		})
-		list(xbar = xbar, var = var, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var = var, n = n_k, pi_k = pi_k)
 	})
 	
 	if(verbose) cat("Building DQDA classifier...done!\n")

@@ -65,10 +65,10 @@ function(N, K, var.feature, num.alphas = 2, t = -1) {
 	
 	risk.stein.out <- risk.stein(N = N, K = K, var.feature = var.feature, num.alphas = num.alphas, t = t)
 
-	var.pooled <- risk.stein.out$var.pooled
+	var_pool <- risk.stein.out$var_pool
 	alpha <- risk.stein.out$alpha
 	
-	var.feature.shrink <- (h(nu = nu, p = p, t = t) * var.pooled)^alpha * (h(nu = nu, p = 1, t = t) * var.feature)^(1 - alpha)
+	var.feature.shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha * (h(nu = nu, p = 1, t = t) * var.feature)^(1 - alpha)
 	var.feature.shrink
   }
 }

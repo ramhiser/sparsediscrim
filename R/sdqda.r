@@ -7,9 +7,9 @@
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdqda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+sdqda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	sdqda.obj <- list()
-	sdqda.obj$training <- training.df
+	sdqda.obj$training <- train_df
 	
 	if(jointdiag != "none") {
 		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
@@ -24,21 +24,21 @@ sdqda <- function(training.df, num.alphas = 5, jointdiag = "none", verbose = FAL
 	N <- nrow(sdqda.obj$training)
 	num.classes <- nlevels(sdqda.obj$training$labels)
 	
-	estimators <- dlply(sdqda.obj$training, .(labels), function(class.df) {
-		class.x <- as.matrix(class.df[, -1])
+	estimators <- dlply(sdqda.obj$training, .(labels), function(df_k) {
+		class.x <- as.matrix(df_k[, -1])
 		dimnames(class.x) <- NULL
 		
-		n.k <- nrow(class.x)
-		p.hat <- n.k / N
+		n_k <- nrow(class.x)
+		pi_k <- n_k / N
 		
 		xbar <- as.vector(colMeans(class.x))
 		var <- apply(class.x, 2, function(col) {
-			(n.k - 1) * var(col) / n.k
+			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n.k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var = var.shrink, n = n.k, p.hat = p.hat)
+		list(xbar = xbar, var = var.shrink, n = n_k, pi_k = pi_k)
 	})
 	if(verbose) message("done!")
 	
@@ -64,8 +64,8 @@ predict.sdqda <- function(object, newdata) {
 	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class.est) {
-			sum((obs - class.est$xbar)^2 * class.est$var) - sum(log(class.est$var)) - 2 * log(class.est$p.hat)
+		scores <- sapply(object$estimators, function(class_est) {
+			sum((obs - class_est$xbar)^2 * class_est$var) - sum(log(class_est$var)) - 2 * log(class_est$pi_k)
 		})
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
