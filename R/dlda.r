@@ -3,7 +3,7 @@
 # of the pooled sample covariance matrix are set to zero.
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dlda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
+dlda <- function(train_df, verbose = FALSE, ...) {
 	obj <- list()
 	obj$training <- train_df
 
@@ -47,7 +47,7 @@ predict.dlda <- function(object, newdata) {
 	}
 	newdata <- data.matrix(newdata)
 	
-	# TODO: Project data with chosen projection matrix.
+	
 	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
 		newdata <- newdata %*% t(object$jointdiag.B)
 	}
@@ -59,6 +59,8 @@ predict.dlda <- function(object, newdata) {
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
 	})
+	
+	predictions <- factor(predictions, levels = object$classes)
 	
 	predictions
 }
