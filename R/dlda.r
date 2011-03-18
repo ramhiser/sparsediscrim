@@ -17,13 +17,14 @@ dlda <- function(train_df) {
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
 		
-		sum_squares <- apply(x_k, 2, function(col) {
+		sum_squares <- apply(df_k[,-1], 2, function(col) {
 			(n_k - 1) * var(col)
 		})
 		
 		list(xbar = xbar, sum_squares = sum_squares, n_k = n_k, pi_k = pi_k)
 	})
-	
+	# TODO: Calculate var_pool before calculating other estimators,
+	#		so that sum_squares is not being carried around for each class.
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
 	
 	obj$estimators <- llply(estimators, function(class_estimators) {

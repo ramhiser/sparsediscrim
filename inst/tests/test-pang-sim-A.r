@@ -26,7 +26,7 @@ generate_data_A <- function(n_k, p) {
 	list(training = df[which_are_training,], test = df[-which_are_training,])
 }
 
-tolerance <- 0.02
+tol <- 0.02
 B <- 500
 
 n_k <- c(4, 5, 8, 10, 15)
@@ -52,32 +52,32 @@ test_that("DLDA's matches performance of Simulation A given in Pang (2009)", {
 		})
 		mean(error_rates)
 	})
-	names(dlda_error_A) <- c("n_k", "p", "error")
+	names(dlda_error_A) <<- c("n_k", "p", "error")
 	
 	# n_k = 4. p = 30, 50, 100
-	expect_that(dlda_error_A$error[1,], equals(0.2806, tolerance = tol))
-	expect_that(dlda_error_A$error[2,], equals(0.2300, tolerance = tol))
-	expect_that(dlda_error_A$error[3,], equals(0.1475, tolerance = tol))
+	expect_that(dlda_error_A[1,3], equals(0.2806, tolerance = tol))
+	expect_that(dlda_error_A[2,3], equals(0.2300, tolerance = tol))
+	expect_that(dlda_error_A[3,3], equals(0.1475, tolerance = tol))
 	
 	# n_k = 5. p = 30, 50, 100
-	expect_that(dlda_error_A$error[4,], equals(0.2415, tolerance = tol))
-	expect_that(dlda_error_A$error[5,], equals(0.2015, tolerance = tol))
-	expect_that(dlda_error_A$error[6,], equals(0.1160, tolerance = tol))
+	expect_that(dlda_error_A[4,3], equals(0.2415, tolerance = tol))
+	expect_that(dlda_error_A[5,3], equals(0.2015, tolerance = tol))
+	expect_that(dlda_error_A[6,3], equals(0.1160, tolerance = tol))
 	
 	# n_k = 8. p = 30, 50, 100
-	expect_that(dlda_error_A$error[7,], equals(0.1928, tolerance = tol))
-	expect_that(dlda_error_A$error[8,], equals(0.1294, tolerance = tol))
-	expect_that(dlda_error_A$error[9,], equals(0.0619, tolerance = tol))
+	expect_that(dlda_error_A[7,3], equals(0.1928, tolerance = tol))
+	expect_that(dlda_error_A[8,3], equals(0.1294, tolerance = tol))
+	expect_that(dlda_error_A[9,3], equals(0.0619, tolerance = tol))
 	
 	# n_k = 10. p = 30, 50, 100
-	expect_that(dlda_error_A$error[10,], equals(0.1803, tolerance = tol))
-	expect_that(dlda_error_A$error[11,], equals(0.1030, tolerance = tol))
-	expect_that(dlda_error_A$error[12,], equals(0.0470, tolerance = tol))
+	expect_that(dlda_error_A[10,3], equals(0.1803, tolerance = tol))
+	expect_that(dlda_error_A[11,3], equals(0.1030, tolerance = tol))
+	expect_that(dlda_error_A[12,3], equals(0.0470, tolerance = tol))
 	
 	# n_k = 15. p = 30, 50, 100
-	expect_that(dlda_error_A$error[13,], equals(0.1505, tolerance = tol))
-	expect_that(dlda_error_A$error[14,], equals(0.0858, tolerance = tol))
-	expect_that(dlda_error_A$error[15,], equals(0.0272, tolerance = tol))
+	expect_that(dlda_error_A[13,3], equals(0.1505, tolerance = tol))
+	expect_that(dlda_error_A[14,3], equals(0.0858, tolerance = tol))
+	expect_that(dlda_error_A[15,3], equals(0.0272, tolerance = tol))
 })
 
 test_that("DQDA's matches performance of Simulation A given in Pang (2009)", {
@@ -101,29 +101,29 @@ test_that("DQDA's matches performance of Simulation A given in Pang (2009)", {
 	names(dqda_error_A) <- c("n_k", "p", "error")
 	
 	# n_k = 4. p = 30, 50, 100
-	expect_that(dqda_error_A$error[1,], equals(0.3844, tolerance = tol))
-	expect_that(dqda_error_A$error[2,], equals(0.3631, tolerance = tol))
-	expect_that(dqda_error_A$error[3,], equals(0.3144, tolerance = tol))
+	expect_that(dqda_error_A[1,3], equals(0.3844, tolerance = tol))
+	expect_that(dqda_error_A[2,3], equals(0.3631, tolerance = tol))
+	expect_that(dqda_error_A[3,3], equals(0.3144, tolerance = tol))
 	
 	# n_k = 5. p = 30, 50, 100
-	expect_that(dqda_error_A$error[4,], equals(0.3410, tolerance = tol))
-	expect_that(dqda_error_A$error[5,], equals(0.3240, tolerance = tol))
-	expect_that(dqda_error_A$error[6,], equals(0.2710, tolerance = tol))
+	expect_that(dqda_error_A[4,3], equals(0.3410, tolerance = tol))
+	expect_that(dqda_error_A[5,3], equals(0.3240, tolerance = tol))
+	expect_that(dqda_error_A[6,3], equals(0.2710, tolerance = tol))
 	
 	# n_k = 8. p = 30, 50, 100
-	expect_that(dqda_error_A$error[7,], equals(0.2703, tolerance = tol))
-	expect_that(dqda_error_A$error[8,], equals(0.2194, tolerance = tol))
-	expect_that(dqda_error_A$error[9,], equals(0.1522, tolerance = tol))
+	expect_that(dqda_error_A[7,3], equals(0.2703, tolerance = tol))
+	expect_that(dqda_error_A[8,3], equals(0.2194, tolerance = tol))
+	expect_that(dqda_error_A[9,3], equals(0.1522, tolerance = tol))
 	
 	# n_k = 10. p = 30, 50, 100
-	expect_that(dqda_error_A$error[10,], equals(0.2443, tolerance = tol))
-	expect_that(dqda_error_A$error[11,], equals(0.1735, tolerance = tol))
-	expect_that(dqda_error_A$error[12,], equals(0.1078, tolerance = tol))
+	expect_that(dqda_error_A[10,3], equals(0.2443, tolerance = tol))
+	expect_that(dqda_error_A[11,3], equals(0.1735, tolerance = tol))
+	expect_that(dqda_error_A[12,3], equals(0.1078, tolerance = tol))
 	
 	# n_k = 15. p = 30, 50, 100
-	expect_that(dqda_error_A$error[13,], equals(0.2013, tolerance = tol))
-	expect_that(dqda_error_A$error[14,], equals(0.1418, tolerance = tol))
-	expect_that(dqda_error_A$error[15,], equals(0.0595, tolerance = tol))
+	expect_that(dqda_error_A[13,3], equals(0.2013, tolerance = tol))
+	expect_that(dqda_error_A[14,3], equals(0.1418, tolerance = tol))
+	expect_that(dqda_error_A[15,3], equals(0.0595, tolerance = tol))
 })
 
 test_that("SDLDA's matches performance of Simulation A given in Pang (2009)", {
@@ -147,29 +147,29 @@ test_that("SDLDA's matches performance of Simulation A given in Pang (2009)", {
 	names(sdlda_error_A) <- c("n_k", "p", "error")
 	
 	# n_k = 4. p = 30, 50, 100
-	expect_that(sdlda_error_A$error[1,], equals(0.2388, tolerance = tol))
-	expect_that(sdlda_error_A$error[2,], equals(0.1775, tolerance = tol))
-	expect_that(sdlda_error_A$error[3,], equals(0.0881, tolerance = tol))
+	expect_that(sdlda_error_A[1,3], equals(0.2388, tolerance = tol))
+	expect_that(sdlda_error_A[2,3], equals(0.1775, tolerance = tol))
+	expect_that(sdlda_error_A[3,3], equals(0.0881, tolerance = tol))
 	
 	# n_k = 5. p = 30, 50, 100
-	expect_that(sdlda_error_A$error[4,], equals(0.2260, tolerance = tol))
-	expect_that(sdlda_error_A$error[5,], equals(0.1705, tolerance = tol))
-	expect_that(sdlda_error_A$error[6,], equals(0.0695, tolerance = tol))
+	expect_that(sdlda_error_A[4,3], equals(0.2260, tolerance = tol))
+	expect_that(sdlda_error_A[5,3], equals(0.1705, tolerance = tol))
+	expect_that(sdlda_error_A[6,3], equals(0.0695, tolerance = tol))
 	
 	# n_k = 8. p = 30, 50, 100
-	expect_that(sdlda_error_A$error[7,], equals(0.1791, tolerance = tol))
-	expect_that(sdlda_error_A$error[8,], equals(0.1069, tolerance = tol))
-	expect_that(sdlda_error_A$error[9,], equals(0.0481, tolerance = tol))
+	expect_that(sdlda_error_A[7,3], equals(0.1791, tolerance = tol))
+	expect_that(sdlda_error_A[8,3], equals(0.1069, tolerance = tol))
+	expect_that(sdlda_error_A[9,3], equals(0.0481, tolerance = tol))
 	
 	# n_k = 10. p = 30, 50, 100
-	expect_that(sdlda_error_A$error[10,], equals(0.1633, tolerance = tol))
-	expect_that(sdlda_error_A$error[11,], equals(0.0953, tolerance = tol))
-	expect_that(sdlda_error_A$error[12,], equals(0.0400, tolerance = tol))
+	expect_that(sdlda_error_A[10,3], equals(0.1633, tolerance = tol))
+	expect_that(sdlda_error_A[11,3], equals(0.0953, tolerance = tol))
+	expect_that(sdlda_error_A[12,3], equals(0.0400, tolerance = tol))
 	
 	# n_k = 15. p = 30, 50, 100
-	expect_that(sdlda_error_A$error[13,], equals(0.1423, tolerance = tol))
-	expect_that(sdlda_error_A$error[14,], equals(0.0800, tolerance = tol))
-	expect_that(sdlda_error_A$error[15,], equals(0.0230, tolerance = tol))
+	expect_that(sdlda_error_A[13,3], equals(0.1423, tolerance = tol))
+	expect_that(sdlda_error_A[14,3], equals(0.0800, tolerance = tol))
+	expect_that(sdlda_error_A[15,3], equals(0.0230, tolerance = tol))
 })
 
 test_that("SDQDA's matches performance of Simulation A given in Pang (2009)", {
@@ -193,29 +193,29 @@ test_that("SDQDA's matches performance of Simulation A given in Pang (2009)", {
 	names(sdqda_error_A) <- c("n_k", "p", "error")
 	
 	# n_k = 4. p = 30, 50, 100
-	expect_that(sdqda_error_A$error[1,], equals(0.2475, tolerance = tol))
-	expect_that(sdqda_error_A$error[2,], equals(0.1863, tolerance = tol))
-	expect_that(sdqda_error_A$error[3,], equals(0.0856, tolerance = tol))
+	expect_that(sdqda_error_A[1,3], equals(0.2475, tolerance = tol))
+	expect_that(sdqda_error_A[2,3], equals(0.1863, tolerance = tol))
+	expect_that(sdqda_error_A[3,3], equals(0.0856, tolerance = tol))
 	
 	# n_k = 5. p = 30, 50, 100
-	expect_that(sdqda_error_A$error[4,], equals(0.2395, tolerance = tol))
-	expect_that(sdqda_error_A$error[5,], equals(0.1720, tolerance = tol))
-	expect_that(sdqda_error_A$error[6,], equals(0.0760, tolerance = tol))
+	expect_that(sdqda_error_A[4,3], equals(0.2395, tolerance = tol))
+	expect_that(sdqda_error_A[5,3], equals(0.1720, tolerance = tol))
+	expect_that(sdqda_error_A[6,3], equals(0.0760, tolerance = tol))
 	
 	# n_k = 8. p = 30, 50, 100
-	expect_that(sdqda_error_A$error[7,], equals(0.1784, tolerance = tol))
-	expect_that(sdqda_error_A$error[8,], equals(0.1109, tolerance = tol))
-	expect_that(sdqda_error_A$error[9,], equals(0.0491, tolerance = tol))
+	expect_that(sdqda_error_A[7,3], equals(0.1784, tolerance = tol))
+	expect_that(sdqda_error_A[8,3], equals(0.1109, tolerance = tol))
+	expect_that(sdqda_error_A[9,3], equals(0.0491, tolerance = tol))
 	
 	# n_k = 10. p = 30, 50, 100
-	expect_that(sdqda_error_A$error[10,], equals(0.1663, tolerance = tol))
-	expect_that(sdqda_error_A$error[11,], equals(0.0983, tolerance = tol))
-	expect_that(sdqda_error_A$error[12,], equals(0.0400, tolerance = tol))
+	expect_that(sdqda_error_A[10,3], equals(0.1663, tolerance = tol))
+	expect_that(sdqda_error_A[11,3], equals(0.0983, tolerance = tol))
+	expect_that(sdqda_error_A[12,3], equals(0.0400, tolerance = tol))
 	
 	# n_k = 15. p = 30, 50, 100
-	expect_that(sdqda_error_A$error[13,], equals(0.1480, tolerance = tol))
-	expect_that(sdqda_error_A$error[14,], equals(0.0812, tolerance = tol))
-	expect_that(sdqda_error_A$error[15,], equals(0.0255, tolerance = tol))
+	expect_that(sdqda_error_A[13,3], equals(0.1480, tolerance = tol))
+	expect_that(sdqda_error_A[14,3], equals(0.0812, tolerance = tol))
+	expect_that(sdqda_error_A[15,3], equals(0.0255, tolerance = tol))
 })
 
 test_that("RSDDA's matches performance of Simulation A given in Pang (2009)", {
@@ -239,27 +239,27 @@ test_that("RSDDA's matches performance of Simulation A given in Pang (2009)", {
 	names(rsdda_error_A) <- c("n_k", "p", "error")
 	
 	# n_k = 4. p = 30, 50, 100
-	expect_that(rsdda_error_A$error[1,], equals(0.2388, tolerance = tol))
-	expect_that(rsdda_error_A$error[2,], equals(0.1775, tolerance = tol))
-	expect_that(rsdda_error_A$error[3,], equals(0.0856, tolerance = tol))
+	expect_that(rsdda_error_A[1,3], equals(0.2388, tolerance = tol))
+	expect_that(rsdda_error_A[2,3], equals(0.1775, tolerance = tol))
+	expect_that(rsdda_error_A[3,3], equals(0.0856, tolerance = tol))
 	
 	# n_k = 5. p = 30, 50, 100
-	expect_that(rsdda_error_A$error[4,], equals(0.2285, tolerance = tol))
-	expect_that(rsdda_error_A$error[5,], equals(0.1690, tolerance = tol))
-	expect_that(rsdda_error_A$error[6,], equals(0.0695, tolerance = tol))
+	expect_that(rsdda_error_A[4,3], equals(0.2285, tolerance = tol))
+	expect_that(rsdda_error_A[5,3], equals(0.1690, tolerance = tol))
+	expect_that(rsdda_error_A[6,3], equals(0.0695, tolerance = tol))
 	
 	# n_k = 8. p = 30, 50, 100
-	expect_that(rsdda_error_A$error[7,], equals(0.1769, tolerance = tol))
-	expect_that(rsdda_error_A$error[8,], equals(0.1078, tolerance = tol))
-	expect_that(rsdda_error_A$error[9,], equals(0.0478, tolerance = tol))
+	expect_that(rsdda_error_A[7,3], equals(0.1769, tolerance = tol))
+	expect_that(rsdda_error_A[8,3], equals(0.1078, tolerance = tol))
+	expect_that(rsdda_error_A[9,3], equals(0.0478, tolerance = tol))
 	
 	# n_k = 10. p = 30, 50, 100
-	expect_that(rsdda_error_A$error[10,], equals(0.1638, tolerance = tol))
-	expect_that(rsdda_error_A$error[11,], equals(0.0968, tolerance = tol))
-	expect_that(rsdda_error_A$error[12,], equals(0.0405, tolerance = tol))
+	expect_that(rsdda_error_A[10,3], equals(0.1638, tolerance = tol))
+	expect_that(rsdda_error_A[11,3], equals(0.0968, tolerance = tol))
+	expect_that(rsdda_error_A[12,3], equals(0.0405, tolerance = tol))
 	
 	# n_k = 15. p = 30, 50, 100
-	expect_that(rsdda_error_A$error[13,], equals(0.1425, tolerance = tol))
-	expect_that(rsdda_error_A$error[14,], equals(0.0802, tolerance = tol))
-	expect_that(rsdda_error_A$error[15,], equals(0.0237, tolerance = tol))
+	expect_that(rsdda_error_A[13,3], equals(0.1425, tolerance = tol))
+	expect_that(rsdda_error_A[14,3], equals(0.0802, tolerance = tol))
+	expect_that(rsdda_error_A[15,3], equals(0.0237, tolerance = tol))
 })
