@@ -3,12 +3,14 @@
 # of the pooled sample covariance matrix are set to zero.
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-dlda <- function(train_df, verbose = FALSE, ...) {
+dlda <- function(train_df) {
 	obj <- list()
+	
+	N <- nrow(train_df)
+	
 	obj$training <- train_df
-
-	if(verbose) message("Building DLDA classifier... ", appendLF = FALSE)
-	N <- nrow(obj$training)
+	obj$N <- N
+	obj$classes <- levels(train_df$labels)
 	
 	estimators <- dlply(obj$training, .(labels), function(df_k) {
 		x_k <- data.matrix(df_k[,-1])
@@ -30,10 +32,7 @@ dlda <- function(train_df, verbose = FALSE, ...) {
 		class_estimators$var <- var_pool
 		class_estimators
 	})
-	if(verbose) message("done!")
-	
-	obj$N <- N
-	obj$classes <- levels(obj$training$labels)
+
 	obj$estimators <- estimators
 	
 	class(obj) <- "dlda"
@@ -46,11 +45,6 @@ predict.dlda <- function(object, newdata) {
 		stop("object not of class 'dlda'")
 	}
 	newdata <- data.matrix(newdata)
-	
-	
-	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
-		newdata <- newdata %*% t(object$jointdiag.B)
-	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {

@@ -141,6 +141,8 @@ predict.rsdda <- function(object, newdata, num.lambdas = 5, lambda = NULL, verbo
 		predicted.class <- object$classes[which.min(scores)]
 		predicted.class
 	})
+	
+	predictions <- factor(predictions, levels = object$classes)
 
 	predictions
 }

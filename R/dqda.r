@@ -61,5 +61,7 @@ predict.dqda <- function(object, newdata) {
 		predicted.class
 	})
 	
+	predictions <- factor(predictions, levels = object$classes)
+	
 	predictions
 }
