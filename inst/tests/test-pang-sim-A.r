@@ -26,7 +26,7 @@ generate_data_A <- function(n_k, p) {
 	list(training = df[which_are_training,], test = df[-which_are_training,])
 }
 
-tol <- 0.02
+tol <- 0.04
 B <- 500
 
 n_k <- c(4, 5, 8, 10, 15)
