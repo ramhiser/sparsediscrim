@@ -95,10 +95,10 @@ function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
+	var_shrink <- var_shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
 	
 	estimators <- llply(estimators, function(class_estimators) {
-		class_estimators$var <- var.shrink
+		class_estimators$var <- var_shrink
 		class_estimators
 	})
 	if(verbose) cat("Building SDLDA classifier...done!\n")

@@ -88,9 +88,9 @@ function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var_shrink <- var_shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var = var.shrink, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, var = var_shrink, n = n_k, pi_k = pi_k)
 	})
 	if(verbose) cat("Building SDQDA classifier...done!\n")
 	

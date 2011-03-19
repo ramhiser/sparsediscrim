@@ -1,5 +1,5 @@
-\name{var.shrinkage}
-\alias{var.shrinkage}
+\name{var_shrinkage}
+\alias{var_shrinkage}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 TODO
@@ -8,7 +8,7 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-var.shrinkage(N, K, var.feature, num.alphas = 2, t = -1)
+var_shrinkage(N, K, var.feature, num.alphas = 2, t = -1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

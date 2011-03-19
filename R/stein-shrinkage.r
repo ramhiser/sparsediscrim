@@ -53,7 +53,7 @@ risk.stein <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 # var.feature is a vector of the sample variances for each feature.
 # Returns:
 #	var.feature.shrink: a vector of the shrunken variances for each feature.
-var.shrinkage <- function(N, K, var.feature, num.alphas = 2, t = -1) {
+var_shrinkage <- function(N, K, var.feature, num.alphas = 2, t = -1) {
 	nu <- N - K
 	p <- length(var.feature)
 	

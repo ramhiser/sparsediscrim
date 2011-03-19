@@ -46,13 +46,13 @@ rsdda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE,
 			(n_k - 1) * var(col) / n_k
 		})
 		
-		var.shrink <- var.shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var_shrink <- var_shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
 		
-		list(xbar = xbar, var.k = var.shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, var.k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var.pool.shrink <- var.shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
+	var.pool.shrink <- var_shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
 	
 	estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var.pool <- var.pool.shrink
