@@ -15,7 +15,7 @@ dlda_diag <- function(train_df, threshold = c("none", "hard"), tol = 0.01, ...) 
 	obj$classes <- levels(train_df$labels)
 	
 	cov_pool <- Reduce('+', dlply(train_df, .(labels), function(df_k) {
-		(n_k - 1) * cov(df_k[,-1])
+		(nrow(df_k) - 1) * cov(df_k[,-1])
 	})) / N
 	
 	cov_eigen <- eigen(cov_pool, symmetric = TRUE)

@@ -8,15 +8,15 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-sdlda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
+sdlda(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{train_df}{
 %%     ~~Describe \code{train_df} here~~
 }
-  \item{num.alphas}{
-%%     ~~Describe \code{num.alphas} here~~
+  \item{num_alphas}{
+%%     ~~Describe \code{num_alphas} here~~
 }
   \item{jointdiag}{
 %%     ~~Describe \code{jointdiag} here~~
@@ -59,7 +59,7 @@ sdlda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+function(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	sdlda.obj <- list()
 	sdlda.obj$training <- train_df
 	
@@ -95,7 +95,7 @@ function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var_shrink <- var_shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
+	var_shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 	
 	estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var <- var_shrink

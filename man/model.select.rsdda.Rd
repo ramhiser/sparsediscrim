@@ -71,7 +71,7 @@ function(object, grid.size = 5, k = 1) {
 	# selection process would be take too long to run, especially in simulations
 	# with a large number of replications.
 	predictions <- laply(seq_len(object$N), function(i) {
-		loo.rsdda.obj <- rsdda(object$training[-i, ], num.alphas = grid.size)
+		loo.rsdda.obj <- rsdda(object$training[-i, ], num_alphas = grid.size)
 		laply(lambda.grid, function(lambda) {
 			predict.rsdda(loo.rsdda.obj, object$training[i, -1], lambda = lambda)
 		})

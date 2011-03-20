@@ -137,7 +137,7 @@ test_that("SDLDA's matches performance of Simulation A given in Pang (2009)", {
 			train_df <- data$training
 			test_df <- data$test
 
-			sdlda_out <- sdlda(train_df, num.alphas = 101)
+			sdlda_out <- sdlda(train_df, num_alphas = 101)
 			predictions <- predict(sdlda_out, data.matrix(test_df[, -1]))
 			test_error <- mean(predictions != test_df$labels)
 			test_error
@@ -183,7 +183,7 @@ test_that("SDQDA's matches performance of Simulation A given in Pang (2009)", {
 			train_df <- data$training
 			test_df <- data$test
 
-			sdqda_out <- sdqda(train_df, num.alphas = 101)
+			sdqda_out <- sdqda(train_df, num_alphas = 101)
 			predictions <- predict(sdqda_out, data.matrix(test_df[, -1]))
 			test_error <- mean(predictions != test_df$labels)
 			test_error
@@ -229,7 +229,7 @@ test_that("RSDDA's matches performance of Simulation A given in Pang (2009)", {
 			train_df <- data$training
 			test_df <- data$test
 
-			rsdda_out <- rsdda(train_df, num.alphas = 101)
+			rsdda_out <- rsdda(train_df, num_alphas = 101)
 			predictions <- predict(rsdda_out, data.matrix(test_df[, -1]), num.lambdas = 101)
 			test_error <- mean(predictions != test_df$labels)
 			test_error

@@ -7,48 +7,38 @@
 
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdqda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
-	sdqda.obj <- list()
-	sdqda.obj$training <- train_df
+sdqda <- function(train_df, num_alphas = 101) {
+	obj <- list()
 	
-	if(jointdiag != "none") {
-		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
-		joint.diag.out <- joint.diagonalization(sdqda.obj$training, method = jointdiag)
-		sdqda.obj$training <- joint.diag.out$transformed.df
-		sdqda.obj$jointdiag.B <- joint.diag.out$B
-		sdqda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) message("done!")
-	}
+	N <- nrow(train_df)
 	
-	if(verbose) message("Building SDQDA classifier... ", appendLF = FALSE)
-	N <- nrow(sdqda.obj$training)
-	num.classes <- nlevels(sdqda.obj$training$labels)
+	obj$training <- train_df
+	obj$N <- N
+	obj$classes <- levels(train_df$labels)
+	obj$num_classes <- nlevels(train_df$labels)
 	
-	estimators <- dlply(sdqda.obj$training, .(labels), function(df_k) {
-		class.x <- as.matrix(df_k[, -1])
-		dimnames(class.x) <- NULL
-		
-		n_k <- nrow(class.x)
+	obj$estimators <- dlply(obj$training, .(labels), function(df_k) {
+		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		
-		xbar <- as.vector(colMeans(class.x))
-		var <- apply(class.x, 2, function(col) {
-			(n_k - 1) * var(col) / n_k
+		xbar <- as.vector(colMeans(df_k[,-1]))
+		
+		sum_squares <- apply(df_k[,-1], 2, function(col) {
+			(n_k - 1) * var(col)
 		})
+		var <- sum_squares / n_k
+		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
 		
-		var_shrink <- var_shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
-		
-		list(xbar = xbar, var = var_shrink, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, sum_squares = sum_squares, var = var_shrink, n_k = n_k, pi_k = pi_k)
 	})
-	if(verbose) message("done!")
 	
-	sdqda.obj$N <- N
-	sdqda.obj$classes <- levels(sdqda.obj$training$labels)
-	sdqda.obj$estimators <- estimators
+	# TODO: Calculate var_pool before calculating other estimators,
+	#		so that sum_squares is not being carried around for each class.
+	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
 	
-	class(sdqda.obj) <- "sdqda"
+	class(obj) <- "sdqda"
 	
-	sdqda.obj
+	obj
 	
 }
 
@@ -58,10 +48,6 @@ predict.sdqda <- function(object, newdata) {
 	}
 	
 	newdata <- data.matrix(newdata)
-	
-	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
-		newdata <- newdata %*% t(object$jointdiag.B)
-	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {

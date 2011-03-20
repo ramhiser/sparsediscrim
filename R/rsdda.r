@@ -8,8 +8,8 @@
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
 
-# num.alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
-rsdda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+# num_alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
+rsdda <- function(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	rsdda.obj <- list()
 	rsdda.obj$training <- train_df
 	
@@ -46,13 +46,13 @@ rsdda <- function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE,
 			(n_k - 1) * var(col) / n_k
 		})
 		
-		var_shrink <- var_shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
 		
 		list(xbar = xbar, var.k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var.pool.shrink <- var_shrinkage(N = N, K = num.classes, var.feature = var_pool, num.alphas = num.alphas, t = -1)
+	var.pool.shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 	
 	estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var.pool <- var.pool.shrink
@@ -91,7 +91,7 @@ model.select.rsdda <- function(object, grid.size = 5, k = 1) {
 	# selection process would be take too long to run, especially in simulations
 	# with a large number of replications.
 	predictions <- laply(seq_len(object$N), function(i) {
-		loo.rsdda.obj <- rsdda(object$training[-i, ], num.alphas = grid.size)
+		loo.rsdda.obj <- rsdda(object$training[-i, ], num_alphas = grid.size)
 		laply(lambda.grid, function(lambda) {
 			predict.rsdda(loo.rsdda.obj, object$training[i, -1], lambda = lambda)
 		})

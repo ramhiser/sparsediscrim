@@ -8,7 +8,7 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-var_shrinkage(N, K, var.feature, num.alphas = 2, t = -1)
+var_shrinkage(N, K, var_feature, num_alphas = 2, t = -1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,11 +18,11 @@ var_shrinkage(N, K, var.feature, num.alphas = 2, t = -1)
   \item{K}{
 %%     ~~Describe \code{K} here~~
 }
-  \item{var.feature}{
-%%     ~~Describe \code{var.feature} here~~
+  \item{var_feature}{
+%%     ~~Describe \code{var_feature} here~~
 }
-  \item{num.alphas}{
-%%     ~~Describe \code{num.alphas} here~~
+  \item{num_alphas}{
+%%     ~~Describe \code{num_alphas} here~~
 }
   \item{t}{
 %%     ~~Describe \code{t} here~~
@@ -59,17 +59,17 @@ var_shrinkage(N, K, var.feature, num.alphas = 2, t = -1)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(N, K, var.feature, num.alphas = 2, t = -1) {
+function(N, K, var_feature, num_alphas = 2, t = -1) {
 	nu <- N - K
-	p <- length(var.feature)
+	p <- length(var_feature)
 	
-	risk.stein.out <- risk.stein(N = N, K = K, var.feature = var.feature, num.alphas = num.alphas, t = t)
+	risk_stein_out <- risk_stein(N = N, K = K, var_feature = var_feature, num_alphas = num_alphas, t = t)
 
-	var_pool <- risk.stein.out$var_pool
-	alpha <- risk.stein.out$alpha
+	var_pool <- risk_stein_out$var_pool
+	alpha <- risk_stein_out$alpha
 	
-	var.feature.shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha * (h(nu = nu, p = 1, t = t) * var.feature)^(1 - alpha)
-	var.feature.shrink
+	var_feature_shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha * (h(nu = nu, p = 1, t = t) * var_feature)^(1 - alpha)
+	var_feature_shrink
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

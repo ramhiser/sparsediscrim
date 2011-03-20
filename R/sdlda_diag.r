@@ -17,7 +17,7 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 	num_classes <- nlevels(train_df$labels)
 	
 	cov_pool <- Reduce('+', dlply(train_df, .(labels), function(df_k) {
-		(n_k - 1) * cov(df_k[,-1])
+		(nrow(df_k) - 1) * cov(df_k[,-1])
 	})) / N
 	
 	cov_eigen <- eigen(cov_pool, symmetric = TRUE)
@@ -34,7 +34,7 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 	}
 	train_df <- cbind.data.frame(train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
 	
-	var_shrink <- var_shrinkage(N = N, K = num_classes, var.feature = var_pool, num_alphas = num_alphas, t = -1)
+	var_shrink <- var_shrinkage(N = N, K = num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 		
 	estimators <- dlply(train_df, .(labels), function(df_k) {
 		n_k <- nrow(df_k)

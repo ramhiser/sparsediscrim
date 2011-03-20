@@ -8,15 +8,15 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-sdqda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
+sdqda(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{train_df}{
 %%     ~~Describe \code{train_df} here~~
 }
-  \item{num.alphas}{
-%%     ~~Describe \code{num.alphas} here~~
+  \item{num_alphas}{
+%%     ~~Describe \code{num_alphas} here~~
 }
   \item{jointdiag}{
 %%     ~~Describe \code{jointdiag} here~~
@@ -59,7 +59,7 @@ sdqda(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
+function(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 	sdqda.obj <- list()
 	sdqda.obj$training <- train_df
 	
@@ -88,7 +88,7 @@ function(train_df, num.alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
 			(n_k - 1) * var(col) / n_k
 		})
 		
-		var_shrink <- var_shrinkage(N = n_k, K = 1, var.feature = var, num.alphas = num.alphas, t = -1)
+		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
 		
 		list(xbar = xbar, var = var_shrink, n = n_k, pi_k = pi_k)
 	})
