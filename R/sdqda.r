@@ -23,23 +23,15 @@ sdqda <- function(train_df, num_alphas = 101) {
 		
 		xbar <- as.vector(colMeans(df_k[,-1]))
 		
-		sum_squares <- apply(df_k[,-1], 2, function(col) {
-			(n_k - 1) * var(col)
-		})
-		var <- sum_squares / n_k
+		var <- (n_k - 1) / n_k * apply(df_k[,-1], 2, function(col) { var(col) })
 		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
 		
-		list(xbar = xbar, sum_squares = sum_squares, var = var_shrink, n_k = n_k, pi_k = pi_k)
+		list(xbar = xbar, var = var_shrink, n_k = n_k, pi_k = pi_k)
 	})
-	
-	# TODO: Calculate var_pool before calculating other estimators,
-	#		so that sum_squares is not being carried around for each class.
-	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	
+
 	class(obj) <- "sdqda"
 	
-	obj
-	
+	obj	
 }
 
 predict.sdqda <- function(object, newdata) {

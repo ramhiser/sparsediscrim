@@ -22,7 +22,7 @@ risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
 	
 	# The pooled variance is defined in Pang et al. (2009) as the geometric mean
 	# of the sample variances of each feature.
-	var_pool <- prod(var_feature)^(1 / p)
+	var_pool <- prod(var_feature)^(t / p)
 	
 	# Here we compute the average risk for the Stein loss function on page 1023
 	# for all values of alpha.
