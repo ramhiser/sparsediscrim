@@ -46,6 +46,11 @@ predict.dlda_diag <- function(object, newdata) {
 	if (!inherits(object, "dlda_diag"))  {
 		stop("object not of class 'dlda_diag'")
 	}
+	if(is.vector(newdata)) {
+		newdata <- matrix(data.matrix(newdata), nrow = 2)
+	} else {
+		newdata <- data.matrix(newdata)
+	}
 	newdata <- tcrossprod(data.matrix(newdata), object$B)
 	
 	predictions <- apply(newdata, 1, function(obs) {

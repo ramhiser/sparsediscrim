@@ -31,7 +31,11 @@ predict.dqda <- function(object, newdata) {
 	if (!inherits(object, "dqda"))  {
 		stop("object not of class 'dqda'")
 	}
-	newdata <- data.matrix(newdata)
+	if(is.vector(newdata)) {
+		newdata <- matrix(data.matrix(newdata), nrow = 2)
+	} else {
+		newdata <- data.matrix(newdata)
+	}
 
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {

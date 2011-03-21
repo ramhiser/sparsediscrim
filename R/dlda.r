@@ -37,7 +37,11 @@ predict.dlda <- function(object, newdata) {
 	if (!inherits(object, "dlda"))  {
 		stop("object not of class 'dlda'")
 	}
-	newdata <- data.matrix(newdata)
+	if(is.vector(newdata)) {
+		newdata <- matrix(data.matrix(newdata), nrow = 2)
+	} else {
+		newdata <- data.matrix(newdata)
+	}
 	
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {

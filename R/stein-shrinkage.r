@@ -3,7 +3,15 @@
 # p is the feature space dimension.
 # t is a constant specified by the user. By default, t = -1 in Pang et al. (2009).
 h <- function(nu, p, t = -1) {
-	(nu / 2)^t * (gamma(nu / 2) / gamma(nu / 2 + t / p))^p
+	stopifnot(nu > 0)
+	
+	if(nu / 2 + t / p > 0) {
+		(nu / 2)^t * (gamma(nu / 2) / gamma(nu / 2 + t / p))^p
+	} else {
+		warning("The bias-correction has resulted in a NaN. Incrementing nu by 1...")
+		(nu / 2)^t * (gamma(nu / 2) / gamma((nu + 1) / 2 + t / p))^p
+	}
+	
 }
 
 # This function finds the value for alpha \in [0,1] that empirically minimizes the

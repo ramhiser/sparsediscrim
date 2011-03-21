@@ -264,3 +264,28 @@ test_that("RSDDA's matches performance of Simulation A given in Pang (2009)", {
 	expect_that(rsdda_error_A[15,3], equals(0.0237, tolerance = tol, scale = 1))
 })
 
+library('diagdiscrim')
+library('mvtnorm')
+library('testthat')
+
+B <- 3
+rsdda_error_A <<- ddply(sim_configs, .(n_k, p), function(sim_config) {
+	print(sim_config)
+	error_rates <- replicate(B, {
+		data <- generate_data_A(n_k = sim_config$n_k, p = sim_config$p)
+		train_df <- data$training
+		test_df <- data$test
+		message("Training classifier")
+		rsdda_out <- rsdda(train_df, num_alphas = 101)
+		message("Classifier trained!")
+		message("Making predictions")
+		predictions <- predict(rsdda_out, data.matrix(test_df[, -1]), num_lambdas = 101)
+		message("Made predictions")
+		print(predictions)
+		test_error <- mean(predictions != test_df$labels)
+		print(test_error)
+		test_error
+	})
+	mean(error_rates)
+})
+names(rsdda_error_A) <<- c("n_k", "p", "error")

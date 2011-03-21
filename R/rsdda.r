@@ -29,7 +29,7 @@ rsdda <- function(train_df, num_alphas = 101) {
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var_pool_shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
+	var_pool_shrink <- var_shrinkage(N = N, K = obj$num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 	
 	obj$estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var_pool <- var_pool_shrink
@@ -61,11 +61,13 @@ model.select.rsdda <- function(object, grid_size = 5, k = 1) {
 	# If we did this for each observation left out using crossvalidation, the model
 	# selection process would be take too long to run, especially in simulations
 	# with a large number of replications.
-	predictions <- laply(seq_len(object$N), function(i) {
+	predictions <- sapply(seq_len(object$N), function(i) {
 		loo.obj <- rsdda(object$training[-i, ], num_alphas = grid_size)
-		laply(lambda_grid, function(lambda) {
+		prediction <- sapply(lambda_grid, function(lambda) {
 			predict.rsdda(loo.obj, object$training[i, -1], lambda = lambda)
 		})
+		print(prediction)
+		prediction
 	})
 
 	error.rates.loo <- apply(predictions, 2, function(predictions.lambda) {
@@ -96,20 +98,23 @@ predict.rsdda <- function(object, newdata, num_lambdas = 5, lambda = NULL, verbo
 	else {
 		object$lambda <- lambda
 	}
+	message("Lambda:", object$lambda)
 	
-	newdata <- data.matrix(newdata)
-
+	if(is.vector(newdata)) {
+		newdata <- matrix(data.matrix(newdata), nrow = 2)
+	} else {
+		newdata <- data.matrix(newdata)
+	}
+	
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {
 			var_rsdda <- (class_est$var_k)^(1 - object$lambda) * (class_est$var_pool)^(object$lambda)
 			sum((obs - class_est$xbar)^2 * var_rsdda) - sum(log(var_rsdda)) - 2 * log(class_est$pi_k)
 		})
-		
 		prediction <- object$classes[which.min(scores)]
 		prediction
 	})
 	
 	predictions <- factor(predictions, levels = object$classes)
-
 	predictions
 }
