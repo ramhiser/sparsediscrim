@@ -66,7 +66,6 @@ model.select.rsdda <- function(object, grid_size = 5, k = 1) {
 		prediction <- sapply(lambda_grid, function(lambda) {
 			predict.rsdda(loo.obj, object$training[i, -1], lambda = lambda)
 		})
-		print(prediction)
 		prediction
 	})
 
@@ -98,8 +97,7 @@ predict.rsdda <- function(object, newdata, num_lambdas = 5, lambda = NULL, verbo
 	else {
 		object$lambda <- lambda
 	}
-	message("Lambda:", object$lambda)
-	
+
 	if(is.vector(newdata)) {
 		newdata <- matrix(data.matrix(newdata), nrow = 2)
 	} else {
