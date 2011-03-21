@@ -16,11 +16,7 @@ dlda <- function(train_df) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
-		
-		sum_squares <- apply(df_k[,-1], 2, function(col) {
-			(n_k - 1) * var(col)
-		})
-		
+		sum_squares <- (n_k - 1) * apply(df_k[,-1], 2, var)
 		list(xbar = xbar, sum_squares = sum_squares, n_k = n_k, pi_k = pi_k)
 	})
 	# TODO: Calculate var_pool before calculating other estimators,

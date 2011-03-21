@@ -10,7 +10,6 @@ dqda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
 	obj <- list()
 	
 	N <- nrow(train_df)
-	
 	obj$training <- train_df
 	obj$N <- N
 	obj$classes <- levels(train_df$labels)
@@ -19,10 +18,7 @@ dqda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
-		
-		var <- apply(df_k[,-1], 2, function(col) {
-			(n_k - 1) / n_k * var(col)
-		})
+		var <- (n_k - 1) / n_k * apply(df_k[,-1], 2, var)
 		list(xbar = xbar, var = var, n_k = n_k, pi_k = pi_k)
 	})
 

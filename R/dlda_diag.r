@@ -10,7 +10,6 @@ dlda_diag <- function(train_df, threshold = c("none", "hard"), tol = 0.01, ...) 
 	
 	N <- nrow(train_df)
 	p <- ncol(train_df) - 1
-	
 	obj$N <- N
 	obj$classes <- levels(train_df$labels)
 	
@@ -19,7 +18,6 @@ dlda_diag <- function(train_df, threshold = c("none", "hard"), tol = 0.01, ...) 
 	})) / N
 	
 	cov_eigen <- eigen(cov_pool, symmetric = TRUE)
-	
 	var_pool <- numeric(p)
 	
 	if(threshold == 'none') {
@@ -36,7 +34,6 @@ dlda_diag <- function(train_df, threshold = c("none", "hard"), tol = 0.01, ...) 
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
-		
 		list(xbar = xbar, var = var_pool, n_k = n_k, pi_k = pi_k)
 	})
 

@@ -11,17 +11,15 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 	
 	N <- nrow(train_df)
 	p <- ncol(train_df) - 1
-	
 	obj$N <- N
 	obj$classes <- levels(train_df$labels)
-	num_classes <- nlevels(train_df$labels)
+	obj$num_classes <- nlevels(train_df$labels)
 	
 	cov_pool <- Reduce('+', dlply(train_df, .(labels), function(df_k) {
 		(nrow(df_k) - 1) * cov(df_k[,-1])
 	})) / N
 	
 	cov_eigen <- eigen(cov_pool, symmetric = TRUE)
-	
 	var_pool <- numeric(p)
 	
 	if(threshold == 'none') {

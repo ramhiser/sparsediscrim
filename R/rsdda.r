@@ -21,13 +21,10 @@ rsdda <- function(train_df, num_alphas = 101) {
 	estimators <- dlply(obj$training, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
-		
-		xbar <- as.vector(colMeans(df_k))
-		
-		sum_squares <- (n_k - 1) * apply(class.x, 2, function(col) { var(col) })
+		xbar <- as.vector(colMeans(df_k[,-1]))
+		sum_squares <- (n_k - 1) * apply(df_k[,-1], 2, var)
 		var <- sum_squares / n_k
 		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
-		
 		list(xbar = xbar, var_k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	

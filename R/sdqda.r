@@ -11,7 +11,6 @@ sdqda <- function(train_df, num_alphas = 101) {
 	obj <- list()
 	
 	N <- nrow(train_df)
-	
 	obj$training <- train_df
 	obj$N <- N
 	obj$classes <- levels(train_df$labels)
@@ -20,12 +19,9 @@ sdqda <- function(train_df, num_alphas = 101) {
 	obj$estimators <- dlply(obj$training, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
-		
 		xbar <- as.vector(colMeans(df_k[,-1]))
-		
-		var <- (n_k - 1) / n_k * apply(df_k[,-1], 2, function(col) { var(col) })
+		var <- (n_k - 1) / n_k * apply(df_k[,-1], 2, var)
 		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
-		
 		list(xbar = xbar, var = var_shrink, n_k = n_k, pi_k = pi_k)
 	})
 
