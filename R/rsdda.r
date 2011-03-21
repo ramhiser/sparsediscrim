@@ -9,71 +9,45 @@
 # which contains the class labels.
 
 # num_alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
-rsdda <- function(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
-	rsdda.obj <- list()
-	rsdda.obj$training <- train_df
+rsdda <- function(train_df, num_alphas = 101) {
+	obj <- list()
 	
-	if(jointdiag != "none") {
-		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
-		joint.diag.out <- joint.diagonalization(rsdda.obj$training, method = jointdiag)
-		rsdda.obj$training <- joint.diag.out$transformed.df
-		rsdda.obj$jointdiag.B <- joint.diag.out$B
-		rsdda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) message("done!")
-	}
+	N <- nrow(train_df)
+	obj$training <- train_df
+	obj$N <- N
+	obj$classes <- levels(train_df$labels)
+	obj$num_classes <- nlevels(train_df$labels)
 
-	if(verbose) message("Building RSDDA classifier... ", appendLF = FALSE)
-	N <- nrow(rsdda.obj$training)
-	num.classes <- nlevels(rsdda.obj$training$labels)
-	
-	train_x <- as.matrix(rsdda.obj$training[,-1])
-	dimnames(train_x) <- NULL
-	
-	estimators <- dlply(rsdda.obj$training, .(labels), function(df_k) {
-		class.x <- as.matrix(df_k[, -1])
-		dimnames(class.x) <- NULL
-		
-		n_k <- nrow(class.x)
+	estimators <- dlply(obj$training, .(labels), function(df_k) {
+		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		
-		xbar <- as.vector(colMeans(class.x))
+		xbar <- as.vector(colMeans(df_k))
 		
-		sum_squares <- apply(class.x, 2, function(col) {
-			(n_k - 1) * var(col)
-		})
-		
-		var <- apply(class.x, 2, function(col) {
-			(n_k - 1) * var(col) / n_k
-		})
-		
+		sum_squares <- (n_k - 1) * apply(class.x, 2, function(col) { var(col) })
+		var <- sum_squares / n_k
 		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
 		
-		list(xbar = xbar, var.k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
+		list(xbar = xbar, var_k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
 	})
 	
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var.pool.shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
+	var_pool_shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 	
-	estimators <- llply(estimators, function(class_estimators) {
-		class_estimators$var.pool <- var.pool.shrink
+	obj$estimators <- llply(estimators, function(class_estimators) {
+		class_estimators$var_pool <- var_pool_shrink
 		class_estimators
 	})
 	
-	if(verbose) message("done!")
-	
-	rsdda.obj$N <- N
-	rsdda.obj$classes <- levels(rsdda.obj$training$labels)
-	rsdda.obj$estimators <- estimators
-	
-	class(rsdda.obj) <- "rsdda"
+	class(obj) <- "rsdda"
 
-	rsdda.obj
+	obj
 }
 
 # Estimates the optimal value of lambda used in RSDDA by leave-k-out crossvalidation.
-# grid.size: the grid size of lambda.grid considered in estimating the regularization parameter lambda
+# grid_size: the grid size of lambda_grid considered in estimating the regularization parameter lambda
 # k: Leave-k-out crossvalidation is used to estimate the optimal value of lambda.
-model.select.rsdda <- function(object, grid.size = 5, k = 1) {
+model.select.rsdda <- function(object, grid_size = 5, k = 1) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
 	}
@@ -83,7 +57,7 @@ model.select.rsdda <- function(object, grid.size = 5, k = 1) {
 		warning("Leave-k-out crossvalidation for k > 1 is not implemented yet. Using k = 1 instead...\n")
 	}
 	
-	lambda.grid <- seq(0, 1, length = grid.size)
+	lambda_grid <- seq(0, 1, length = grid_size)
 	
 	# Here, we calculate the Leave-K-out Error Rates for each lambda in the grid.
 	# NOTE: We are only simultaneously diagonalizing the covariance matrices ONCE.
@@ -91,9 +65,9 @@ model.select.rsdda <- function(object, grid.size = 5, k = 1) {
 	# selection process would be take too long to run, especially in simulations
 	# with a large number of replications.
 	predictions <- laply(seq_len(object$N), function(i) {
-		loo.rsdda.obj <- rsdda(object$training[-i, ], num_alphas = grid.size)
-		laply(lambda.grid, function(lambda) {
-			predict.rsdda(loo.rsdda.obj, object$training[i, -1], lambda = lambda)
+		loo.obj <- rsdda(object$training[-i, ], num_alphas = grid_size)
+		laply(lambda_grid, function(lambda) {
+			predict.rsdda(loo.obj, object$training[i, -1], lambda = lambda)
 		})
 	})
 
@@ -102,23 +76,23 @@ model.select.rsdda <- function(object, grid.size = 5, k = 1) {
 	})
 	
 	# Find the lambdas that attain the minimum Leave-K-out error rate.
-	optimal.lambdas <- lambda.grid[which(error.rates.loo == min(error.rates.loo))]
+	optimal_lambdas <- lambda_grid[which(error.rates.loo == min(error.rates.loo))]
 	
 	# Finally, we add the optimal lambda to the RSDDA object.
 	# If there is a tie for optimal lambda, randomly choose one from the optimal ones.
-	object$lambda <- sample(optimal.lambdas, 1)
+	object$lambda <- sample(optimal_lambdas, 1)
 	
 	return(object)
 }
 
-predict.rsdda <- function(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE) {
+predict.rsdda <- function(object, newdata, num_lambdas = 5, lambda = NULL, verbose = FALSE) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
 	}
 	
 	if(is.null(lambda) || !is.numeric(lambda)) {
 		if(verbose) cat("Model selection for RSDDA\n")
-		object <- model.select.rsdda(object, grid.size = num.lambdas)
+		object <- model.select.rsdda(object, grid_size = num_lambdas)
 		if(verbose) cat("Model selection for RSDDA...done!\n")
 		if(verbose) cat("RSDDA Lambda Parameter:", object$lambda, "\n")
 	}
@@ -127,15 +101,11 @@ predict.rsdda <- function(object, newdata, num.lambdas = 5, lambda = NULL, verbo
 	}
 	
 	newdata <- data.matrix(newdata)
-	
-	if(!is.null(object$jointdiag.method) && object$jointdiag.method != "none") {
-		newdata <- newdata %*% t(object$jointdiag.B)
-	}
-	
+
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {
-			var.rsdda <- (class_est$var.k)^(1 - object$lambda) * (class_est$var.pool)^(object$lambda)
-			sum((obs - class_est$xbar)^2 * var.rsdda) - sum(log(var.rsdda)) - 2 * log(class_est$pi_k)
+			var_rsdda <- (class_est$var_k)^(1 - object$lambda) * (class_est$var_pool)^(object$lambda)
+			sum((obs - class_est$xbar)^2 * var_rsdda) - sum(log(var_rsdda)) - 2 * log(class_est$pi_k)
 		})
 		
 		prediction <- object$classes[which.min(scores)]

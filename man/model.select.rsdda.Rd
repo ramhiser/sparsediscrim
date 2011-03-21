@@ -8,15 +8,15 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-model.select.rsdda(object, grid.size = 5, k = 1)
+model.select.rsdda(object, grid_size = 5, k = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{
 %%     ~~Describe \code{object} here~~
 }
-  \item{grid.size}{
-%%     ~~Describe \code{grid.size} here~~
+  \item{grid_size}{
+%%     ~~Describe \code{grid_size} here~~
 }
   \item{k}{
 %%     ~~Describe \code{k} here~~
@@ -53,7 +53,7 @@ model.select.rsdda(object, grid.size = 5, k = 1)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(object, grid.size = 5, k = 1) {
+function(object, grid_size = 5, k = 1) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
 	}
@@ -63,7 +63,7 @@ function(object, grid.size = 5, k = 1) {
 		warning("Leave-k-out crossvalidation for k > 1 is not implemented yet. Using k = 1 instead...\n")
 	}
 	
-	lambda.grid <- seq(0, 1, length = grid.size)
+	lambda.grid <- seq(0, 1, length = grid_size)
 	
 	# Here, we calculate the Leave-K-out Error Rates for each lambda in the grid.
 	# NOTE: We are only simultaneously diagonalizing the covariance matrices ONCE.
@@ -71,7 +71,7 @@ function(object, grid.size = 5, k = 1) {
 	# selection process would be take too long to run, especially in simulations
 	# with a large number of replications.
 	predictions <- laply(seq_len(object$N), function(i) {
-		loo.rsdda.obj <- rsdda(object$training[-i, ], num_alphas = grid.size)
+		loo.rsdda.obj <- rsdda(object$training[-i, ], num_alphas = grid_size)
 		laply(lambda.grid, function(lambda) {
 			predict.rsdda(loo.rsdda.obj, object$training[i, -1], lambda = lambda)
 		})

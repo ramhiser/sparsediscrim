@@ -190,7 +190,7 @@ test_that("RSDDA's matches performance of Simulation B given in Pang (2009)", {
 			test_df <- data$test
 
 			rsdda_out <- rsdda(train_df, num_alphas = 101)
-			predictions <- predict(rsdda_out, data.matrix(test_df[, -1]), num.lambdas = 101)
+			predictions <- predict(rsdda_out, data.matrix(test_df[, -1]), num_lambdas = 101)
 			test_error <- mean(predictions != test_df$labels)
 			test_error
 		})

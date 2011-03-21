@@ -8,7 +8,7 @@ TODO
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-predict.rsdda(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE)
+predict.rsdda(object, newdata, num_lambdas = 5, lambda = NULL, verbose = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +18,8 @@ predict.rsdda(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE)
   \item{newdata}{
 %%     ~~Describe \code{newdata} here~~
 }
-  \item{num.lambdas}{
-%%     ~~Describe \code{num.lambdas} here~~
+  \item{num_lambdas}{
+%%     ~~Describe \code{num_lambdas} here~~
 }
   \item{lambda}{
 %%     ~~Describe \code{lambda} here~~
@@ -59,14 +59,14 @@ predict.rsdda(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function(object, newdata, num.lambdas = 5, lambda = NULL, verbose = FALSE) {
+function(object, newdata, num_lambdas = 5, lambda = NULL, verbose = FALSE) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
 	}
 	
 	if(is.null(lambda) || !is.numeric(lambda)) {
 		if(verbose) cat("Model selection for RSDDA\n")
-		object <- model.select.rsdda(object, grid.size = num.lambdas)
+		object <- model.select.rsdda(object, grid_size = num_lambdas)
 		if(verbose) cat("Model selection for RSDDA...done!\n")
 		if(verbose) cat("RSDDA Lambda Parameter:", object$lambda, "\n")
 	}
