@@ -27,7 +27,7 @@ sdlda <- function(train_df, num_alphas = 101) {
 	# TODO: Calculate var_pool before calculating other estimators,
 	#		so that sum_squares is not being carried around for each class.
 	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var_shrink <- var_shrinkage(N = N, K = num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
+	var_shrink <- var_shrinkage(N = N, K = obj$num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 	
 	obj$estimators <- llply(estimators, function(class_estimators) {
 		class_estimators$var <- var_shrink

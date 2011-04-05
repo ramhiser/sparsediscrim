@@ -263,3 +263,4 @@ test_that("RSDDA's matches performance of Simulation A given in Pang (2009)", {
 	expect_that(rsdda_error_A[14,3], equals(0.0802, tolerance = tol, scale = 1))
 	expect_that(rsdda_error_A[15,3], equals(0.0237, tolerance = tol, scale = 1))
 })
+

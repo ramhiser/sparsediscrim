@@ -28,9 +28,9 @@ dlda_diag <- function(train_df, threshold = c("none", "hard"), tol = 0.01, ...) 
 		obj$B <- cov_eigen$vectors[, seq_len(q)]
 		var_pool <- cov_eigen$values[seq_len(q)]
 	}
-	train_df <- cbind.data.frame(train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
-		
-	estimators <- dlply(train_df, .(labels), function(df_k) {
+	train_df <- cbind.data.frame(labels = train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
+
+	obj$estimators <- dlply(train_df, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
@@ -51,8 +51,8 @@ predict.dlda_diag <- function(object, newdata) {
 	} else {
 		newdata <- data.matrix(newdata)
 	}
-	newdata <- tcrossprod(data.matrix(newdata), object$B)
-	
+	newdata <- newdata %*% object$B
+
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {
 			sum((obs - class_est$xbar)^2 / class_est$var) - 2 * log(class_est$pi_k)

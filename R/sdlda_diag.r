@@ -30,11 +30,11 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 		obj$B <- cov_eigen$vectors[, seq_len(q)]
 		var_pool <- cov_eigen$values[seq_len(q)]
 	}
-	train_df <- cbind.data.frame(train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
+	train_df <- cbind.data.frame(labels = train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
 	
-	var_shrink <- var_shrinkage(N = N, K = num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
+	var_shrink <- var_shrinkage(N = N, K = obj$num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
 		
-	estimators <- dlply(train_df, .(labels), function(df_k) {
+	obj$estimators <- dlply(train_df, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
 		xbar <- as.vector(colMeans(df_k[,-1]))
@@ -56,7 +56,7 @@ predict.sdlda_diag <- function(object, newdata) {
 	} else {
 		newdata <- data.matrix(newdata)
 	}
-	newdata <- tcrossprod(data.matrix(newdata), object$B)
+	newdata <- newdata %*% object$B
 	
 	predictions <- apply(newdata, 1, function(obs) {
 		scores <- sapply(object$estimators, function(class_est) {
