@@ -43,6 +43,7 @@ risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
 		risk <- risk - log(h(nu = nu, p = p)^alpha * h(nu = nu, p = 1)^(1 - alpha))
 		risk <- risk - t * digamma(nu / 2)
 		risk <- risk + t * log(nu / 2) - 1
+		risk
 	})
 
 	# Which of the alphas empirically minimize this risk?

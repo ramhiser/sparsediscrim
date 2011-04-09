@@ -4,7 +4,7 @@
 # We use a shrinkage method based on Pang, Tong, and Zhao (2009).
 # We assume the first column is named "labels" and holds a factor vector,
 # which contains the class labels.
-sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard"), tol = 0.01, ...) {
+sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "eigen_pct", "hard", "soft"), delta = 0.01, eigen_pct = 0.95, ...) {
 	obj <- list()
 	
 	threshold <- match.arg(threshold)
@@ -26,9 +26,19 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 		obj$B <- cov_eigen$vectors
 		var_pool <- cov_eigen$values
 	} else if(threshold == 'hard') {
-		q <- sum(cov_eigen$values >= tol)
+		q <- sum(cov_eigen$values >= delta)
 		obj$B <- cov_eigen$vectors[, seq_len(q)]
 		var_pool <- cov_eigen$values[seq_len(q)]
+	} else if(threshold == 'eigen_pct') {
+		q <- sum(cumsum(cov_eigen$values) / sum(cov_eigen$value) <= eigen_pct)
+		obj$B <- cov_eigen$vectors[, seq_len(q)]
+		var_pool <- cov_eigen$values[seq_len(q)]
+	} else if(threshold == 'soft') {
+		shrunken_eigenvals <- cov_eigen$values - delta
+		shrunken_eigenvals[which(shrunken_eigenvals < 0)] <- 0
+		q <- sum(shrunken_eigenvals > 0)
+		obj$B <- cov_eigen$vectors[, seq_len(q)]
+		var_pool <- shrunken_eigenvals[seq_len(q)]
 	}
 	train_df <- cbind.data.frame(labels = train_df$labels, data.matrix(train_df[, -1]) %*% obj$B)
 	
@@ -37,7 +47,11 @@ sdlda_diag <- function(train_df, num_alphas = 101, threshold = c("none", "hard")
 	obj$estimators <- dlply(train_df, .(labels), function(df_k) {
 		n_k <- nrow(df_k)
 		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(df_k[,-1]))
+		if(is.vector(df_k[,-1])) {
+			xbar <- mean(df_k[,-1])
+		} else {
+			xbar <- as.vector(colMeans(df_k[,-1]))
+		}
 		
 		list(xbar = xbar, var = var_shrink, n_k = n_k, pi_k = pi_k)
 	})
