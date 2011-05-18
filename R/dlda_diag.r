@@ -7,6 +7,7 @@ dlda_diag <- function(train_df, threshold = c("none", "eigen_pct", "hard", "soft
 	obj <- list()
 	
 	threshold <- match.arg(threshold)
+	obj$threshold <- threshold
 	
 	N <- nrow(train_df)
 	p <- ncol(train_df) - 1
@@ -55,6 +56,24 @@ dlda_diag <- function(train_df, threshold = c("none", "eigen_pct", "hard", "soft
 	
 	obj
 }
+
+dlda_diag.cv <- function(train_df, threshold = c("soft", "hard"), hold_out = 5, delta = seq(0.1, 0.5, by = 0.1), verbose = FALSE) {
+	laply(cv_partition(train_df$labels, k = hold_out), function(held_out) {
+		cv_train_df <- train_df[-held_out,]
+		cv_test_df <- train_df[held_out,]
+		
+		errors <- sapply(delta, function(del) {
+			cv_out <- dlda_diag(cv_train_df, threshold = threshold, delta = del)
+			cv_predictions <- predict.dlda_diag(cv_out, cv_test_df[,-1])
+			sum(cv_test_df$labels != cv_predictions)
+		})
+		errors
+	})
+}
+
+cv_out <- dlda_diag(cv_train_df, threshold = threshold, delta = 0.2)
+cv_predictions <- predict.dlda_diag(cv_out, cv_test_df[,-1])
+sum(cv_test_df$labels != cv_predictions)
 
 predict.dlda_diag <- function(object, newdata) {
 	if (!inherits(object, "dlda_diag"))  {

@@ -1,2 +1,21 @@
-Run inst/tests/test-pang-sim-A.r for comparison with Pang et al. (2009)
-Run inst/tests/test-pang-sim-B.r for comparison with Pang et al. (2009)
+Move away from the diag_dlda syntax and add the option for diagonalization to DLDA.
+Ex:	dlda_out <- dlda(train_df, diagonalize = TRUE)
+
+#########################################################################
+
+Cross-validation for estimating tuning parameters.
+dlda.cv <- function(dlda_obj, hold_out_size = 5, shrink = seq(0.01, 0.1, by = 0.01)) {
+	Takes a dlda_obj
+	Iterate through tuning params
+	Determine optimal value
+	Attach crossvalidation info to object, which can be passed to 
+}
+
+Example:
+dlda_out <- dlda(train_df, diagonalize = TRUE)
+	Has $B and $train_df attached to it.
+dlda_out <- dlda_cv(dlda_out, hold_out_size = 5)
+predict(dlda_out, test_df)
+
+#########################################################################
+
