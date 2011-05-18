@@ -1,21 +1,16 @@
-Move away from the diag_dlda syntax and add the option for diagonalization to DLDA.
-Ex:	dlda_out <- dlda(train_df, diagonalize = TRUE)
+Add pi_k to the classifier to DLDA
+Add option to set prior probabilities DLDA.
+	'prior = 1' indicates equal probabilities.
 
-#########################################################################
+Add pi_k to the classifier to DQDA
+Add option to set prior probabilities DQDA.
+	'prior = 1' indicates equal probabilities.
 
-Cross-validation for estimating tuning parameters.
-dlda.cv <- function(dlda_obj, hold_out_size = 5, shrink = seq(0.01, 0.1, by = 0.01)) {
-	Takes a dlda_obj
-	Iterate through tuning params
-	Determine optimal value
-	Attach crossvalidation info to object, which can be passed to 
-}
+Add pi_k to the classifier to SDLDA
+Add option to set prior probabilities SDLDA.
+	'prior = 1' indicates equal probabilities.
 
-Example:
-dlda_out <- dlda(train_df, diagonalize = TRUE)
-	Has $B and $train_df attached to it.
-dlda_out <- dlda_cv(dlda_out, hold_out_size = 5)
-predict(dlda_out, test_df)
-
-#########################################################################
+Add pi_k to the classifier to SDQDA
+Add option to set prior probabilities SDQDA.
+	'prior = 1' indicates equal probabilities.
 

@@ -1,51 +1,58 @@
 # Diagonalized Quadratic Discriminant Analysis (DQDA)
-# The DQDA classifier is a modification to LDA, where the off-diagonal elements
-# of the pooled sample covariance matrix are set to zero.
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-dqda <- function(train_df, jointdiag = "none", verbose = FALSE, ...) {
+#'
+#' Given a set of training data, this function builds the DQDA classifier,
+#' which is often attributed to Dudoit et al. (2002).
+#'
+# The DQDA classifier is a modification to QDA, where the off-diagonal elements
+# of the sample covariance matrices for each class are set to zero.
+#' 
+#' @param x training data in matrix form.
+#' @param y labels of the training data.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @return dqda obj
+dqda <- function(x, y) {
 	obj <- list()
+	y <- factor(y)
+	obj$labels <- y
+	obj$N <- length(y)
+	obj$p <- ncol(x)
+	obj$groups <- levels(y)
+	obj$num_groups <- nlevels(obj$labels)
 	
-	N <- nrow(train_df)
-	obj$training <- train_df
-	obj$N <- N
-	obj$classes <- levels(train_df$labels)
-	
-	obj$estimators <- dlply(obj$training, .(labels), function(df_k) {
-		n_k <- nrow(df_k)
-		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(df_k[,-1]))
-		var <- (n_k - 1) / n_k * apply(df_k[,-1], 2, var)
-		list(xbar = xbar, var = var, n_k = n_k, pi_k = pi_k)
-	})
-
+	obj$est <- foreach(k=levels(y)) %do% {
+		stats <- list()
+		x_k <- x[which(y == k), ]
+		stats$label <- k
+		stats$n_k <- n_k <- nrow(x_k)
+		stats$xbar_k <- colMeans(x_k)
+		stats$var <- (n_k - 1) * apply(x_k, 2, var) / n_k
+		stats
+	}
 	class(obj) <- "dqda"
 	
 	obj
 }
 
-predict.dqda <- function(object, newdata) {
-	if (!inherits(object, "dqda"))  {
-		stop("object not of class 'dqda'")
+predict_dqda <- function(obj, newdata) {
+	if (!inherits(obj, "dqda"))  {
+		stop("obj not of class 'dqda'")
 	}
-	if(is.vector(newdata)) {
-		newdata <- matrix(data.matrix(newdata), nrow = 2)
-	} else {
-		newdata <- data.matrix(newdata)
-	}
+	if(is.vector(newdata)) newdata <- matrix(newdata, nrow = 1)
 
-	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class_est) {
-			sum((obs - class_est$xbar)^2 / class_est$var) + sum(log(class_est$var)) - 2 * log(class_est$pi_k)
+	scores <- apply(newdata, 1, function(obs) {
+		sapply(obj$est, function(class_est) {
+			sum((obs - class_est$xbar)^2 / class_est$var) 
 		})
-		prediction <- object$classes[which.min(scores)]
-		prediction
 	})
 	
-	predictions <- factor(predictions, levels = object$classes)
+	if(is.vector(scores)) {
+		min_scores <- which.min(scores)
+	} else {
+		min_scores <- apply(scores, 1, which.min)
+	}
+
+	predicted <- factor(obj$groups[min_scores], levels = obj$groups)
 	
-	predictions
+	list(scores = scores, predicted = predicted)
 }

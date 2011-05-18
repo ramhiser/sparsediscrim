@@ -1,64 +1,70 @@
 # Shrinkage-based Diagonal Linear Discriminant Analysis (SDLDA)
+#'
+#' Given a set of training data, this function builds the DLDA classifier,
+#' which is often attributed to Dudoit et al. (2002). To improve the estimation
+#' of the pooled variances, we  use a shrinkage method from Pang et al. (2009).
+#'
 # The DLDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.
-# We use a shrinkage method based on Pang, Tong, and Zhao (2009).
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-sdlda <- function(train_df, num_alphas = 101) {
+#' 
+#' @param x training data in matrix form.
+#' @param y labels of the training data.
+#' @param num_alphas The number of values used to find the optimal amount of shrinkage.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return dlda obj
+sdlda <- function(x, y, num_alphas = 101) {
 	obj <- list()
+	y <- factor(y)
+	obj$labels <- y
+	obj$N <- length(y)
+	obj$p <- ncol(x)
+	obj$groups <- levels(y)
+	obj$num_groups <- nlevels(obj$labels)
 	
-	N <- nrow(train_df)
-	obj$training <- train_df
-	obj$N <- N
-	obj$classes <- levels(train_df$labels)
-	obj$num_classes <- nlevels(train_df$labels)
+	obj$est <- foreach(k=levels(y)) %do% {
+		stats <- list()
+		x_k <- x[which(y == k), ]
+		stats$label <- k
+		stats$n_k <- n_k <- nrow(x_k)
+		stats$xbar_k <- colMeans(x_k)
+		stats$var <- (n_k - 1) * apply(x_k, 2, var) / n_k
+		stats
+	}
+	obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n_k * x$var)) / obj$N
+	obj$var_shrink <- var_shrinkage(
+		N = obj$N,
+		K = obj$num_classes,
+		var_feature = obj$var_pool,
+		num_alphas = num_alphas,
+		t = -1
+	)
 	
-	estimators <- dlply(obj$training, .(labels), function(df_k) {
-		n_k <- nrow(df_k)
-		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(df_k[,-1]))
-		sum_squares <- (n_k - 1) * apply(df_k[,-1], 2, var)
-		list(xbar = xbar, sum_squares = sum_squares, n_k = n_k, pi_k = pi_k)
-	})
-	
-	# TODO: Calculate var_pool before calculating other estimators,
-	#		so that sum_squares is not being carried around for each class.
-	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var_shrink <- var_shrinkage(N = N, K = obj$num_classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
-	
-	obj$estimators <- llply(estimators, function(class_estimators) {
-		class_estimators$var <- var_shrink
-		class_estimators
-	})
-
 	class(obj) <- "sdlda"
 	
 	obj
 }
 
-predict.sdlda <- function(object, newdata) {
-	if (!inherits(object, "sdlda"))  {
-		stop("object not of class 'sdlda'")
+predict_sdlda <- function(obj, newdata) {
+	if (!inherits(obj, "sdlda"))  {
+		stop("obj not of class 'sdlda'")
 	}
-	
-	if(is.vector(newdata)) {
-		newdata <- matrix(data.matrix(newdata), nrow = 2)
-	} else {
-		newdata <- data.matrix(newdata)
-	}
+	if(is.vector(newdata)) newdata <- matrix(newdata, nrow = 1)
 
-	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class_est) {
-			sum((obs - class_est$xbar)^2 * class_est$var) - 2 * log(class_est$pi_k)
+	scores <- apply(newdata, 1, function(obs) {
+		sapply(obj$est, function(class_est) {
+			sum((obs - class_est$xbar)^2 * obj$var_shrink) 
 		})
-		prediction <- object$classes[which.min(scores)]
-		prediction
 	})
 	
-	predictions <- factor(predictions, levels = object$classes)
+	if(is.vector(scores)) {
+		min_scores <- which.min(scores)
+	} else {
+		min_scores <- apply(scores, 1, which.min)
+	}
+
+	predicted <- factor(obj$groups[min_scores], levels = obj$groups)
 	
-	predictions
+	list(scores = scores, predicted = predicted)
 }

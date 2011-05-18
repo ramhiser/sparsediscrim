@@ -1,57 +1,59 @@
 # Diagonalized Linear Discriminant Analysis (DLDA)
+#'
+#' Given a set of training data, this function builds the DLDA classifier,
+#' which is often attributed to Dudoit et al. (2002).
+#'
 # The DLDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-dlda <- function(train_df) {
+#' 
+#' @param x training data in matrix form.
+#' @param y labels of the training data.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @return dlda obj
+dlda <- function(x, y) {
 	obj <- list()
+	y <- factor(y)
+	obj$labels <- y
+	obj$N <- length(y)
+	obj$p <- ncol(x)
+	obj$groups <- levels(y)
+	obj$num_groups <- nlevels(obj$labels)
 	
-	N <- nrow(train_df)
-	
-	obj$training <- train_df
-	obj$N <- N
-	obj$classes <- levels(train_df$labels)
-	
-	estimators <- dlply(obj$training, .(labels), function(df_k) {
-		n_k <- nrow(df_k)
-		pi_k <- n_k / N
-		xbar <- as.vector(colMeans(df_k[,-1]))
-		sum_squares <- (n_k - 1) * apply(df_k[,-1], 2, var)
-		list(xbar = xbar, sum_squares = sum_squares, n_k = n_k, pi_k = pi_k)
-	})
-	# TODO: Calculate var_pool before calculating other estimators,
-	#		so that sum_squares is not being carried around for each class.
-	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	
-	obj$estimators <- llply(estimators, function(class_estimators) {
-		class_estimators$var <- var_pool
-		class_estimators
-	})
-
+	obj$est <- foreach(k=levels(y)) %do% {
+		stats <- list()
+		x_k <- x[which(y == k), ]
+		stats$label <- k
+		stats$n_k <- n_k <- nrow(x_k)
+		stats$xbar_k <- colMeans(x_k)
+		stats$var <- (n_k - 1) * apply(x_k, 2, var) / n_k
+		stats
+	}
+	obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n_k * x$var)) / obj$N
 	class(obj) <- "dlda"
 	
 	obj
 }
 
-predict.dlda <- function(object, newdata) {
-	if (!inherits(object, "dlda"))  {
-		stop("object not of class 'dlda'")
+predict_dlda <- function(obj, newdata) {
+	if (!inherits(obj, "dlda"))  {
+		stop("obj not of class 'dlda'")
 	}
-	if(is.vector(newdata)) {
-		newdata <- matrix(data.matrix(newdata), nrow = 2)
-	} else {
-		newdata <- data.matrix(newdata)
-	}
-	
-	predictions <- apply(newdata, 1, function(obs) {
-		scores <- sapply(object$estimators, function(class_est) {
-			sum((obs - class_est$xbar)^2 / class_est$var) - 2 * log(class_est$pi_k)
+	if(is.vector(newdata)) newdata <- matrix(newdata, nrow = 1)
+
+	scores <- apply(newdata, 1, function(obs) {
+		sapply(obj$est, function(class_est) {
+			sum((obs - class_est$xbar)^2 / obj$var_pool) 
 		})
-		prediction <- object$classes[which.min(scores)]
-		prediction
 	})
 	
-	predictions <- factor(predictions, levels = object$classes)
+	if(is.vector(scores)) {
+		min_scores <- which.min(scores)
+	} else {
+		min_scores <- apply(scores, 1, which.min)
+	}
+
+	predicted <- factor(obj$groups[min_scores], levels = obj$groups)
 	
-	predictions
+	list(scores = scores, predicted = predicted)
 }
