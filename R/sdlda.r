@@ -28,7 +28,7 @@ sdlda <- function(x, y, num_alphas = 101) {
 		x_k <- x[which(y == k), ]
 		stats$label <- k
 		stats$n_k <- n_k <- nrow(x_k)
-		stats$xbar_k <- colMeans(x_k)
+		stats$xbar <- colMeans(x_k)
 		stats$var <- (n_k - 1) * apply(x_k, 2, var) / n_k
 		stats
 	}
