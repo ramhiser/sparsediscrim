@@ -50,7 +50,7 @@ predict_dlda <- function(obj, newdata) {
 	if(is.vector(scores)) {
 		min_scores <- which.min(scores)
 	} else {
-		min_scores <- apply(scores, 1, which.min)
+		min_scores <- apply(scores, 2, which.min)
 	}
 
 	predicted <- factor(obj$groups[min_scores], levels = obj$groups)

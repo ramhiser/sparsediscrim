@@ -35,7 +35,7 @@ sdlda <- function(x, y, num_alphas = 101) {
 	obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n_k * x$var)) / obj$N
 	obj$var_shrink <- var_shrinkage(
 		N = obj$N,
-		K = obj$num_classes,
+		K = obj$num_groups,
 		var_feature = obj$var_pool,
 		num_alphas = num_alphas,
 		t = -1
@@ -61,7 +61,7 @@ predict_sdlda <- function(obj, newdata) {
 	if(is.vector(scores)) {
 		min_scores <- which.min(scores)
 	} else {
-		min_scores <- apply(scores, 1, which.min)
+		min_scores <- apply(scores, 2, which.min)
 	}
 
 	predicted <- factor(obj$groups[min_scores], levels = obj$groups)

@@ -1,3 +1,6 @@
+During the Alon sim, I noticed that var_shrink with SDLDA was constant for all 30 genes,
+even before diagonalization. Need to double-check that this is correctly implemented.
+
 Add pi_k to the classifier to DLDA
 Add option to set prior probabilities DLDA.
 	'prior = 1' indicates equal probabilities.
