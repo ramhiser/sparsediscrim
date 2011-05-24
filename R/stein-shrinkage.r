@@ -23,7 +23,7 @@ h <- function(nu, p, t = -1) {
 #	alpha: the alpha that minimizes the average risk under a Stein loss function.
 #		If the minimum is not unique, we randomly select an alpha from the minimizers.
 #	risk: the minimum average risk attained.
-risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
+risk_stein <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	nu <- N - K
 	p <- length(var_feature)
 	alphas <- seq(0, 1, length = num_alphas)
@@ -34,7 +34,7 @@ risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
 	
 	# Here we compute the average risk for the Stein loss function on page 1023
 	# for all values of alpha.
-	risk_alphas <- laply(alphas, function(alpha) {
+	risk_alphas <- foreach(alpha = alphas, .combine=c) %do% {
 		risk <- h(nu = nu, p = p)^alpha * h(nu = nu, p = 1)^(1 - alpha)
 		risk <- risk / (h(nu = nu, p = 1, t = alpha * t / p))^(p - 1)
 		risk <- risk / h(nu = nu, p = 1, t = (1 - alpha + alpha / p) * t)
@@ -44,7 +44,7 @@ risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
 		risk <- risk - t * digamma(nu / 2)
 		risk <- risk + t * log(nu / 2) - 1
 		risk
-	})
+	}
 
 	# Which of the alphas empirically minimize this risk?
 	# If there are ties in the minimum risk, we randomly select
@@ -62,7 +62,7 @@ risk_stein <- function(N, K, var_feature, num_alphas = 2, t = -1) {
 # var_feature is a vector of the sample variances for each feature.
 # Returns:
 #	var_feature_shrink: a vector of the shrunken variances for each feature.
-var_shrinkage <- function(N, K, var_feature, num_alphas = 2, t = -1) {
+var_shrinkage <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	nu <- N - K
 	p <- length(var_feature)
 	
