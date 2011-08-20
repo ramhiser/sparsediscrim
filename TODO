@@ -1,12 +1,3 @@
-Add Roxygen comments to functions
-	sdqda
-	predict_sdqda
-	rsdda
-	model.select.rsdda
-	predict_rsdda
-	h
-	var_shrinkage
-	risk_stein
 simultaneous diagonalization of two covariance matrices
 	Compute T
 	Compute B_star

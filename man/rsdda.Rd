@@ -1,126 +1,40 @@
 \name{rsdda}
 \alias{rsdda}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-TODO
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Regularized Shrinkage-based Diagonal Discriminant Analysis (RSDDA)}
 \usage{
-rsdda(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...)
+  rsdda(x, y, num_alphas = 101)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{train_df}{
-%%     ~~Describe \code{train_df} here~~
-}
-  \item{num_alphas}{
-%%     ~~Describe \code{num_alphas} here~~
-}
-  \item{jointdiag}{
-%%     ~~Describe \code{jointdiag} here~~
-}
-  \item{verbose}{
-%%     ~~Describe \code{verbose} here~~
-}
-  \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{x}{training data in matrix form.}
+
+  \item{y}{labels of the training data.}
+
+  \item{num_alphas}{The number of values used to find the
+  optimal amount of shrinkage.}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  rsdda obj
+}
+\description{
+  Given a set of training data, this function builds the
+  RSDDA classifier. To improve the estimation of the pooled
+  variances, we use a shrinkage method from Pang et al.
+  (2009). This yields the SDQDA classifier.
+}
+\details{
+  The RSDDA classifier is a regularized version of SDQDA,
+  where the off-diagonal elements of the pooled sample
+  covariance matrix are set to zero.
 }
 \references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
+  Dudoit, S., Fridlyand, J., & Speed, T. P. (2002).
+  "Comparison of Discrimination Methods for the
+  Classification of Tumors Using Gene Expression Data,"
+  Journal of the American Statistical Association, 97, 457,
+  77-87.
+
+  Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
+  Diagonal Discriminant Analysis and Its Applications in
+  High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(train_df, num_alphas = 5, jointdiag = "none", verbose = FALSE, ...) {
-	rsdda.obj <- list()
-	rsdda.obj$training <- train_df
-	
-	if(jointdiag != "none") {
-		if(verbose) message("Simultaneously diagonalizing covariance matrices... ", appendLF = FALSE)
-		joint.diag.out <- joint.diagonalization(rsdda.obj$training, method = jointdiag)
-		rsdda.obj$training <- joint.diag.out$transformed.df
-		rsdda.obj$jointdiag.B <- joint.diag.out$B
-		rsdda.obj$jointdiag.method <- joint.diag.out$method
-		if(verbose) message("done!")
-	}
-
-	if(verbose) cat("Building RSDDA classifier\n")
-	N <- nrow(rsdda.obj$training)
-	num.classes <- nlevels(rsdda.obj$training$labels)
-	
-	train_x <- as.matrix(rsdda.obj$training[,-1])
-	dimnames(train_x) <- NULL
-	
-	estimators <- dlply(rsdda.obj$training, .(labels), function(df_k) {
-		class.x <- as.matrix(df_k[, -1])
-		dimnames(class.x) <- NULL
-		
-		n_k <- nrow(class.x)
-		pi_k <- n_k / N
-		
-		xbar <- as.vector(colMeans(class.x))
-		
-		sum_squares <- apply(class.x, 2, function(col) {
-			(n_k - 1) * var(col)
-		})
-		
-		var <- apply(class.x, 2, function(col) {
-			(n_k - 1) * var(col) / n_k
-		})
-		
-		var_shrink <- var_shrinkage(N = n_k, K = 1, var_feature = var, num_alphas = num_alphas, t = -1)
-		
-		list(xbar = xbar, var.k = var_shrink, sum_squares = sum_squares, n = n_k, pi_k = pi_k)
-	})
-	
-	var_pool <- colSums(laply(estimators, function(class_est) class_est$sum_squares)) / N
-	var.pool.shrink <- var_shrinkage(N = N, K = num.classes, var_feature = var_pool, num_alphas = num_alphas, t = -1)
-	
-	estimators <- llply(estimators, function(class_estimators) {
-		class_estimators$var.pool <- var.pool.shrink
-		class_estimators
-	})
-	
-	if(verbose) cat("Building RSDDA classifier...done!\n")
-	
-	rsdda.obj$N <- N
-	rsdda.obj$classes <- levels(rsdda.obj$training$labels)
-	rsdda.obj$estimators <- estimators
-	
-	class(rsdda.obj) <- "rsdda"
-
-	rsdda.obj
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

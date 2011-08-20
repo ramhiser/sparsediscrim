@@ -1,63 +1,27 @@
 \name{h}
 \alias{h}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-TODO
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Bias correction function from Pang et al. (2009).}
 \usage{
-h(nu, p, t = -1)
+  h(nu, p, t = -1)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{nu}{
-%%     ~~Describe \code{nu} here~~
-}
-  \item{p}{
-%%     ~~Describe \code{p} here~~
-}
-  \item{t}{
-%%     ~~Describe \code{t} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{nu}{a specified constant (nu = N - K)}
+
+  \item{p}{the feature space dimension.}
+
+  \item{t}{a constant specified by the user. By default, t
+  = -1 in Pang et al. (2009).}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  number - bias correction
+}
+\description{
+  This function computes the function h_{nu, p}(t) on page
+  1023 of Pang et al. (2009).
 }
 \references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
+  Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
+  Diagonal Discriminant Analysis and Its Applications in
+  High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(nu, p, t = -1) {
-	(nu / 2)^t * (gamma(nu / 2) / gamma(nu / 2 + t / p))^p
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

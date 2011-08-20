@@ -4,7 +4,26 @@ Version: 0.1.4
 Date: 2011-5-18
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
-Description: Diagonal Discriminant Analysis and shrinkage-based variants. Optionally, each method can simultaneously diagonalize the covariance matrices to improve the classification rates.
-Depends: foreach, jointDiag
+Description: Diagonal Discriminant Analysis and
+    shrinkage-based variants. Optionally, each method can
+    simultaneously diagonalize the covariance matrices to
+    improve the classification rates.
+Depends:
+    foreach,
+    jointDiag
 License: GPL-2
-URL: https://github.com/ramey/diagdiscrim, http://johnramey.net
+URL: https://github.com/ramey/diagdiscrim,
+    http://johnramey.net
+Collate:
+    'asfari.r'
+    'dlda.r'
+    'dqda.r'
+    'eigendiag.r'
+    'general-eigen.r'
+    'joint-diagonalization.r'
+    'jointDiag.r'
+    'pool.r'
+    'rsdda.r'
+    'sdlda.r'
+    'sdqda.r'
+    'stein-shrinkage.r'

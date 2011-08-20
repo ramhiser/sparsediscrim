@@ -1,0 +1,32 @@
+\name{risk_stein}
+\alias{risk_stein}
+\title{Stein Risk function from Pang et al. (2009).}
+\usage{
+  risk_stein(N, K, var_feature, num_alphas = 101, t = -1)
+}
+\arguments{
+  \item{N}{the sample size.}
+
+  \item{the}{number of classes.}
+
+  \item{var_feature}{a vector of the sample variances for
+  each dimension.}
+}
+\value{
+  list with alpha: the alpha that minimizes the average
+  risk under a Stein loss function. If the minimum is not
+  unique, we randomly select an alpha from the minimizers.
+  risk: the minimum average risk attained.
+}
+\description{
+  This function finds the value for alpha \in [0,1] that
+  empirically minimizes the average risk under a Stein loss
+  function, which is given on page 1023 of Pang et al.
+  (2009).
+}
+\references{
+  Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
+  Diagonal Discriminant Analysis and Its Applications in
+  High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+}
+
