@@ -1,4 +1,4 @@
-# Diagonalized Linear Discriminant Analysis (DLDA)
+#' Diagonalized Linear Discriminant Analysis (DLDA)
 #'
 #' Given a set of training data, this function builds the DLDA classifier,
 #' which is often attributed to Dudoit et al. (2002).
@@ -6,6 +6,8 @@
 # The DLDA classifier is a modification to LDA, where the off-diagonal elements
 # of the pooled sample covariance matrix are set to zero.
 #' 
+#' @export
+#'
 #' @param x training data in matrix form.
 #' @param y labels of the training data.
 #'
@@ -35,6 +37,18 @@ dlda <- function(x, y) {
 	obj
 }
 
+#' DLDA prediction of the class membership of a matrix of new observations.
+#'
+# The DLDA classifier is a modification to LDA, where the off-diagonal elements
+# of the pooled sample covariance matrix are set to zero.
+#' 
+#' @export
+#'
+#' @param obj trained DLDA object
+#' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @return list predicted class memberships of each row in newdata
 predict_dlda <- function(obj, newdata) {
 	if (!inherits(obj, "dlda"))  {
 		stop("obj not of class 'dlda'")

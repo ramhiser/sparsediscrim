@@ -1,3 +1,22 @@
+Add Roxygen comments to functions
+	sdqda
+	predict_sdqda
+	rsdda
+	model.select.rsdda
+	predict_rsdda
+	h
+	var_shrinkage
+	risk_stein
+simultaneous diagonalization of two covariance matrices
+	Compute T
+	Compute B_star
+	Compute C
+	Compute eigenvectors of C
+	Compute F
+	Make sure that F diagonalizes two cov matrices
+	Add this to a unit test
+
+
 Add pi_k to the classifier to DLDA
 Add option to set prior probabilities DLDA.
 	'prior = 1' indicates equal probabilities.

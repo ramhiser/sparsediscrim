@@ -1,7 +1,13 @@
-# This function computes the function h_{nu, p}(t) on page 1023 of Pang et al. (2009).
-# nu is a specified constant (nu = N - K)
-# p is the feature space dimension.
-# t is a constant specified by the user. By default, t = -1 in Pang et al. (2009).
+#' Bias correction function from Pang et al. (2009).
+#'
+#' This function computes the function h_{nu, p}(t) on page 1023 of Pang et al. (2009).
+#'
+#' @param nu a specified constant (nu = N - K)
+#' @param p the feature space dimension.
+#' @param t a constant specified by the user. By default, t = -1 in Pang et al. (2009).
+#'
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return number - bias correction
 h <- function(nu, p, t = -1) {
 	stopifnot(nu > 0)
 	
@@ -11,18 +17,21 @@ h <- function(nu, p, t = -1) {
 		warning("The bias-correction has resulted in a NaN. Incrementing nu by 1...")
 		(nu / 2)^t * (gamma(nu / 2) / gamma((nu + 1) / 2 + t / p))^p
 	}
-	
 }
 
-# This function finds the value for alpha \in [0,1] that empirically minimizes the
-# average risk under a Stein loss function, which is given on page 1023 of Pang et al. (2009).
-# N is the sample size.
-# K is the number of classes.
-# var_feature is a vector of the sample variances for each dimension.
-# Returns:
-#	alpha: the alpha that minimizes the average risk under a Stein loss function.
-#		If the minimum is not unique, we randomly select an alpha from the minimizers.
-#	risk: the minimum average risk attained.
+#' Stein Risk function from Pang et al. (2009).
+#'
+#' This function finds the value for alpha \in [0,1] that empirically minimizes the
+#' average risk under a Stein loss function, which is given on page 1023 of Pang et al. (2009).
+#'
+#' @param N the sample size.
+#' @param the number of classes.
+#' @param var_feature a vector of the sample variances for each dimension.
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return list with
+#'	alpha: the alpha that minimizes the average risk under a Stein loss function.
+#'		If the minimum is not unique, we randomly select an alpha from the minimizers.
+#'	risk: the minimum average risk attained.
 risk_stein <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	nu <- N - K
 	p <- length(var_feature)
@@ -55,13 +64,19 @@ risk_stein <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	list(alpha = alpha_star, var_pool = var_pool)
 }
 
-# This function computes the shrinkage-based estimator of variance of each feature (variable)
-# from Pang et al. (2009) for the SDLDA classifier.
-# N is the sample size.
-# K is the number of classes.
-# var_feature is a vector of the sample variances for each feature.
-# Returns:
-#	var_feature_shrink: a vector of the shrunken variances for each feature.
+#' Shrinkage-based estimator of variances for each feature from Pang et al. (2009).
+#'
+#' This function computes the shrinkage-based estimator of variance of each feature (variable)
+#' from Pang et al. (2009) for the SDLDA classifier.
+#'
+#' @param N the sample size.
+#' @param the number of classes.
+#' @param var_feature a vector of the sample variances for each feature.
+#' @param num_alphas The number of values used to find the optimal amount of shrinkage.
+#' @param t a constant specified by the user. By default, t = -1 in Pang et al. (2009).
+#'
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return a vector of the shrunken variances for each feature.
 var_shrinkage <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	nu <- N - K
 	p <- length(var_feature)

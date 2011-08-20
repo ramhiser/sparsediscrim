@@ -13,7 +13,7 @@ eigendiag.cov <- function(df, shrink = FALSE, shrink.val = 0.01) {
 }
 
 eigendiag <- function(mat.list) {
-	eigen.list <- lapply(sig.list, function(x) eigen(x)$vectors)
+	eigen.list <- lapply(mat.list, function(x) eigen(x)$vectors)
 	Q <- Reduce("+", eigen.list)
 	list(Q = Q, eigenvectors.list = eigen.list)
 }

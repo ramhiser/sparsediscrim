@@ -1,11 +1,13 @@
-# Diagonalized Quadratic Discriminant Analysis (DQDA)
+#' Diagonalized Quadratic Discriminant Analysis (DQDA)
 #'
 #' Given a set of training data, this function builds the DQDA classifier,
 #' which is often attributed to Dudoit et al. (2002).
 #'
-# The DQDA classifier is a modification to QDA, where the off-diagonal elements
-# of the sample covariance matrices for each class are set to zero.
+# The DQDA classifier is a modification to LDA, where the off-diagonal elements
+# of the pooled sample covariance matrix are set to zero.
 #' 
+#' @export
+#'
 #' @param x training data in matrix form.
 #' @param y labels of the training data.
 #'
@@ -34,6 +36,18 @@ dqda <- function(x, y) {
 	obj
 }
 
+#' DQDA prediction of the class membership of a matrix of new observations.
+#'
+# The DQDA classifier is a modification to LDA, where the off-diagonal elements
+# of the pooled sample covariance matrix are set to zero.
+#' 
+#' @export
+#'
+#' @param obj trained DQDA object
+#' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @return list predicted class memberships of each row in newdata
 predict_dqda <- function(obj, newdata) {
 	if (!inherits(obj, "dqda"))  {
 		stop("obj not of class 'dqda'")

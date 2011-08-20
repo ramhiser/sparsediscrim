@@ -1,15 +1,23 @@
-# Regularized Shrinkage-based Diagonal Discriminant Analysis (RSDDA)
-# The RSDDA classifier is a regularized version of SDQDA, where the off-diagonal elements
-# of the pooled sample covariance matrix are set to zero.
-# We use a shrinkage method based on Pang, Tong, and Zhao (2009).
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-
-# We assume the first column is named "labels" and holds a factor vector,
-# which contains the class labels.
-
-# num_alphas: the grid size of alphas considered in estimating each shrinkage parameter alpha
-rsdda <- function(train_df, num_alphas = 101) {
+#' Regularized Shrinkage-based Diagonal Discriminant Analysis (RSDDA)
+#'
+#' Given a set of training data, this function builds the RSDDA classifier.
+#' To improve the estimation
+#' of the pooled variances, we  use a shrinkage method from Pang et al. (2009).
+#' This yields the SDQDA classifier.
+#'
+#' The RSDDA classifier is a regularized version of SDQDA, where the off-diagonal elements
+#' of the pooled sample covariance matrix are set to zero.
+#'
+#' @export
+#'
+#' @param x training data in matrix form.
+#' @param y labels of the training data.
+#' @param num_alphas The number of values used to find the optimal amount of shrinkage.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return rsdda obj
+rsdda <- function(x, y, num_alphas = 101) {
 	obj <- list()
 	
 	N <- nrow(train_df)
@@ -41,9 +49,27 @@ rsdda <- function(train_df, num_alphas = 101) {
 	obj
 }
 
-# Estimates the optimal value of lambda used in RSDDA by leave-k-out crossvalidation.
-# grid_size: the grid size of lambda_grid considered in estimating the regularization parameter lambda
-# k: Leave-k-out crossvalidation is used to estimate the optimal value of lambda.
+#' RSDDA model selection.
+#'
+#' Estimates the optimal value of lambda used in RSDDA by leave-k-out crossvalidation.
+#'
+# The DQDA classifier is a modification to LDA, where the off-diagonal elements
+# of the pooled sample covariance matrix are set to zero. To improve the estimation
+#' of the pooled variances, we use a shrinkage method from Pang et al. (2009).
+#' This yields the SDQDA classifier.
+#'
+#' The RSDDA classifier is a regularized version of SDQDA, where the off-diagonal elements
+#' of the pooled sample covariance matrix are set to zero.
+#' 
+#' @export
+#'
+#' @param object trained RSDDA object
+#' @param grid_size the grid size of lambda_grid considered in estimating the regularization parameter lambda
+#' @param k Leave-k-out crossvalidation is used to estimate the optimal value of lambda.
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return rsdda object with 'optimal' value of lambda
 model.select.rsdda <- function(object, grid_size = 5, k = 1) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
@@ -83,6 +109,27 @@ model.select.rsdda <- function(object, grid_size = 5, k = 1) {
 	return(object)
 }
 
+#' RSDDA prediction of the class membership of a matrix of new observations.
+#'
+# The DQDA classifier is a modification to LDA, where the off-diagonal elements
+# of the pooled sample covariance matrix are set to zero. To improve the estimation
+#' of the pooled variances, we use a shrinkage method from Pang et al. (2009).
+#' This yields the SDQDA classifier.
+#'
+#' The RSDDA classifier is a regularized version of SDQDA, where the off-diagonal elements
+#' of the pooled sample covariance matrix are set to zero.
+#' 
+#' @export
+#'
+#' @param obj trained RSDDA object
+#' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
+#' @param num_lambdas TODO
+#' @param lambda TODO
+#' @param verbose TODO
+#'
+#' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of Discrimination Methods for the Classification of Tumors Using Gene Expression Data," Journal of the American Statistical Association, 97, 457, 77-87. 
+#' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal Discriminant Analysis and Its Applications in High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+#' @return list predicted class memberships of each row in newdata
 predict.rsdda <- function(object, newdata, num_lambdas = 5, lambda = NULL, verbose = FALSE) {
 	if (!inherits(object, "rsdda"))  {
 		stop("object not of class 'rsdda'")
