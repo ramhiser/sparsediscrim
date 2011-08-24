@@ -1,6 +1,3 @@
-The simultaneous diagonalization works for full rank
-Currently, the test with p = 100 fails because cov_2 is singular.
-What to do?
 If we apply DQDA or SDQDA, do we improve the classification performance?
 
 Add pi_k to the classifier to DLDA
@@ -30,7 +27,3 @@ They mention a paper in Pattern Recognition (2001) that does the same thing but 
 	The paper is by Yu and Yang (2001) and entitled "A Direct LDA Algorithm for High-Dimensional Data – with Application to Face Recognition"
 	Unbeknownst to Srivastava, this had already been done.
 	As far as I am know, Srivastava's method is the same as this one.
-	
-	
-	
-Write up a report on Simultaneous Diagonalization of Symmetric Matrices

@@ -11,6 +11,10 @@
 #' To determine what constitutes 'non-zero', we select all of the eigenvalues
 #' larger than the specified tolerance, 'tol'.
 #'
+#' The eigen_pct is the percentage of eigenvalues to use, by which we mean
+#' the cumulative sum of the eigenvalues (scaled by the sum of the eigenvalues).
+#' This is similar to the typical automatic approach to Principal Components Analysis.
+#' 
 #' If the user does not wish to use the dimension reduction method,
 #' then k is automatically computed as the number of eigenvalues of B.
 #' Hence, in this case, k = p.
@@ -28,11 +32,12 @@
 #' @param B p x p real symmetric matrix
 #' @param dim_reduce logical flag: Should we reduce the dimension of the simultaneous diagonalization?
 #' @param k the reduced dimension of the simultaneous diagonalizer.
+#' @param eigen_pct The percentage of eigenvalues to preserve.
 #' @param tol a value indicating the magnitude below which eigenvalues are considered 0.
 #' @return a list containing:
 #'	the matrix Q that is the p x k simultaneous diagonalizing matrix
 #'	the selected value of k
-simdiag <- function(A, B, dim_reduce = F, k = NULL, tol = sqrt(.Machine$double.eps)) {
+simdiag <- function(A, B, dim_reduce = F, k = NULL, eigen_pct = NULL, tol = sqrt(.Machine$double.eps)) {
 	B_eigen <- eigen(B, symmetric = TRUE)
 	
 	# We note that B may singular here and denote its rank
@@ -44,6 +49,8 @@ simdiag <- function(A, B, dim_reduce = F, k = NULL, tol = sqrt(.Machine$double.e
 	# to declare an eigenvalue as 0.
 	if(!dim_reduce) {
 		k <- length(B_eigen$values)
+	} else if(!is.null(eigen_pct)) {
+		k <- sum(cumsum(B_eigen$values) / sum(B_eigen$values) <= eigen_pct)
 	} else if(is.null(k)) {
 		k <- sum(B_eigen$values > tol)
 	}
