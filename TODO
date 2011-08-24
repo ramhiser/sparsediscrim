@@ -1,12 +1,7 @@
-simultaneous diagonalization of two covariance matrices
-	Compute T
-	Compute B_star
-	Compute C
-	Compute eigenvectors of C
-	Compute F
-	Make sure that F diagonalizes two cov matrices
-	Add this to a unit test
-
+The simultaneous diagonalization works for full rank
+Currently, the test with p = 100 fails because cov_2 is singular.
+What to do?
+If we apply DQDA or SDQDA, do we improve the classification performance?
 
 Add pi_k to the classifier to DLDA
 Add option to set prior probabilities DLDA.
@@ -24,3 +19,18 @@ Add pi_k to the classifier to SDQDA
 Add option to set prior probabilities SDQDA.
 	'prior = 1' indicates equal probabilities.
 
+Fix simdiag when k = 1. It throws an error.
+	Error in t(Q_B) %*% A : non-conformable arguments
+
+
+A very useful set of notes is given here:
+http://www.prip.tuwien.ac.at/teaching/ws/StME/apponly.pdf
+
+They mention a paper in Pattern Recognition (2001) that does the same thing but in the equal cov matrix case for dimension reduction.
+	The paper is by Yu and Yang (2001) and entitled "A Direct LDA Algorithm for High-Dimensional Data – with Application to Face Recognition"
+	Unbeknownst to Srivastava, this had already been done.
+	As far as I am know, Srivastava's method is the same as this one.
+	
+	
+	
+Write up a report on Simultaneous Diagonalization of Symmetric Matrices
