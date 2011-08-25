@@ -28,6 +28,7 @@
 #' diagonal matrix with diagonal entries as the characteristic roots
 #' (generalized eigenvalues) of det(B - lambda A) = 0.
 #'
+#' @export
 #' @param A p x p real symmetric matrix
 #' @param B p x p real symmetric matrix
 #' @param dim_reduce logical flag: Should we reduce the dimension of the simultaneous diagonalization?
