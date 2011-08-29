@@ -63,6 +63,7 @@ simdiag <- function(A, B, dim_reduce = F, k = NULL, eigen_pct = NULL, tol = sqrt
 	} else {
 		Q_B <- B_eigen$vectors[, seq_len(k)] %*% diag(B_eigen$values[seq_len(k)]^(-1/2))
 	}
+	Q_A_eigen <- eigen(t(Q_B) %*% A %*% Q_B, symmetric = TRUE)
 
 	list(Q = Q_B %*% Q_A_eigen$vectors, k = k)
 }
