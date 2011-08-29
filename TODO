@@ -16,9 +16,6 @@ Add pi_k to the classifier to SDQDA
 Add option to set prior probabilities SDQDA.
 	'prior = 1' indicates equal probabilities.
 
-Fix simdiag when k = 1. It throws an error.
-	Error in t(Q_B) %*% A : non-conformable arguments
-
 
 A very useful set of notes is given here:
 http://www.prip.tuwien.ac.at/teaching/ws/StME/apponly.pdf
