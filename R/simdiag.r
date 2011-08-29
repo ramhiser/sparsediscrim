@@ -55,7 +55,14 @@ simdiag <- function(A, B, dim_reduce = F, k = NULL, eigen_pct = NULL, tol = sqrt
 	} else if(is.null(k)) {
 		k <- sum(B_eigen$values > tol)
 	}
-	Q_B <- B_eigen$vectors[, seq_len(k)] %*% diag(B_eigen$values[seq_len(k)]^(-1/2))
-	Q_A_eigen <- eigen(t(Q_B) %*% A %*% Q_B, symmetric = TRUE)
+
+	# We had to split the dimension reduction into two cases because of the way
+	# matrices are handled in R when they are essentially vectors.
+	if(k == 1) {
+		Q_B <- as.matrix(B_eigen$vectors[, 1] * B_eigen$values[1]^(-1/2), ncol = 1)
+	} else {
+		Q_B <- B_eigen$vectors[, seq_len(k)] %*% diag(B_eigen$values[seq_len(k)]^(-1/2))
+	}
+
 	list(Q = Q_B %*% Q_A_eigen$vectors, k = k)
 }

@@ -1,3 +1,6 @@
+library('diagdiscrim')
+library('testthat')
+
 context("Simultaneous Diagonalization with Generalized Eigenvalues")
 
 # TODO: Add this unit test back in when we generalize to K >= 2.
@@ -152,10 +155,10 @@ test_that("The Function simdiag Simultaneously Diagonalizes Two High-Dimensional
 		cov(x2 %*% Q),
 		diag(k)
 	)
-	
+
 	# Now, we repeat the above by manually selecting k to be 2.
 	k <- 2
-	simdiag_out <- simdiag(cov_1, cov_2, dim_reduce = T, k = 2)
+	simdiag_out <- simdiag(cov_1, cov_2, dim_reduce = T, k = k)
 	cov_2_eigen <- eigen(cov_2, symmetric = TRUE)
 	expect_equal(simdiag_out$k, k)
 	
@@ -171,6 +174,42 @@ test_that("The Function simdiag Simultaneously Diagonalizes Two High-Dimensional
 	expect_equal(
 		cov(x1 %*% Q),
 		diag(Q_A_eigen$values)
+	)
+	# Cov(X_2 Q) should equal both the identity and Q' \Sigma_2 Q = I_p.
+	expect_equal(
+		cov(x2 %*% Q),
+		diag(k)
+	)
+})
+
+# There were several errors when k = 1 (either directly as specified by user or
+#	indirectly when the eigen_pct or rank yielded 1.)
+test_that("The function simdiag works correctly with k = 1", {
+	set.seed(42)
+	p <- 100
+	x1 <- replicate(p, rnorm(20))
+	x2 <- replicate(p, rnorm(20, 2))
+	cov_1 <- cov(x1)
+	cov_2 <- cov(x2)
+		
+	# Now, we repeat the above by manually selecting k to be 1.
+	k <- 1
+	simdiag_out <- simdiag(cov_1, cov_2, dim_reduce = T, k = k)
+	cov_2_eigen <- eigen(cov_2, symmetric = TRUE)
+	expect_equal(simdiag_out$k, k)
+	
+	Q_B <- cov_2_eigen$vectors[,1] * cov_2_eigen$values[1]^(-1/2)
+	Q_A_eigen <- eigen(t(Q_B) %*% cov_1 %*% Q_B, symmetric = TRUE)
+	Q <- Q_B %*% Q_A_eigen$vectors
+
+	expect_equal(simdiag_out$Q, Q)
+	expect_equal(drop(t(simdiag_out$Q) %*% cov_1 %*% simdiag_out$Q), Q_A_eigen$values[seq_len(k)])
+	expect_equal(t(simdiag_out$Q) %*% cov_2 %*% simdiag_out$Q, diag(k))
+	
+	# Cov(X_1 Q) should equal both the identity and Q' \Sigma_1 Q.
+	expect_equal(
+		drop(cov(x1 %*% Q)),
+		Q_A_eigen$values
 	)
 	# Cov(X_2 Q) should equal both the identity and Q' \Sigma_2 Q = I_p.
 	expect_equal(
