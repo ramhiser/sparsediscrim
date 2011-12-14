@@ -15,12 +15,3 @@ Add option to set prior probabilities SDLDA.
 Add pi_k to the classifier to SDQDA
 Add option to set prior probabilities SDQDA.
 	'prior = 1' indicates equal probabilities.
-
-
-A very useful set of notes is given here:
-http://www.prip.tuwien.ac.at/teaching/ws/StME/apponly.pdf
-
-They mention a paper in Pattern Recognition (2001) that does the same thing but in the equal cov matrix case for dimension reduction.
-	The paper is by Yu and Yang (2001) and entitled "A Direct LDA Algorithm for High-Dimensional Data – with Application to Face Recognition"
-	Unbeknownst to Srivastava, this had already been done.
-	As far as I am know, Srivastava's method is the same as this one.
