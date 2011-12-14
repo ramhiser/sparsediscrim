@@ -1,0 +1,2 @@
+Diagonal Discriminant Analysis
+
