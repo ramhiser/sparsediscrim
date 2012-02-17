@@ -85,21 +85,17 @@ dlda.default <- function(x, y, prior = NULL) {
 #' @method dlda formula
 #' @S3method dlda formula
 dlda.formula <- function(formula, data, prior = NULL, ...) {
+  # The formula interface includes an intercept. If the user includes the
+  # intercept in the model, it should be removed. Otherwise, errors and doom
+  # happen.
+  # To remove the intercept, we update the formula, like so:
+  # (NOTE: The terms must be collected in case the dot (.) notation is used)
+  formula <- update(formula(terms(formula, data = data)), . ~ . - 1)
+  
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  # The formula interface includes an intercept. If the user includes the
-  # intercept in the model, it should be removed. Otherwise, errors and doom
-  # happen.
-  # To remove the intercept, we run the following code:
-  # NOTE: I 'acquired' the code from the 'train.formula' function in the 'caret'
-  # package.
-  xint <- match("(Intercept)", colnames(x), nomatch = 0)
-  if (xint > 0) {
-    x <- x[, -xint, drop = FALSE]
-  }
-  
   est <- dlda.default(x, y, prior, ...)
   est$call <- match.call()
   est$formula <- formula
