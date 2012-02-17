@@ -81,11 +81,13 @@ var_shrinkage <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 	nu <- N - K
 	p <- length(var_feature)
 	
-	risk_stein_out <- risk_stein(N = N, K = K, var_feature = var_feature, num_alphas = num_alphas, t = t)
+	risk_stein_out <- risk_stein(N = N, K = K, var_feature = var_feature,
+                               num_alphas = num_alphas, t = t)
 
 	var_pool <- risk_stein_out$var_pool
 	alpha <- risk_stein_out$alpha
 	
-	var_feature_shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha * (h(nu = nu, p = 1, t = t) * var_feature)^(1 - alpha)
+	var_feature_shrink <- (h(nu = nu, p = p, t = t) * var_pool)^alpha *
+    (h(nu = nu, p = 1, t = t) * var_feature)^(1 - alpha)
 	var_feature_shrink
 }

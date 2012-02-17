@@ -2,8 +2,8 @@
 \alias{predict.rsdda}
 \title{RSDDA prediction of the class membership of a matrix of new observations.}
 \usage{
-  predict.rsdda(object, newdata, num_lambdas = 5, lambda =
-  NULL, verbose = FALSE)
+  predict.rsdda(object, newdata, num_lambdas = 5,
+    lambda = NULL, verbose = FALSE)
 }
 \arguments{
   \item{obj}{trained RSDDA object}

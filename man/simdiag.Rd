@@ -3,7 +3,7 @@
 \title{Simultaneously diagonalizes two real symmetric matrices.}
 \usage{
   simdiag(A, B, dim_reduce = F, k = NULL, eigen_pct = NULL,
-  tol = sqrt(.Machine$double.eps))
+    tol = sqrt(.Machine$double.eps))
 }
 \arguments{
   \item{A}{p x p real symmetric matrix}

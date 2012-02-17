@@ -1,17 +1,44 @@
-If we apply DQDA or SDQDA, do we improve the classification performance?
+* TODO Update classifiers
+** DQDA
+*** TODO Purge the function of foreach
 
-Add pi_k to the classifier to DLDA
-Add option to set prior probabilities DLDA.
-	'prior = 1' indicates equal probabilities.
+Use tapply instead.
 
-Add pi_k to the classifier to DQDA
-Add option to set prior probabilities DQDA.
-	'prior = 1' indicates equal probabilities.
+*** TODO Add pi_k to the classifier
+*** TODO Add option to set prior probabilities
+*** TODO Add generic predict function 
+*** TODO Add option to use data.frame via S3 class
+*** TODO Add more documentation
+*** TODO Update unit test to match latest changes
+** SDLDA
+*** TODO Purge the function of foreach
 
-Add pi_k to the classifier to SDLDA
-Add option to set prior probabilities SDLDA.
-	'prior = 1' indicates equal probabilities.
+Use tapply instead.
 
-Add pi_k to the classifier to SDQDA
-Add option to set prior probabilities SDQDA.
-	'prior = 1' indicates equal probabilities.
+*** TODO Add pi_k to the classifier
+*** TODO Add option to set prior probabilities
+*** TODO Add generic predict function 
+*** TODO Add option to use data.frame via S3 class
+*** TODO Add more documentation
+*** TODO Update unit test to match latest changes
+** SDQDA
+*** TODO Purge the function of foreach
+
+Use tapply instead.
+
+*** TODO Add pi_k to the classifier
+*** TODO Add option to set prior probabilities
+*** TODO Add generic predict function 
+*** TODO Add option to use data.frame via S3 class
+*** TODO Add more documentation
+*** TODO Update unit test to match latest changes
+** Determine how to update RSDDA
+* TODO Commit and merge with "master" after classifiers are updated.
+* TODO Determine how to streamline the SimDiag.
+
+Right now, there are at least 3 different ways to SimDiag in the package.
+This is confusing to me. How much worse would it be for a new user?
+
+Work on this task after the classifiers have been updated.
+
+* Bugs to Squash

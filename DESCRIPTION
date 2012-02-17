@@ -1,7 +1,7 @@
 Package: diagdiscrim
 Title: Diagonal Discriminant Analysis and its Variants
-Version: 0.1.4
-Date: 2011-5-18
+Version: 0.2.0
+Date: 2012-02-16
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: Diagonal Discriminant Analysis and
@@ -11,9 +11,9 @@ Description: Diagonal Discriminant Analysis and
 Depends:
     foreach,
     jointDiag
-License: GPL-2
+License: MIT
 URL: https://github.com/ramey/diagdiscrim,
-    http://johnramey.net
+    http://ramhiser.com
 Collate:
     'asfari.r'
     'dlda.r'
@@ -28,3 +28,4 @@ Collate:
     'sdqda.r'
     'stein-shrinkage.r'
     'simdiag.r'
+    'estimates.r'

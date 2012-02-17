@@ -14,7 +14,7 @@
 }
 \value{
   list with alpha: the alpha that minimizes the average
-  risk under a Stein loss function. If the minimum is not
+  risk under a Stein loss function.  If the minimum is not
   unique, we randomly select an alpha from the minimizers.
   risk: the minimum average risk attained.
 }
