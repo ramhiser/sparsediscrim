@@ -4,10 +4,10 @@
 Right now, there are at least 3 different ways to SimDiag in the package.
 This is confusing to me. How much worse would it be for a new user?
 
-Work on this task after the classifiers have been updated.
-
 * TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
 
+* TODO Remove the 'foreach' package from 'Depends' in DESCRIPTION
 
+Ensure that this doesn't break any code.
