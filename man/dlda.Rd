@@ -2,6 +2,8 @@
 \alias{dlda}
 \alias{dlda.default}
 \alias{dlda.formula}
+\alias{predict.dlda}
+\alias{print.dlda}
 \title{Diagonal Linear Discriminant Analysis (DLDA)}
 \usage{
   dlda(x, ...)
@@ -9,6 +11,10 @@
   \method{dlda}{default} (x, y, prior = NULL)
 
   \method{dlda}{formula} (formula, data, prior = NULL, ...)
+
+  \method{print}{dlda} (x, ...)
+
+  \method{predict}{dlda} (object, newdata)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -29,10 +35,21 @@
 
   \item{data}{data frame from which variables specified in
   \code{formula} are preferentially to be taken.}
+
+  \item{x}{object to print}
+
+  \item{...}{unused}
+
+  \item{object}{trained DLDA object}
+
+  \item{newdata}{matrix of observations to predict. Each
+  row corresponds to a new observation.}
 }
 \value{
   \code{dlda} object that contains the trained DLDA
   classifier
+
+  list predicted class memberships of each row in newdata
 }
 \description{
   Given a set of training data, this function builds the
@@ -42,6 +59,12 @@
   classifiers, where the distributions of each class are
   assumed to be multivariate normal and to share a common
   covariance matrix.
+
+  Summarizes the trained DLDA classifier in a nice manner.
+
+  The DLDA classifier is a modification to LDA, where the
+  off-diagonal elements of the pooled sample covariance
+  matrix are set to zero.
 }
 \details{
   The DLDA classifier is a modification to the well-known
@@ -95,5 +118,12 @@ all.equal(predicted, predicted2)
   Classification of Tumors Using Gene Expression Data,"
   Journal of the American Statistical Association, 97, 457,
   77-87.
+
+  Dudoit, S., Fridlyand, J., & Speed, T. P. (2002).
+  "Comparison of Discrimination Methods for the
+  Classification of Tumors Using Gene Expression Data,"
+  Journal of the American Statistical Association, 97, 457,
+  77-87.
 }
+\keyword{internal}
 

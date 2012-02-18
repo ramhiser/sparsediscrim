@@ -19,7 +19,7 @@
   risk: the minimum average risk attained.
 }
 \description{
-  This function finds the value for alpha \in [0,1] that
+  This function finds the value for alpha \\in [0,1] that
   empirically minimizes the average risk under a Stein loss
   function, which is given on page 1023 of Pang et al.
   (2009).

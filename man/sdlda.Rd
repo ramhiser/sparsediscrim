@@ -1,26 +1,127 @@
 \name{sdlda}
+\alias{predict.sdlda}
+\alias{print.sdlda}
 \alias{sdlda}
+\alias{sdlda.default}
+\alias{sdlda.formula}
 \title{Shrinkage-based Diagonal Linear Discriminant Analysis (SDLDA)}
 \usage{
-  sdlda(x, y, num_alphas = 101)
+  sdlda(x, ...)
+
+  \method{sdlda}{default} (x, y, prior = NULL,
+    num_alphas = 101)
+
+  \method{sdlda}{formula} (formula, data, prior = NULL,
+    ...)
+
+  \method{print}{sdlda} (x, ...)
+
+  \method{predict}{sdlda} (object, newdata)
 }
 \arguments{
-  \item{x}{training data in matrix form.}
+  \item{x}{matrix containing the training data. The rows
+  are the sample observations, and the columns are the
+  features.}
 
-  \item{y}{labels of the training data.}
+  \item{y}{vector of class labels for each training
+  observation}
 
-  \item{num_alphas}{The number of values used to find the
-  optimal amount of shrinkage.}
+  \item{prior}{vector with prior probabilities for each
+  class. If NULL (default), then equal probabilities are
+  used. See details.}
+
+  \item{num_alphas}{the number of values used to find the
+  optimal amount of shrinkage}
+
+  \item{formula}{A formula of the form \code{groups ~ x1 +
+  x2 + ...} That is, the response is the grouping factor
+  and the right hand side specifies the (non-factor)
+  discriminators.}
+
+  \item{data}{data frame from which variables specified in
+  \code{formula} are preferentially to be taken.}
+
+  \item{x}{object to print}
+
+  \item{...}{unused}
+
+  \item{object}{trained SDLDA object}
+
+  \item{newdata}{matrix of observations to predict. Each
+  row corresponds to a new observation.}
 }
 \value{
-  sdlda obj
+  \code{sdlda} object that contains the trained SDLDA
+  classifier
+
+  list predicted class memberships of each row in newdata
 }
 \description{
   Given a set of training data, this function builds the
-  DLDA classifier, which is often attributed to Dudoit et
-  al. (2002). To improve the estimation of the pooled
-  variances, we use a shrinkage method from Pang et al.
-  (2009). This yields the SDLDA classifier.
+  Shrinkage-based Diagonal Linear Discriminant Analysis
+  (SDLDA) classifier, which is based on the DLDA
+  classifier, often attributed to Dudoit et al. (2002). The
+  DLDA classifier belongs to the family of Naive Bayes
+  classifiers, where the distributions of each class are
+  assumed to be multivariate normal and to share a common
+  covariance matrix. To improve the estimation of the
+  pooled variances, Pang et al. (2009) proposed the SDLDA
+  classifier which uses a shrinkage-based estimators of the
+  pooled covariance matrix.
+
+  Summarizes the trained SDLDA classifier in a nice manner.
+
+  The SDLDA classifier is a modification to LDA, where the
+  off-diagonal elements of the pooled sample covariance
+  matrix are set to zero. To improve the estimation of the
+  pooled variances, we use a shrinkage method from Pang et
+  al. (2009).
+}
+\details{
+  The DLDA classifier is a modification to the well-known
+  LDA classifier, where the off-diagonal elements of the
+  pooled covariance matrix are assumed to be zero -- the
+  features are assumed to be uncorrelated. Under
+  multivariate normality, the assumption uncorrelated
+  features is equivalent to the assumption of independent
+  features. The feature-independence assumption is a
+  notable attribute of the Naive Bayes classifier family.
+  The benefit of these classifiers is that they are fast
+  and have much fewer parameters to estimate, especially
+  when the number of features is quite large.
+
+  The matrix of training observations are given in
+  \code{x}. The rows of \code{x} contain the sample
+  observations, and the columns contain the features for
+  each training observation.
+
+  The vector of class labels given in \code{y} are coerced
+  to a \code{factor}. The length of \code{y} should match
+  the number of rows in \code{x}.
+
+  An error is thrown if a given class has less than 2
+  observations because the variance for each feature within
+  a class cannot be estimated with less than 2
+  observations.
+
+  The vector, \code{prior}, contains the \emph{a priori}
+  class membership for each class. If \code{prior} is NULL
+  (default), the class membership probabilities are
+  estimated as the sample proportion of observations
+  belonging to each class. Otherwise, \code{prior} should
+  be a vector with the same length as the number of classes
+  in \code{y}. The \code{prior} probabilties should be
+  nonnegative and sum to one.
+}
+\examples{
+n <- nrow(iris)
+train <- sample(seq_len(n), n / 2)
+sdlda_out <- sdlda(Species ~ ., data = iris[train, ])
+predicted <- predict(sdlda_out, iris[-train, -5])$class
+
+sdlda_out2 <- sdlda(x = iris[train, -5], y = iris[train, 5])
+predicted2 <- predict(sdlda_out2, iris[-train, -5])$class
+all.equal(predicted, predicted2)
 }
 \references{
   Dudoit, S., Fridlyand, J., & Speed, T. P. (2002).
@@ -32,5 +133,16 @@
   Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
   Diagonal Discriminant Analysis and Its Applications in
   High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+
+  Dudoit, S., Fridlyand, J., & Speed, T. P. (2002).
+  "Comparison of Discrimination Methods for the
+  Classification of Tumors Using Gene Expression Data,"
+  Journal of the American Statistical Association, 97, 457,
+  77-87.
+
+  Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
+  Diagonal Discriminant Analysis and Its Applications in
+  High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
 }
+\keyword{internal}
 

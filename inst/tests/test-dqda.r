@@ -1,5 +1,6 @@
 library('diagdiscrim')
 library('mvtnorm')
+library('plyr')
 
 context("Diagonalized Quadratic Discriminant Analysis")
 
@@ -13,9 +14,8 @@ test_that("DQDA computes correct estimators and predictions with 2 classes havin
 	x1 <- rmvnorm(n1, rep(mu1, p))
 	x2 <- rmvnorm(n2, rep(mu2, p))
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
+  x <- rbind(x1, x2)
+  y <- gl(2, n1)
 	
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
@@ -23,23 +23,23 @@ test_that("DQDA computes correct estimators and predictions with 2 classes havin
 	cov1 <- (n1 - 1) * cov(x1) / n1
 	cov2 <- (n2 - 1) * cov(x2) / n2
 	
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
 	
 	test1 <- test2 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x <- rbind(test.x1, test.x2)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x <- rbind(test_x1, test_x2)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0.041))
+	expect_that(test_error, equals(0.041))
 })
 
 test_that("DQDA computes correct estimators and predictions with 2 classes having identity covariance matrix and p = 20", {
@@ -52,33 +52,32 @@ test_that("DQDA computes correct estimators and predictions with 2 classes havin
 	x1 <- rmvnorm(n1, rep(mu1, p))
 	x2 <- rmvnorm(n2, rep(mu2, p))
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
-	
+  x <- rbind(x1, x2)
+  y <- gl(2, n1)
+
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
 	
 	cov1 <- (n1 - 1) * cov(x1) / n1
 	cov2 <- (n2 - 1) * cov(x2) / n2
 	
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
 	
 	test1 <- test2 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x <- rbind(test.x1, test.x2)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x <- rbind(test_x1, test_x2)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0))
+	expect_that(test_error, equals(0))
 })
 
 test_that("DQDA computes correct estimators and predictions with 3 classes having identity covariance matrix and p = 5", {
@@ -93,9 +92,8 @@ test_that("DQDA computes correct estimators and predictions with 3 classes havin
 	x2 <- rmvnorm(n2, rep(mu2, p))
 	x3 <- rmvnorm(n3, rep(mu3, p))
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2), cbind(3, x3))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
+  x <- rbind(x1, x2, x3)
+  y <- gl(3, n1)
 	
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
@@ -105,26 +103,26 @@ test_that("DQDA computes correct estimators and predictions with 3 classes havin
 	cov2 <- (n2 - 1) * cov(x2) / n2
 	cov3 <- (n3 - 1) * cov(x3) / n3
 	
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$var), diag(cov3)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$var), diag(cov3)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$xbar), xbar3), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$xbar), xbar3), is_true())
 	
 	test1 <- test2 <- test3 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2), rep(3, test3))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x3 <- rmvnorm(test3, rep(mu3, p))
-	test.x <- rbind(test.x1, test.x2, test.x3)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2), rep(3, test3))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x3 <- rmvnorm(test3, rep(mu3, p))
+	test_x <- rbind(test_x1, test_x2, test_x3)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0.0226666667))
+	expect_that(test_error, equals(0.025333333))
 })
 
 test_that("DQDA computes correct estimators and predictions with 3 classes having identity covariance matrix and p = 50", {
@@ -139,9 +137,8 @@ test_that("DQDA computes correct estimators and predictions with 3 classes havin
 	x2 <- rmvnorm(n2, rep(mu2, p))
 	x3 <- rmvnorm(n3, rep(mu3, p))
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2), cbind(3, x3))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
+  x <- rbind(x1, x2, x3)
+  y <- gl(3, n1)
 	
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
@@ -151,34 +148,34 @@ test_that("DQDA computes correct estimators and predictions with 3 classes havin
 	cov2 <- (n2 - 1) * cov(x2) / n2
 	cov3 <- (n3 - 1) * cov(x3) / n3
 	
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$var), diag(cov3)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$var), diag(cov3)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$xbar), xbar3), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$xbar), xbar3), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$var), diag(cov3)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$var), diag(cov3)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$xbar), xbar3), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$xbar), xbar3), is_true())
 	
 	test1 <- test2 <- test3 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2), rep(3, test3))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x3 <- rmvnorm(test3, rep(mu3, p))
-	test.x <- rbind(test.x1, test.x2, test.x3)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2), rep(3, test3))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x3 <- rmvnorm(test3, rep(mu3, p))
+	test_x <- rbind(test_x1, test_x2, test_x3)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0))
+	expect_that(test_error, equals(0))
 })
 
 test_that("DQDA computes correct estimators and predictions with 5 classes having intraclass covariance matrix and p = 5", {
@@ -201,9 +198,8 @@ test_that("DQDA computes correct estimators and predictions with 5 classes havin
 	x4 <- rmvnorm(n4, rep(mu4, p), sigma = Sigma)
 	x5 <- rmvnorm(n5, rep(mu5, p), sigma = Sigma)
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2), cbind(3, x3), cbind(4, x4), cbind(5, x5))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
+  x <- rbind(x1, x2, x3, x4, x5)
+  y <- gl(5, n1)
 	
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
@@ -217,32 +213,32 @@ test_that("DQDA computes correct estimators and predictions with 5 classes havin
 	cov4 <- (n4 - 1) * cov(x4) / n4
 	cov5 <- (n5 - 1) * cov(x5) / n5
 
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$var), diag(cov3)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`4`$var), diag(cov4)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`5`$var), diag(cov5)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$var), diag(cov3)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`4`$var), diag(cov4)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`5`$var), diag(cov5)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$xbar), xbar3), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`4`$xbar), xbar4), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`5`$xbar), xbar5), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$xbar), xbar3), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`4`$xbar), xbar4), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`5`$xbar), xbar5), is_true())
 	
 	test1 <- test2 <- test3 <- test4 <- test5 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2), rep(3, test3), rep(4, test4), rep(5, test5))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x3 <- rmvnorm(test3, rep(mu3, p))
-	test.x4 <- rmvnorm(test4, rep(mu4, p))
-	test.x5 <- rmvnorm(test5, rep(mu5, p))
-	test.x <- rbind(test.x1, test.x2, test.x3, test.x4, test.x5)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2), rep(3, test3), rep(4, test4), rep(5, test5))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x3 <- rmvnorm(test3, rep(mu3, p))
+	test_x4 <- rmvnorm(test4, rep(mu4, p))
+	test_x5 <- rmvnorm(test5, rep(mu5, p))
+	test_x <- rbind(test_x1, test_x2, test_x3, test_x4, test_x5)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0.0232))
+	expect_that(test_error, equals(0.0292))
 })
 
 test_that("DQDA computes correct estimators and predictions with 5 classes having intraclass covariance matrix and p = 50", {
@@ -265,9 +261,8 @@ test_that("DQDA computes correct estimators and predictions with 5 classes havin
 	x4 <- rmvnorm(n4, rep(mu4, p), sigma = Sigma)
 	x5 <- rmvnorm(n5, rep(mu5, p), sigma = Sigma)
 	
-	train.df <- rbind.data.frame(cbind(1, x1), cbind(2, x2), cbind(3, x3), cbind(4, x4), cbind(5, x5))
-	names(train.df) <- c("labels", paste("X", seq_len(ncol(train.df) - 1), sep = ""))
-	train.df$labels <- factor(train.df$labels)
+  x <- rbind(x1, x2, x3, x4, x5)
+  y <- gl(5, n1)
 	
 	xbar1 <- as.vector(aaply(x1, 2, mean))
 	xbar2 <- as.vector(aaply(x2, 2, mean))
@@ -281,32 +276,32 @@ test_that("DQDA computes correct estimators and predictions with 5 classes havin
 	cov4 <- (n4 - 1) * cov(x4) / n4
 	cov5 <- (n5 - 1) * cov(x5) / n5
 	
-	dqda.out <- dqda(train.df)
+	dqda_out <- dqda(x = x, y = y)
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$var), diag(cov1)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$var), diag(cov2)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$var), diag(cov3)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`4`$var), diag(cov4)), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`5`$var), diag(cov5)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$var), diag(cov1)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$var), diag(cov2)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$var), diag(cov3)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`4`$var), diag(cov4)), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`5`$var), diag(cov5)), is_true())
 	
-	expect_that(all.equal(as.vector(dqda.out$estimators$`1`$xbar), xbar1), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`2`$xbar), xbar2), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`3`$xbar), xbar3), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`4`$xbar), xbar4), is_true())
-	expect_that(all.equal(as.vector(dqda.out$estimators$`5`$xbar), xbar5), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`1`$xbar), xbar1), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`2`$xbar), xbar2), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`3`$xbar), xbar3), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`4`$xbar), xbar4), is_true())
+	expect_that(all.equal(as.vector(dqda_out$est$`5`$xbar), xbar5), is_true())
 	
 	test1 <- test2 <- test3 <- test4 <- test5 <- 500
-	test.labels <- c(rep(1, test1), rep(2, test2), rep(3, test3), rep(4, test4), rep(5, test5))
-	test.x1 <- rmvnorm(test1, rep(mu1, p))
-	test.x2 <- rmvnorm(test2, rep(mu2, p))
-	test.x3 <- rmvnorm(test3, rep(mu3, p))
-	test.x4 <- rmvnorm(test4, rep(mu4, p))
-	test.x5 <- rmvnorm(test5, rep(mu5, p))
-	test.x <- rbind(test.x1, test.x2, test.x3, test.x4, test.x5)
-	predictions <- predict(dqda.out, test.x)
-	test.error <- mean(predictions != test.labels)
+	test_labels <- c(rep(1, test1), rep(2, test2), rep(3, test3), rep(4, test4), rep(5, test5))
+	test_x1 <- rmvnorm(test1, rep(mu1, p))
+	test_x2 <- rmvnorm(test2, rep(mu2, p))
+	test_x3 <- rmvnorm(test3, rep(mu3, p))
+	test_x4 <- rmvnorm(test4, rep(mu4, p))
+	test_x5 <- rmvnorm(test5, rep(mu5, p))
+	test_x <- rbind(test_x1, test_x2, test_x3, test_x4, test_x5)
+	predictions <- predict(dqda_out, test_x)$class
+	test_error <- mean(predictions != test_labels)
 	
-	expect_that(test.error, equals(0))
+	expect_that(test_error, equals(0))
 })
 
 

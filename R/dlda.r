@@ -109,6 +109,7 @@ dlda.formula <- function(formula, data, prior = NULL, ...) {
 #' @keywords internal
 #' @param x object to print
 #' @param ... unused
+#' @rdname dlda
 #' @method print dlda
 #' @S3method print dlda
 #' @export
@@ -130,6 +131,9 @@ print.dlda <- function(x, ...) {
 #' The DLDA classifier is a modification to LDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
 #' 
+#' @rdname dlda
+#' @method predict dlda
+#' @S3method predict dlda
 #' @export
 #'
 #' @param object trained DLDA object
