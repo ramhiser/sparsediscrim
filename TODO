@@ -1,9 +1,13 @@
+* TODO Update SimDiag
+** Provide thorough documentation on how to diagonalize a test observation
+
+The purpose of this is so that I don't have to keep rethinking this on the fly.
+My guess is this why my paper was not ready for that student paper competition.
+
+** Provide a thorough unit test that simultaneously diagonalizes a well-formed case
+** Provide a thorough unit test that simultaneously diagonalizes random high-dimensional data
+* TODO Determine if 'Q' is a solution to a generalized eigenvalue problem
 * TODO Determine how to update RSDDA
-* TODO Determine how to streamline the SimDiag.
-
-Right now, there are at least 3 different ways to SimDiag in the package.
-This is confusing to me. How much worse would it be for a new user?
-
 * TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda

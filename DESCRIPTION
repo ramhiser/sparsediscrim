@@ -26,3 +26,4 @@ Collate:
     'simdiag.r'
     'estimates.r'
     'helper-intercept.r'
+    'helper-simdiag2.r'

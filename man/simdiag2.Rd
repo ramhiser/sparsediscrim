@@ -1,25 +1,16 @@
-\name{simdiag}
-\alias{print.simdiag}
-\alias{simdiag}
-\alias{simdiag.default}
-\alias{simdiag.formula}
+\name{simdiag2}
+\alias{simdiag2}
 \title{Simultaneously diagonalizes two real symmetric matrices.}
 \usage{
-  simdiag(x, ...)
-
-  \method{simdiag}{default} (x, y, q = NULL,
-    method = c("rank", "bhattacharyya"),
-    simdiag_data = TRUE, tol = 1e-06)
-
-  \method{simdiag}{formula} (formula, data, q = NULL,
-    method = c("rank", "bhattacharyya"), tol = 1e-06)
-
-  \method{print}{simdiag} (x, ...)
+  simdiag2(x, y, q = NULL, tol = 1e-06)
 }
 \arguments{
   \item{A}{p x p real symmetric matrix}
 
   \item{B}{p x p real symmetric matrix}
+
+  \item{dim_reduce}{logical flag: Should we reduce the
+  dimension of the simultaneous diagonalization?}
 
   \item{q}{the reduced dimension of the simultaneous
   diagonalizer.}
@@ -27,42 +18,18 @@
   \item{method}{the method to automatically select the
   value of \code{q}. Ignored if \code{q} is given.}
 
-  \item{simdiag_data}{Should the data matrix, \code{x}, be
-  transformed and returned? If TRUE (default), we return an
-  updated matrix, \code{x}. For large data sets, this
-  option can yield a very large \code{simdiag} object.}
-
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
-
-  \item{formula}{A formula of the form \code{groups ~ x1 +
-  x2 + ...} That is, the response is the grouping factor
-  and the right hand side specifies the (non-factor)
-  discriminators.}
-
-  \item{data}{data frame from which variables specified in
-  \code{formula} are preferentially to be taken.}
-
-  \item{x}{object to print}
-
-  \item{...}{unused}
 }
 \value{
-  a list containing: \itemize{ \item \code{Q}: simultaneous
-  diagonalizing matrix of size p x q \item \code{q}: the
-  reduced dimension of the data \item \code{x}: the
-  transformed data matrix, \code{x}. Returned, if
-  simdiag_data is TRUE. Otherwise, \code{x} is not
-  returned. }
+  a list containing: the matrix Q that is the p x k
+  simultaneous diagonalizing matrix the selected value of k
 }
 \description{
-  This function simultaneously diagonalizes two real
+  This function simultaneously diagaonlizes two real
   symmetric matrices. If the matrices are singular, we
   employ a dimension reduction method that simultaneously
   diagonalizes them in a lower dimension.
-
-  Summarizes the simultaneous diagonalization information
-  for a set of classes.
 }
 \details{
   If the user selects the dimension reduction option, the
@@ -73,6 +40,12 @@
   constitutes 'non-zero', we select all of the eigenvalues
   larger than the specified tolerance, 'tol'.
 
+  The eigen_pct is the percentage of eigenvalues to use, by
+  which we mean the cumulative sum of the eigenvalues
+  (scaled by the sum of the eigenvalues). This is similar
+  to the typical automatic approach to Principal Components
+  Analysis.
+
   If the user does not wish to use the dimension reduction
   method, then k is automatically computed as the number of
   eigenvalues of B. Hence, in this case, k = p.
@@ -80,12 +53,11 @@
   The returned simultaneous diagonalizing matrix, Q, is
   constructed such that
 
-  Q A Q' = D, and Q B Q' = I_k,
+  Q' A Q = D, and Q' B Q = I_k,
 
   where I_k denotes the k-dimensional identity matrix and
   Lambda is the diagonal matrix with diagonal entries as
   the characteristic roots (generalized eigenvalues) of
   det(B - lambda A) = 0.
 }
-\keyword{internal}
 
