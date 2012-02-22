@@ -1,6 +1,7 @@
 \name{var_shrinkage}
 \alias{var_shrinkage}
-\title{Shrinkage-based estimator of variances for each feature from Pang et al. (2009).}
+\title{Shrinkage-based estimator of variances for each feature from Pang et al.
+(2009).}
 \usage{
   var_shrinkage(N, K, var_feature, num_alphas = 101,
     t = -1)

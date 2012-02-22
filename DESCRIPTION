@@ -9,7 +9,6 @@ Description: Diagonal Discriminant Analysis and
     simultaneously diagonalize the covariance matrices to
     improve the classification rates.
 Depends:
-    foreach,
     jointDiag
 License: MIT
 URL: https://github.com/ramey/diagdiscrim,
@@ -27,3 +26,5 @@ Collate:
     'estimates.r'
     'helper-intercept.r'
     'helper-simdiag2.r'
+    'data-intraclass.r'
+    'helper-transform.r'

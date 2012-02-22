@@ -13,10 +13,11 @@
   each dimension.}
 }
 \value{
-  list with alpha: the alpha that minimizes the average
-  risk under a Stein loss function.  If the minimum is not
-  unique, we randomly select an alpha from the minimizers.
-  risk: the minimum average risk attained.
+  list with \itemize{ \item \code{alpha}: the alpha that
+  minimizes the average risk under a Stein loss function.
+  If the minimum is not unique, we randomly select an
+  \code{alpha} from the minimizers.  \item \code{risk}: the
+  minimum average risk attained. }
 }
 \description{
   This function finds the value for alpha \\in [0,1] that
