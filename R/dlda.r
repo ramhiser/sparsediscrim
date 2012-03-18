@@ -64,11 +64,8 @@ dlda.default <- function(x, y, prior = NULL) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior)
+  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE)
 
-  # Calculates the pooled variance across all classes.
-	obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
-	
   # Creates an object of type 'dlda' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "dlda"

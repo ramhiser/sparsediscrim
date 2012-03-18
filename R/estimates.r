@@ -31,8 +31,10 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
+#' @param pool logical value. If TRUE, calculates the pooled sample variances
+#' for each class.
 #' @return list of MLEs and necessary ancillary information
-diag_estimates <- function(x, y, prior = NULL) {
+diag_estimates <- function(x, y, prior = NULL, pool = FALSE) {
   obj <- list()
 	obj$labels <- y
 	obj$N <- length(y)
@@ -71,6 +73,11 @@ diag_estimates <- function(x, y, prior = NULL) {
     stats$var <- with(stats, (n - 1) * apply(x[i,], 2, var) / n)
     stats
   })
+
+  # Calculates the pooled variance across all classes.
+  if (pool) {
+    obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
+  }
 
   # Add each element in 'prior' to the corresponding obj$est$prior
   for(k in seq_len(obj$num_groups)) {

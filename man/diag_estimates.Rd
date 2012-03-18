@@ -2,7 +2,7 @@
 \alias{diag_estimates}
 \title{Computes estimates and ancillary information for diagonal classifiers}
 \usage{
-  diag_estimates(x, y, prior = NULL)
+  diag_estimates(x, y, prior = NULL, pool = FALSE)
 }
 \arguments{
   \item{matrix}{containing the training data. The rows are
@@ -15,6 +15,9 @@
   \item{prior}{vector with prior probabilities for each
   class. If NULL (default), then equal probabilities are
   used. See details.}
+
+  \item{pool}{logical value. If TRUE, calculates the pooled
+  sample variances for each class.}
 }
 \value{
   list of MLEs and necessary ancillary information

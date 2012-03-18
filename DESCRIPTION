@@ -33,3 +33,4 @@ Collate:
     'data-block-autocorrelation.r'
     'helper-cov-mle.r'
     'helper-simdiag-fastsvd.r'
+    'helper-shrinkage.r'

@@ -72,10 +72,7 @@ sdlda.default <- function(x, y, prior = NULL, num_alphas = 101) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior)
-
-  # Calculates the pooled variance across all classes.
-	obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
+  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE)
 
   # Calculates the shrinkage-based estimator of the pooled covariance matrix.
   obj$var_shrink <- var_shrinkage(
