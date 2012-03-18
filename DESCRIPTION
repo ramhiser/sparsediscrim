@@ -10,6 +10,8 @@ Description: Diagonal Discriminant Analysis and
     improve the classification rates.
 Depends:
     jointDiag
+Suggests:
+    bdsmatrix
 License: MIT
 URL: https://github.com/ramey/diagdiscrim,
     http://ramhiser.com
@@ -28,3 +30,6 @@ Collate:
     'helper-simdiag2.r'
     'data-intraclass.r'
     'helper-transform.r'
+    'data-block-autocorrelation.r'
+    'helper-cov-mle.r'
+    'helper-simdiag-fastsvd.r'

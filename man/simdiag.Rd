@@ -9,8 +9,9 @@ generated from \code{K} classes.}
   simdiag(x, ...)
 
   \method{simdiag}{default} (x, y, q = NULL,
-    method = c("rank", "bhattacharyya"),
-    simdiag_data = TRUE, tol = 1e-06)
+    method = c("fast_svd", "rank", "bhattacharyya"),
+    simdiag_data = TRUE, calc_ranks = FALSE,
+    tol = sqrt(.Machine$double.eps))
 
   \method{simdiag}{formula} (formula, data, q = NULL,
     method = c("rank", "bhattacharyya"), tol = 1e-06)
@@ -37,12 +38,26 @@ generated from \code{K} classes.}
   option can yield a very large \code{simdiag} object and
   should possibly be calculated manually.}
 
+  \item{calc_ranks}{logical value. We consider the first
+  class to be the class with sample covariance of larger
+  rank. By default, if \code{calc_ranks} is \code{FALSE},
+  we consider the first class to be the one with a larger
+  sample size.in terms of the larger. Otherwise, if
+  \code{TRUE}, we calculate the ranks numerically as the
+  number of nonzero eigenvalues and select the first class
+  to have larger rank. Note that this option adds
+  additional computations. If multicollinearity is
+  suspected and if the sample sizes are approximately
+  equal, we recommend that \code{calc_ranks} be set to
+  \code{TRUE}. Only used if the \code{method} is selected
+  to be \code{fast_svd}; this is the default option.}
+
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
 
-  \item{formula}{A formula of the form \code{groups ~ x1 +
-  x2 + ...} That is, the response is the grouping factor
-  and the right hand side specifies the (non-factor)
+  \item{formula}{formula of the form \code{groups ~ x1 + x2
+  + ...} That is, the response is the grouping factor and
+  the right hand side specifies the (non-factor)
   discriminators.}
 
   \item{data}{data frame from which variables specified in
@@ -85,12 +100,12 @@ generated from \code{K} classes.}
   The returned simultaneous diagonalizing matrix, \code{Q},
   is constructed such that
 
-  \deqn{Q \widehat{\Sigma_k} Q' = D_k}
+  \deqn{Q \widehat{\\Sigma_k} Q' = D_k}
 
   for all \eqn{k = 1, \ldots, K}, where
-  \eqn{\widehat{\Sigma_k}} is the maximum likelihood
+  \eqn{\widehat{\\Sigma_k}} is the maximum likelihood
   estimator (under normality) for the \eqn{k}th class
-  covariance matrix, \eqn{\Sigma_k}, where \eqn{D_k} is a
+  covariance matrix, \eqn{\\Sigma_k}, where \eqn{D_k} is a
   diagonal matrix.
 
   The returned simultaneously-diagonalizing matrix,

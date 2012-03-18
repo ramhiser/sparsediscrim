@@ -1,12 +1,38 @@
-* TODO Update SimDiag
-** Provide thorough documentation on how to diagonalize a test observation
+* TODO Add 'fast_svd' option to SimDiag
+** TODO Determine how we should determine with class has larger rank
 
-The purpose of this is so that I don't have to keep rethinking this on the fly.
-My guess is this why my paper was not ready for that student paper competition.
+*** Write a function that does this.
+*** By default, choose the order that the data sets are in.
+*** Provide the user with an argument that allows for an automatic detection of q_1.
 
+Tell the user that can this option can slightly increase the runtime, especially if the
+data are not 'wide'.
+
+    
 * TODO Determine if 'Q' is a solution to a generalized eigenvalue problem
+** TODO Read Generalized Eigenvalues Paper from OsoFast
+
+This paper deals with positive semidefinite covariance matrices.
+It might clearly define the generalized e'value problem well enough that I can
+sufficiently describe our choice for Q as a solution to a generalized eigenvalue problem.
+
+What's more is that some definitions of the GE problem solve: Ax = \lambda Bx. But B must
+be nonsingular in order to transform the problem to the usual eigenvalue problem.
+That is, B^{-1} Ax = \lambda x. But if B is singular, this is problematic.
+
 * TODO Determine how to update RSDDA
 * TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
 
+* TODO Update the documentation for Guo's simulation config with the notation.
+
+Also, update the examples.
+
+
+** Code 'fast_svd' SimDiag function
+** Add 'fast_svd' option/argument to 'simdiag'
+** Code Guo simulation
+** Code microarray simulations
+** Code Bhattacharyya distance
+** Add MDEB regularization technique to simulations and rerun them

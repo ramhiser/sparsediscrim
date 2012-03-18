@@ -20,7 +20,7 @@
 #'
 #' where \eqn{I_q} denotes the \eqn{q}-dimensional identity matrix and \eqn{D} is
 #' the diagonal matrix with diagonal entries as the characteristic roots
-#' (generalized eigenvalues) of det(B - lambda A) = 0.
+#' (generalized eigenvalues) of det(B - \\lambda A) = 0.
 #'
 #' @export
 #' @param A p x p real symmetric matrix
@@ -44,10 +44,10 @@ simdiag2 <- function(A, B, q = NULL, tol = 1e-6) {
   if (nrow(A) != nrow(B)) {
     stop("The matrices, 'A' and 'B', must have the same size.")
   }
-  p <- nrow(A)
 
   # If a value for 'q' is provided, we check that it is between 1 and p,
   # inclusively. If not, an error is thrown.
+  p <- nrow(A)
   if (!is.null(q)) {
     q <- as.integer(q)
     if (q < 1 || q > p) {

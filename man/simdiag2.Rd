@@ -44,6 +44,6 @@
   where \eqn{I_q} denotes the \eqn{q}-dimensional identity
   matrix and \eqn{D} is the diagonal matrix with diagonal
   entries as the characteristic roots (generalized
-  eigenvalues) of det(B - lambda A) = 0.
+  eigenvalues) of det(B - \\lambda A) = 0.
 }
 

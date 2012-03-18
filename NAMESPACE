@@ -1,5 +1,7 @@
+export(cov_mle)
 export(dlda)
 export(dqda)
+export(generate_blockdiag)
 export(generate_intraclass)
 export(model.select.rsdda)
 export(predict.rsdda)
