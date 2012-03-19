@@ -14,18 +14,20 @@
 #' @param shrinkage list of length \eqn{K}. The \eqn{k}th list element is a
 #' diagonal matrix towards which the \eqn{k}th sample covariance matrix is
 #' shrunken.
+#' @param pool logical value. Add the shrinkage matrix to the diagonal pooled
+#' sample covariance matrix.
 #' @return list of length \code{K} with MDEB shrinkage matrices
-diag_shrinkage <- function(obj, diag_mat = rep(1, p), pool = FALSE) {
-  if (pool) {
-    obj$var_pool <- obj$var_pool + shrink
-    obj$shrinkage <- shrink
-  } else {
-    obj$est <- mapply(function(class_est, shrink) {
+diag_shrinkage <- function(obj, shrinkage, pool = FALSE) {
+  obj$est <- mapply(function(class_est, shrink) {
+    if (pool) {
+      class_est$var <- obj$var_pool + shrink
+    } else {
       class_est$var <- class_est$var + shrink
-      class_est$shrinkage <- shrink
-      class_est
-    }, obj$est, shrinkage)
-  }
+    }
+    class_est$shrinkage <- shrink
+    class_est
+  }, obj$est, shrinkage)
+
   obj
 }
 
@@ -60,7 +62,7 @@ diag_shrinkage <- function(obj, diag_mat = rep(1, p), pool = FALSE) {
 mdeb_shrinkage <- function(obj, diag_mat = rep(1, p)) {
   p <- obj$p
   lapply(obj$est, function(class_est) {
-    shrink_coeff <- sum(class_est$var)
+    shrink_coeff <- sum(class_est$var) / min(p, class_est$n)
     shrink_coeff * diag_mat
   })
 }
