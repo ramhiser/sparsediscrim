@@ -77,6 +77,10 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE) {
   # Calculates the pooled variance across all classes.
   if (pool) {
     obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
+    obj$est <- lapply(obj$est, function(class_est) {
+      class_est$var <- obj$var_pool
+      class_est
+    })
   }
 
   # Add each element in 'prior' to the corresponding obj$est$prior

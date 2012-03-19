@@ -152,7 +152,7 @@ predict.dqda <- function(object, newdata) {
 
 	scores <- apply(newdata, 1, function(obs) {
 		sapply(object$est, function(class_est) {
-			sum((obs - class_est$xbar)^2 / class_est$var)
+			with(class_est, sum((obs - xbar)^2 / var + log(var)) + log(prior))
 		})
 	})
 	

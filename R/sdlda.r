@@ -173,7 +173,7 @@ predict.sdlda <- function(object, newdata) {
 
 	scores <- apply(newdata, 1, function(obs) {
 		sapply(object$est, function(class_est) {
-			sum((obs - class_est$xbar)^2 / object$var_shrink)
+			with(class_est, sum((obs - xbar)^2 / object$var_shrink) + log(prior))
 		})
 	})
 	
