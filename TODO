@@ -1,4 +1,5 @@
-* TODO Determine if 'Q' is a solution to a generalized eigenvalue problem
+* Paper
+** TODO Determine if 'Q' is a solution to a generalized eigenvalue problem
 ** TODO Read Generalized Eigenvalues Paper from OsoFast
 
 This paper deals with positive semidefinite covariance matrices.
@@ -9,18 +10,16 @@ What's more is that some definitions of the GE problem solve: Ax = \lambda Bx. B
 be nonsingular in order to transform the problem to the usual eigenvalue problem.
 That is, B^{-1} Ax = \lambda x. But if B is singular, this is problematic.
 
-* TODO Determine how to update RSDDA
-* TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
+** TODO Code Bhattacharyya distance
+* Package
+** TODO Add description and citation info to the 'tong_mean_shrinkage' function
+** TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
 
-* TODO Update the documentation for Guo's simulation config with the notation.
+
+** TODO Determine how to update RSDDA
+** TODO Update the documentation for Guo's simulation config with the notation.
 
 Also, update the examples.
-
-* TODO Code 'fast_svd' SimDiag function
-* TODO Add 'fast_svd' option/argument to 'simdiag'
-* TODO Code Guo simulation
-* TODO Code microarray simulations
-* TODO Code Bhattacharyya distance
 
