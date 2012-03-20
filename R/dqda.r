@@ -41,11 +41,14 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
+#' @param est_mean the estimator for the class means. By default, we use the
+#' maximum likelihood estimator (MLE). To improve the estimation, we provide the
+#' option to use a shrunken mean estimator proposed by Tong et al. (2012).
+#' @return \code{dqda} object that contains the trained DQDA classifier
 #'
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
-#' @return \code{dqda} object that contains the trained DQDA classifier
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
@@ -61,11 +64,11 @@ dqda <- function(x, ...)
 #' @rdname dqda
 #' @method dqda default
 #' @S3method dqda default
-dqda.default <- function(x, y, prior = NULL) {
+dqda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong")) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior)
+  obj <- diagdiscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
 
   # Creates an object of type 'dqda' and adds the 'match.call' to the object
   obj$call <- match.call()
@@ -82,7 +85,8 @@ dqda.default <- function(x, y, prior = NULL) {
 #' @rdname dqda
 #' @method dqda formula
 #' @S3method dqda formula
-dqda.formula <- function(formula, data, prior = NULL, ...) {
+dqda.formula <- function(formula, data, prior = NULL,
+                         est_mean = c("mle", "tong"), ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -94,7 +98,7 @@ dqda.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- dqda.default(x, y, prior, ...)
+  est <- dqda.default(x, y, prior, est_mean, ...)
   est$call <- match.call()
   est$formula <- formula
   est

@@ -34,3 +34,4 @@ Collate:
     'helper-cov-mle.r'
     'helper-simdiag-fastsvd.r'
     'helper-shrinkage.r'
+    'helper-mean-shrinkage.r'
