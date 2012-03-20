@@ -26,7 +26,7 @@ diag_shrinkage <- function(obj, shrinkage, pool = FALSE) {
     }
     class_est$shrinkage <- shrink
     class_est
-  }, obj$est, shrinkage)
+  }, obj$est, shrinkage, SIMPLIFY = FALSE)
 
   obj
 }
