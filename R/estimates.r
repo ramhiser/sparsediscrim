@@ -47,6 +47,8 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
 	obj$groups <- levels(y)
 	obj$num_groups <- nlevels(y)
 
+  est_mean <- match.arg(est_mean)
+
   # Error Checking
   if (!is.null(prior)) {
     if (length(prior) != obj$num_groups) {
