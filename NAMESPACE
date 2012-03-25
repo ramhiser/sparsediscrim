@@ -1,4 +1,5 @@
 export(cov_mle)
+export(cov_pool)
 export(diag_shrinkage)
 export(dlda)
 export(dqda)
