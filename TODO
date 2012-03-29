@@ -12,11 +12,12 @@ That is, B^{-1} Ax = \lambda x. But if B is singular, this is problematic.
 
 ** TODO Code Bhattacharyya distance
 * Package
+** TODO Finish documentation for the 'boot_parametric' function
+** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function
 ** TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
-
 
 ** TODO Determine how to update RSDDA
 ** TODO Update the documentation for Guo's simulation config with the notation.
