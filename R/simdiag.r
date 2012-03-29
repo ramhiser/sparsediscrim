@@ -104,8 +104,8 @@ simdiag.default <- function(x, y, q = NULL,
     # with the larger sample size, which is our preliminary candidate value for 'q'.
     larger_class <- which.max(table(y))
 
-    Sig1 <- cov_mle(x[which(y == larger_class)])
-    Sig2 <- cov_mle(x[which(y != larger_class)])
+    Sig1 <- cov_mle(x[which(y == larger_class), ])
+    Sig2 <- cov_mle(x[which(y != larger_class), ])
 
     # In future work, we intend to allow for more than the K = 2 case. Hence, we
     # have delegated the actual simultaneous diagonalization to the function,
