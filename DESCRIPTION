@@ -9,8 +9,9 @@ Description: Diagonal Discriminant Analysis and
     simultaneously diagonalize the covariance matrices to
     improve the classification rates.
 Depends:
-    jointDiag,
-    car
+    car,
+    corpcor,
+    jointDiag
 Suggests:
     bdsmatrix
 License: MIT
@@ -39,3 +40,4 @@ Collate:
     'data-parametric-bootstrap.r'
     'bhattacharyya.r'
     'helper-pct-change.r'
+    'helper-fast-cov-eigen.r'

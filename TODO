@@ -2,11 +2,16 @@
 ** TODO Finish documentation for the 'boot_parametric' function
 ** TODO Add paper references to the 'bhatta_simdiag' function
 ** TODO Add paper references to the 'dimred_bhatta_simdiag' function
+** TODO Discuss the Fast SVD trick and eigenvalue decomposition in the 'fast_cov_eigen' function.
 ** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function
 ** TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
+
+** TODO Add more information to the 'print.simdiag' function's output.
+
+If it turns out that there's very little to print, then just remove the function.
 
 ** TODO Determine how to update RSDDA
 ** TODO Update the documentation for Guo's simulation config with the notation.
