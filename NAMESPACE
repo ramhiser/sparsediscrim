@@ -1,3 +1,4 @@
+export(bhatta_simdiag)
 export(boot_parametric)
 export(cov_mle)
 export(cov_pool)

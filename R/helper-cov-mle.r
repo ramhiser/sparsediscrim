@@ -5,11 +5,23 @@
 #' data as the maximum likelihood estimator (MLE) of the population covariance
 #' matrix.
 #'
+#' If the \code{diag} option is set to \code{TRUE}, then we assume the population
+#' covariance matrix is diagonal, and the MLE is computed under this assumption.
+#' In this case, we return a vector of length \code{p} instead.
+#'
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
-#' @return sample covariance matrix of size \eqn{p \times p}
-cov_mle <- function(x) {
-  (nrow(x) - 1) / nrow(x) * cov(x)
+#' @param diag logical value. If TRUE, assumes the population covariance matrix
+#' is diagonal. By default, we assume that \code{diag} is \code{FALSE}.
+#' @return sample covariance matrix of size \eqn{p \times p}. If \code{diag} is
+#' \code{TRUE}, then a vector of length \code{p} is returned instead.
+cov_mle <- function(x, diag = FALSE) {
+  n <- nrow(x)
+  if (diag) {
+    (n - 1) / n * apply(x, 2, var)
+  } else {
+    (n - 1) / n * cov(x)
+  }
 }
 
 #' Computes the pooled maximum likelihood estimator for the common covariance

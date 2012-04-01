@@ -76,6 +76,7 @@ simdiag.default <- function(x, y, q = NULL,
                             tol = sqrt(.Machine$double.eps)) {
   x <- as.matrix(x)
   y <- as.factor(y)
+  method <- match.arg(method)
 
   p <- ncol(x)
   # If a value for 'q' is provided, we check that it is between 1 and p,

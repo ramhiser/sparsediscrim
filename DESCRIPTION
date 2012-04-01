@@ -37,3 +37,4 @@ Collate:
     'helper-shrinkage.r'
     'helper-mean-shrinkage.r'
     'data-parametric-bootstrap.r'
+    'bhattacharyya.r'
