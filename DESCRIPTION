@@ -38,3 +38,4 @@ Collate:
     'helper-mean-shrinkage.r'
     'data-parametric-bootstrap.r'
     'bhattacharyya.r'
+    'helper-pct-change.r'
