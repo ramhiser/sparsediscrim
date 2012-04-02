@@ -9,9 +9,7 @@ generated from \code{K} classes.}
   simdiag(x, ...)
 
   \method{simdiag}{default} (x, y, q = NULL,
-    method = c("fast_svd", "rank", "bhattacharyya"),
-    simdiag_data = TRUE, calc_ranks = FALSE,
-    tol = sqrt(.Machine$double.eps))
+    fast_svd = TRUE, bhattacharyya = TRUE, tol = 1e-05)
 
   \method{simdiag}{formula} (formula, data, q = NULL,
     method = c("rank", "bhattacharyya"), tol = 1e-06)

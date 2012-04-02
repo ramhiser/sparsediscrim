@@ -70,23 +70,11 @@ simdiag <- function(x, ...)
 #' @method simdiag default
 #' @S3method simdiag default
 simdiag.default <- function(x, y, q = NULL,
-                            method = c("fast_svd", "rank", "bhattacharyya"),
-                            simdiag_data = TRUE,
-                            calc_ranks = FALSE,
-                            tol = sqrt(.Machine$double.eps)) {
+                            fast_svd = TRUE,
+                            bhattacharyya = TRUE,
+                            tol = 1e-5) {
   x <- as.matrix(x)
   y <- as.factor(y)
-  method <- match.arg(method)
-
-  p <- ncol(x)
-  # If a value for 'q' is provided, we check that it is between 1 and p,
-  # inclusively. If not, an error is thrown.
-  if (!is.null(q)) {
-    q <- as.integer(q)
-    if (q < 1 || q > p) {
-      stop("The value for 'q' must be between 1 and p, inclusively.")
-    }
-  }
 
   # For now, we only simultaneously diagonalize the covariance matrices for two
   # classes.
@@ -96,36 +84,77 @@ simdiag.default <- function(x, y, q = NULL,
     stop("Currently, we do not simultaneously diagonalize more than 2 classes.")
   }
 
-  if (method == "fast_svd") {
-    obj <- diagdiscrim:::simdiag_fastsvd(x = x, y = y, calc_ranks = calc_ranks,
-                                         q = q, tol = tol)
-  } else if (method == "rank") {
-    # Computes the MLEs of the covariance matrices for each class
-    # Because we assume rank(Sig1) >= rank(Sig2), we designate class 1 as the class
-    # with the larger sample size, which is our preliminary candidate value for 'q'.
-    larger_class <- which.max(table(y))
-
-    Sig1 <- cov_mle(x[which(y == larger_class), ])
-    Sig2 <- cov_mle(x[which(y != larger_class), ])
-
-    # In future work, we intend to allow for more than the K = 2 case. Hence, we
-    # have delegated the actual simultaneous diagonalization to the function,
-    # 'simdiag2'.
-    obj <- diagdiscrim:::simdiag2(A = Sig1, B = Sig2, q = q, tol = tol)
+  # If a value for 'q' is provided, we check that it is between 1 and p,
+  # inclusively. If not, an error is thrown.
+  if (!is.null(q)) {
+    q <- as.integer(q)
+    if (q < 1 || q > p) {
+      stop("The value for 'q' must be between 1 and p, inclusively.")
+    }
   }
 
+  # Computes the MLEs of the covariance matrices for each class
+  # Because we assume rank(Sig1) >= rank(Sig2), we designate class 1 as the class
+  # with the larger sample size, which is our preliminary candidate value for 'q'.
+  class_label1 <- levels(y)[which.max(table(y))]
+  class_label2 <- levels(y)[which.min(table(y))]
+
+  x1 <- x[which(y == class_label1), ]
+  x2 <- x[which(y == class_label2), ]
+
+  cov1 <- cov_mle(x1)
+  cov2 <- cov_mle(x2)
+
+  if (fast_svd) {
+    cov1_eigen <- fast_cov_eigen(x1)
+  } else {
+    cov1_eigen <- eigen(cov1, symmetric = TRUE)
+  }
+  
+  Lambda1 <- cov1_eigen$values
+  q1 <- sum(Lambda1 >= tol)
+  U1 <- cov1_eigen$vectors[, seq_len(q1)]
+  Lambda1_pseudo <- 1 / Lambda1[seq_len(q1)]
+  Lambda1_pseudo_sqrt <- Lambda1_pseudo^(1/2)
+  Q1 <- tcrossprod(diag(Lambda1_pseudo_sqrt), U1)
+
+  eigen_out <- eigen(Q1 %*% tcrossprod(cov2, Q1), symmetric = TRUE)
+  U2 <- eigen_out$vectors
+  Lambda2 <- eigen_out$values
+
+  # Creates a list named 'obj' that will contain all of the returned information.
+  obj <- list()
+
+  obj$Q <- crossprod(U2, Q1)
+
+  # We transform the matrix 'x' and store it in the returned named list as 'x'.
+  obj$x <- tcrossprod(x, obj$Q)
+
+  # By default, we select the value of 'q' to be the number of rows of Q. If the
+  # user has specified a different value for 'q', we use it unless it exceeds
+  # the number of rows of Q, in which case we use the default value.
+  obj$q <- nrow(obj$Q)
+  if (!is.null(q)) {
+    if (q <= nrow(obj$Q)) {
+      obj$q <- q
+    } else {
+      warning("The value for 'q' exceeds the number of rows of 'Q'. Using 'nrow(Q)' instead.")
+    }
+  } else {
+    if (bhattacharyya) {
+      bhatta_out <- dimred_bhatta_simdiag(obj$x, y)
+      obj$q <- bhatta_out$q
+      obj$bhattacharyya <- bhatta_out$bhattacharyya
+      obj$pct_change <- bhatta_out$pct_change
+    }
+  }
+
+  obj$Q <- obj$Q[seq_len(obj$q), ]
+  obj$x <- obj$x[, seq_len(obj$q)]               
 
   # Creates an object of type 'simdiag' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "simdiag"
-
-  # If the user has specified to simultaneously diagonalize the data, we
-  # transform the matrix 'x' and store it in the returned named list as 'x'.
-  # NOTE: This is not recommended if limited memory is an issue, or if the data
-  # set is extremely large.
-  if (simdiag_data) {
-    obj$x <- simdiag_transform(obj, x)
-  }
 	
 	obj
 }
