@@ -6,6 +6,95 @@
 ** TODO Discuss the Fast SVD trick and eigenvalue decomposition in the 'fast_cov_eigen' function.
 ** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function
+** TODO Create unit test for SimDiag with the following code:
+
+dev_mode()
+library('diagdiscrim')
+library('corpcor')
+library('datamicroarray')
+data('alon')
+x <- as.matrix(alon$x)
+y <- as.factor(alon$y)
+
+simdiag_out <- simdiag(x, y)
+str(simdiag_out)
+plot(simdiag_out$bhattacharyya)
+
+class_label1 <- levels(y)[which.max(table(y))]
+class_label2 <- levels(y)[which.min(table(y))]
+
+x1 <- x[which(y == class_label1), ]
+x2 <- x[which(y == class_label2), ]
+n1 <- nrow(x1)
+n2 <- nrow(x2)
+p <- ncol(x)
+cov1 <- cov_mle(x1)
+cov2 <- cov_mle(x2)
+
+cov1_eigen <- fast_cov_eigen(x1)
+
+tol <- 1e-6
+
+
+Lambda1 <- cov1_eigen$values
+q1 <- sum(Lambda1 >= tol)
+U1 <- cov1_eigen$vectors[, seq_len(q1)]
+# TODO: Error check that dim(U1) == c(p, q1) (i.e. check that U1 is a 'p x q1' matrix)
+Lambda1_pseudo <- 1 / Lambda1[seq_len(q1)]
+Lambda1_pseudo_sqrt <- Lambda1_pseudo^(1/2)
+
+# TODO: Change to crossprod()
+# TODO: Error check that dim(Q1) == c(q1, p) (i.e. check that Q1 is a 'q1 x p' matrix)
+Q1 <- diag(Lambda1_pseudo_sqrt) %*% t(U1)
+
+# TODO: Remove message
+message("Checking that cov1 is diagonalized...")
+diag_Sig1 <- Q1 %*% cov1 %*% t(Q1)
+# TODO: Add testthat error check
+norm(diag_Sig1 - diag(q1), "F") < tol
+
+eigen_out <- eigen(Q1 %*% tcrossprod(cov2, Q1), symmetric = TRUE)
+U2 <- eigen_out$vectors
+Lambda2 <- eigen_out$values
+
+Q <- crossprod(U2, Q1)
+
+# TODO: Remove message
+message("Checking that Q %*% Q' = Lambda1_pseudo...")
+# TODO: Replace with crossprod
+# TODO: Add testthat error check
+norm(Q %*% t(Q) - Lambda1_pseudo, "F")
+
+
+# TODO: Remove message
+message("Checking that cov1 is diagonalized by Q...")
+# TODO: Replace with crossprod
+# TODO: Add testthat error check
+norm(Q %*% cov1 %*% t(Q) - diag(q1), "F") < tol
+
+# TODO: Remove message
+message("Checking that cov2 is diagonalized by Q...")
+# TODO: Replace with crossprod
+# TODO: Add testthat error check
+norm(Q %*% cov2 %*% t(Q) - diag(Lambda2), "F") < tol
+
+# Selecting arbitrary values for gamma1 and gamma2
+gamma1 <- 10
+gamma2 <- 15
+
+# TODO: Remove message
+message("Checking that shrunken cov1 is diagonalized by Q...")
+# TODO: Replace with crossprod
+# TODO: Add testthat error check
+norm(Q %*% (cov1 + gamma1 * diag(p)) %*% t(Q) - (diag(q1) + gamma1 * Lambda1_pseudo), "F")
+
+
+# TODO: Remove message
+message("Checking that shrunken cov2 is diagonalized by Q...")
+# TODO: Replace with crossprod
+# TODO: Add testthat error check
+norm(Q %*% (cov2 + gamma2 * diag(p)) %*% t(Q) - diag(Lambda2 + gamma2 * Lambda1_pseudo), "F")
+
 ** TODO Store the 'optimal' value of alpha in SDLDA and SDQDA
 
 Make this available to the user. Also, include in this in print.sdlda
