@@ -37,31 +37,27 @@
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
-#' @param q the reduced dimension of the simultaneous diagonalizer.
-#' @param method the method to automatically select the value of \code{q}.
-#' Ignored if \code{q} is given.
-#' @param simdiag_data Should the data matrix, \code{x}, be transformed and
-#' returned? If TRUE (default), we return an updated matrix, \code{x}. For large
-#' data sets, this option can yield a very large \code{simdiag} object and should
-#' possibly be calculated manually.
-#' @param calc_ranks logical value. We consider the first class to be the class
-#' with sample covariance of larger rank. By default, if \code{calc_ranks} is
-#' \code{FALSE}, we consider the first class to be the one with a larger sample
-#' size.in terms of the larger. Otherwise, if \code{TRUE}, we calculate the ranks
-#' numerically as the number of nonzero eigenvalues and select the first class to
-#' have larger rank. Note that this option adds additional computations. If
-#' multicollinearity is suspected and if the sample sizes are approximately
-#' equal, we recommend that \code{calc_ranks} be set to \code{TRUE}. Only used if
-#' the \code{method} is selected to be \code{fast_svd}; this is the default
-#' option.
+#' @param q the reduced dimension of the simultaneous diagonalizer. If
+#' \code{NULL} (default), we choose \code{q} via the Bhattacharyya distance
+#' method, discussed below.
+#' @param fast_svd logical value that indicates if we should utilize the Fast SVD
+#' compute the eigenvalue decomposition of the sample covariance matrix having
+#' larger rank. By default, we use this Fast SVD method, which is computationally
+#' far superior for 'wide data' (large \code{p}, small {n}). 
+#' @param bhattacharyya logical value that indicates if we should select the
+#' reduced dimension, \code{q}, via our proposed Bhattacharyya method. If
+#' \code{TRUE}, we choose the value for \code{q} to be the dimension, where the
+#' Bhattacharyya distance between the two classes hardly changes for
+#' \code{q + 1}. Our technique is similar, in spirit, to the 'elbow criterion' in
+#' a Principal Components Analysis scree plot. The \code{bhattacharyya} argument
+#' is ignored if a value for \code{q} is specified.
 #' @param tol a value indicating the magnitude below which eigenvalues are
 #' considered 0.
 #' @return a list containing:
 #' \itemize{
 #'   \item \code{Q}: simultaneous diagonalizing matrix of size \eqn{p \times q}
 #'	 \item \code{q}: the reduced dimension of the data
-#'   \item \code{x}: the transformed data matrix, \code{x}. Returned, if
-#'   \code{simdiag_data} is TRUE. Otherwise, \code{x} is not returned.
+#'   \item \code{x}: the transformed data matrix, \code{x}.
 #' }
 simdiag <- function(x, ...)
   UseMethod("simdiag")
@@ -69,10 +65,8 @@ simdiag <- function(x, ...)
 #' @rdname simdiag
 #' @method simdiag default
 #' @S3method simdiag default
-simdiag.default <- function(x, y, q = NULL,
-                            fast_svd = TRUE,
-                            bhattacharyya = TRUE,
-                            tol = 1e-5) {
+simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
+                            fast_svd = TRUE, tol = 1e-5) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -167,8 +161,8 @@ simdiag.default <- function(x, y, q = NULL,
 #' @rdname simdiag
 #' @method simdiag formula
 #' @S3method simdiag formula
-simdiag.formula <- function(formula, data, q = NULL,
-                            method = c("rank", "bhattacharyya"), tol = 1e-6) {
+simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
+                            fast_svd = TRUE, tol = 1e-5) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -180,7 +174,8 @@ simdiag.formula <- function(formula, data, q = NULL,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  obj <- simdiag.default(x, y, q = q, method = method, tol = tol)
+  obj <- simdiag.default(x, y, q = q, bhattacharyya = bhattacharyya,
+                         fast_svd = fast_svd, tol = tol)
   obj$call <- match.call()
   obj$formula <- formula
   obj

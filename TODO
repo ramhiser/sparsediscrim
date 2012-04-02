@@ -2,7 +2,6 @@
 ** TODO Finish documentation for the 'boot_parametric' function
 ** TODO Add paper references to the 'bhatta_simdiag' function
 ** TODO Add paper references to the 'dimred_bhatta_simdiag' function
-** TODO Update documentation in 'simdiag.r
 ** TODO Discuss the Fast SVD trick and eigenvalue decomposition in the 'fast_cov_eigen' function.
 ** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function

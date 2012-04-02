@@ -9,10 +9,10 @@ generated from \code{K} classes.}
   simdiag(x, ...)
 
   \method{simdiag}{default} (x, y, q = NULL,
-    fast_svd = TRUE, bhattacharyya = TRUE, tol = 1e-05)
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05)
 
   \method{simdiag}{formula} (formula, data, q = NULL,
-    method = c("rank", "bhattacharyya"), tol = 1e-06)
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05)
 
   \method{print}{simdiag} (x, ...)
 }
@@ -25,30 +25,27 @@ generated from \code{K} classes.}
   observation}
 
   \item{q}{the reduced dimension of the simultaneous
-  diagonalizer.}
+  diagonalizer. If \code{NULL} (default), we choose
+  \code{q} via the Bhattacharyya distance method, discussed
+  below.}
 
-  \item{method}{the method to automatically select the
-  value of \code{q}. Ignored if \code{q} is given.}
+  \item{fast_svd}{logical value that indicates if we should
+  utilize the Fast SVD compute the eigenvalue decomposition
+  of the sample covariance matrix having larger rank. By
+  default, we use this Fast SVD method, which is
+  computationally far superior for 'wide data' (large
+  \code{p}, small {n}).}
 
-  \item{simdiag_data}{Should the data matrix, \code{x}, be
-  transformed and returned? If TRUE (default), we return an
-  updated matrix, \code{x}. For large data sets, this
-  option can yield a very large \code{simdiag} object and
-  should possibly be calculated manually.}
-
-  \item{calc_ranks}{logical value. We consider the first
-  class to be the class with sample covariance of larger
-  rank. By default, if \code{calc_ranks} is \code{FALSE},
-  we consider the first class to be the one with a larger
-  sample size.in terms of the larger. Otherwise, if
-  \code{TRUE}, we calculate the ranks numerically as the
-  number of nonzero eigenvalues and select the first class
-  to have larger rank. Note that this option adds
-  additional computations. If multicollinearity is
-  suspected and if the sample sizes are approximately
-  equal, we recommend that \code{calc_ranks} be set to
-  \code{TRUE}. Only used if the \code{method} is selected
-  to be \code{fast_svd}; this is the default option.}
+  \item{bhattacharyya}{logical value that indicates if we
+  should select the reduced dimension, \code{q}, via our
+  proposed Bhattacharyya method. If \code{TRUE}, we choose
+  the value for \code{q} to be the dimension, where the
+  Bhattacharyya distance between the two classes hardly
+  changes for \code{q + 1}. Our technique is similar, in
+  spirit, to the 'elbow criterion' in a Principal
+  Components Analysis scree plot. The \code{bhattacharyya}
+  argument is ignored if a value for \code{q} is
+  specified.}
 
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
@@ -69,9 +66,7 @@ generated from \code{K} classes.}
   a list containing: \itemize{ \item \code{Q}: simultaneous
   diagonalizing matrix of size \eqn{p \times q} \item
   \code{q}: the reduced dimension of the data \item
-  \code{x}: the transformed data matrix, \code{x}.
-  Returned, if \code{simdiag_data} is TRUE. Otherwise,
-  \code{x} is not returned. }
+  \code{x}: the transformed data matrix, \code{x}. }
 }
 \description{
   This function determines the matrix, \code{Q}, that
