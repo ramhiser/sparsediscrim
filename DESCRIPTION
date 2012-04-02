@@ -34,7 +34,6 @@ Collate:
     'helper-transform.r'
     'data-block-autocorrelation.r'
     'helper-cov-mle.r'
-    'helper-simdiag-fastsvd.r'
     'helper-shrinkage.r'
     'helper-mean-shrinkage.r'
     'data-parametric-bootstrap.r'
