@@ -87,7 +87,7 @@ boot_parametric <- function(n, x, y, gamma = 1,
   if (transformation == "Yeo-Johnson") {
     yj_out <- tapply(seq_along(y), y, function(i) {
       lambda <- powerTransform(x[i, ], family = "yjPower", lower = optim_lower,
-                               upper = optim_higher)$lambda
+                               upper = optim_upper)$lambda
       list(
            lambda = lambda,
            x = as.matrix(yjPower(x[i, ], lambda = lambda))
