@@ -43,6 +43,10 @@
 #' optimization function, \code{optim}, that is used to determine the
 #' pseudo-likelihood transformation estimators. Ignored if \code{transformation}
 #' is \code{none}.
+#' @param optim_method the specified numerical method to use for the
+#' transformation parameter estimation. By default, we use the \code{Nelder-Mead}
+#' option; for other values, see the \code{method} argument for the \code{optim}
+#' function.
 #' @param optim_upper the lower bound for the values considered in the numerical
 #' optimization function, \code{optim}, that is used to determine the
 #' pseudo-likelihood transformation estimators. Ignored if \code{transformation}
@@ -58,7 +62,8 @@
 #' TODO
 boot_parametric <- function(n, x, y, gamma = 1,
                             transformation = c("none", "Box-Cox", "Yeo-Johnson"),
-                            optim_lower = -3, optim_upper = 3) {
+                            optim_method = "Nelder-Mead", optim_lower = -5,
+                            optim_upper = 5) {
   require('mvtnorm')
   n <- as.integer(n)
   x <- as.matrix(x)
@@ -86,8 +91,8 @@ boot_parametric <- function(n, x, y, gamma = 1,
   # transformation.
   if (transformation == "Yeo-Johnson") {
     yj_out <- tapply(seq_along(y), y, function(i) {
-      lambda <- powerTransform(x[i, ], family = "yjPower", lower = optim_lower,
-                               upper = optim_upper)$lambda
+      lambda <- powerTransform(x[i, ], family = "yjPower", method = optim_method,
+                               lower = optim_lower, upper = optim_upper)$lambda
       list(
            lambda = lambda,
            x = as.matrix(yjPower(x[i, ], lambda = lambda))

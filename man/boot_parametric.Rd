@@ -5,7 +5,8 @@ bootsrapping technique with covariance matrix shrinkage.}
 \usage{
   boot_parametric(n, x, y, gamma = 1,
     transformation = c("none", "Box-Cox", "Yeo-Johnson"),
-    optim_lower = -3, optim_upper = 3)
+    optim_method = "Nelder-Mead", optim_lower = -5,
+    optim_upper = 5)
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class to
@@ -39,6 +40,12 @@ bootsrapping technique with covariance matrix shrinkage.}
   \code{optim}, that is used to determine the
   pseudo-likelihood transformation estimators. Ignored if
   \code{transformation} is \code{none}.}
+
+  \item{optim_method}{the specified numerical method to use
+  for the transformation parameter estimation. By default,
+  we use the \code{Nelder-Mead} option; for other values,
+  see the \code{method} argument for the \code{optim}
+  function.}
 
   \item{optim_upper}{the lower bound for the values
   considered in the numerical optimization function,
