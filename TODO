@@ -17,6 +17,16 @@ Do whatever is easier.
 
 ** TODO Discuss the Fast SVD trick and eigenvalue decomposition in the 'fast_cov_eigen' function.
 ** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
+
+The first part of the transformation is fairly simple: if transformation == "Box-Cox", then
+simply change 'family = "yjPower"' to 'family = "bcPower"' in the call to the 'powerTransform'
+function.
+
+The second part is easy as well. Simply derive the inverse forumulae for the Box-Cox transformation,
+which are algebraically simple, and then code them up as the 'bc_inverse' function.
+
+Third, remove the 'stop' function call in the 'boot_parametric' function.
+
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function
 ** TODO Create unit test for SimDiag with the following code:
 

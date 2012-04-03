@@ -4,7 +4,8 @@
 bootsrapping technique with covariance matrix shrinkage.}
 \usage{
   boot_parametric(n, x, y, gamma = 1,
-    transformation = c("none", "Yeo-Johnson"))
+    transformation = c("none", "Box-Cox", "Yeo-Johnson"),
+    optim_lower = -5, optim_upper = 5)
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class to
@@ -32,6 +33,18 @@ bootsrapping technique with covariance matrix shrinkage.}
   we apply the inverse transformation to the generated data
   to attempt to restore the shape and scale of the
   underlying data.}
+
+  \item{optim_lower}{the lower bound for the values
+  considered in the numerical optimization function,
+  \code{optim}, that is used to determine the
+  pseudo-likelihood transformation estimators. Ignored if
+  \code{transformation} is \code{none}.}
+
+  \item{optim_upper}{the lower bound for the values
+  considered in the numerical optimization function,
+  \code{optim}, that is used to determine the
+  pseudo-likelihood transformation estimators. Ignored if
+  \code{transformation} is \code{none}.}
 }
 \value{
   named list with elements: \itemize{ \item \code{x}:
@@ -51,6 +64,22 @@ bootsrapping technique with covariance matrix shrinkage.}
 \details{
   TODO: Define the covariance matrix, \eqn{\Sigma_k}. TODO:
   Define the shrinkage covariance matrix estimator.
+
+  We use the \code{car} package's implementation of the
+  Box-Cox and Yeo-Johnson transformation methods. To
+  compute the pseudo-likelihood estimators, we use the
+  \code{powerTransform} function in the \code{car} package.
+  In this function, the author uses the \code{optim}
+  function to numerically optimize the pseudo-likelihood
+  functions for the given data. By default, the lower and
+  upper bounds are \code{-Inf} and \code{Inf},
+  respectively, which can yield numerically unstable
+  estimates in the optimization search. Practically, we
+  wish to only consider values between -5 and 5, but we
+  allow the user to alter these values by way of the
+  \code{optim_lower} and \code{optim_upper} arguments,
+  respectively. See the \code{powerTransform} function in
+  the \code{car} package for more details.
 }
 \examples{
 TODO
