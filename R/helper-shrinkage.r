@@ -19,14 +19,14 @@
 #' @return list of length \code{K} with MDEB shrinkage matrices
 diag_shrinkage <- function(obj, shrinkage, pool = FALSE) {
   obj$est <- mapply(function(class_est, shrink) {
-    if (pool) {
-      class_est$var <- obj$var_pool + shrink
-    } else {
-      class_est$var <- class_est$var + shrink
-    }
+    class_est$var <- class_est$var + shrink
     class_est$shrinkage <- shrink
     class_est
   }, obj$est, shrinkage, SIMPLIFY = FALSE)
+
+  if (pool) {
+    obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
+  }
 
   obj
 }

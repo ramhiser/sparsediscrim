@@ -82,17 +82,13 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
     } else if (est_mean == "tong") {
       stats$xbar <- diagdiscrim:::tong_mean_shrinkage(x[i,])
     }
-    stats$var <- with(stats, (n - 1) * apply(x[i,], 2, var) / n)
+    stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
     stats
   })
 
   # Calculates the pooled variance across all classes.
   if (pool) {
     obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
-    obj$est <- lapply(obj$est, function(class_est) {
-      class_est$var <- obj$var_pool
-      class_est
-    })
   }
 
   # Add each element in 'prior' to the corresponding obj$est$prior

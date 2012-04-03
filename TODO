@@ -2,6 +2,19 @@
 ** TODO Finish documentation for the 'boot_parametric' function
 ** TODO Add paper references to the 'bhatta_simdiag' function
 ** TODO Add paper references to the 'dimred_bhatta_simdiag' function
+** TODO Create 'update' function for DLDA and DQDA that applies the MDEB shrinkage estimators.
+
+Rather than having to call functions with names I keep forgetting, it'd be much better if I
+could do one of the following: (Assume dlda_out <- dlda(x,y))
+
+1. Call the 'update' generic function with "shrink" argument
+dlda_out <- update(dlda_out, shrink = TRUE)
+
+2. The origin call to dlda has a "shrink" argument.
+dlda_out <- dlda(x,y, shrink = TRUE)
+
+Do whatever is easier.
+
 ** TODO Discuss the Fast SVD trick and eigenvalue decomposition in the 'fast_cov_eigen' function.
 ** TODO Add the 'Box-Cox' transformation to the 'boot_parametric' function
 ** TODO Add description and citation info to the 'tong_mean_shrinkage' function

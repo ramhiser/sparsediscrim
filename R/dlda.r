@@ -155,7 +155,7 @@ predict.dlda <- function(object, newdata) {
 
 	scores <- apply(newdata, 1, function(obs) {
 		sapply(object$est, function(class_est) {
-			with(class_est, sum((obs - xbar)^2 / var) + log(prior))
+			with(class_est, sum((obs - xbar)^2 / object$var_pool) + log(prior))
 		})
 	})
 	
