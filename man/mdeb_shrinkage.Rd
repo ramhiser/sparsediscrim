@@ -2,14 +2,18 @@
 \alias{mdeb_shrinkage}
 \title{Computes the MDEB shrinkage matrices for each of \code{K} classes.}
 \usage{
-  mdeb_shrinkage(obj, diag_mat = rep(1, p))
+  mdeb_shrinkage(obj, pool = FALSE)
 }
 \arguments{
   \item{obj}{object of type \code{dlda} or \code{dqda}}
 
-  \item{diag_mat}{vector of length \code{p} that is the
-  diagonal matrix towards which each class' covariance
-  matrix is shrunken}
+  \item{pool}{logical value. If \code{TRUE}, the population
+  covariance matrices are considered equal, and the MDEB
+  shrinkage is applied to the (diagonal) pooled sample
+  covariance matrix in the \code{var_pool} vector. If
+  \code{FALSE} (default), the MDEB shrinkage estimator is
+  computed for each class' (diagonal) covariance matrix in
+  its corresponding vector, \code{var}.}
 }
 \value{
   list of length \code{K} with MDEB shrinkage matrices

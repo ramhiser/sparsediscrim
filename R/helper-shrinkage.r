@@ -1,36 +1,3 @@
-#' Applies covariance matrix shrinkage to each class for the DLDA and DQDA
-#' classifiers.
-#'
-#' For each class covariance matrix (which is assumed to be diagonal),
-#' we shrink the diagonal matrix towards a diagonal matrix, \eqn{D_k}.
-#' We assume that each sample covariance matrix, \eqn{\widehat{\Sigma}_k}, is
-#' diagonal for \eqn{k = 1, \ldots, K}, where \eqn{K} is the number of classes.
-#' We wish to shrink each covariance matrix towards a diagonal matrix,
-#' \eqn{D_k}. The matrix \eqn{D_k} is given as the \eqn{k}th list element in the
-#' list, given as an argument, \code{shrinkage}.
-#'
-#' @export
-#' @param obj object of type \code{dlda} or \code{dqda}
-#' @param shrinkage list of length \eqn{K}. The \eqn{k}th list element is a
-#' diagonal matrix towards which the \eqn{k}th sample covariance matrix is
-#' shrunken.
-#' @param pool logical value. Add the shrinkage matrix to the diagonal pooled
-#' sample covariance matrix.
-#' @return list of length \code{K} with MDEB shrinkage matrices
-diag_shrinkage <- function(obj, shrinkage, pool = FALSE) {
-  obj$est <- mapply(function(class_est, shrink) {
-    class_est$var <- class_est$var + shrink
-    class_est$shrinkage <- shrink
-    class_est
-  }, obj$est, shrinkage, SIMPLIFY = FALSE)
-
-  if (pool) {
-    obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
-  }
-
-  obj
-}
-
 #' Computes the MDEB shrinkage matrices for each of \code{K} classes.
 #'
 #' For each class covariance matrix (which is assumed to be diagonal),
@@ -56,13 +23,24 @@ diag_shrinkage <- function(obj, shrinkage, pool = FALSE) {
 #' 
 #' @export
 #' @param obj object of type \code{dlda} or \code{dqda}
-#' @param diag_mat vector of length \code{p} that is the diagonal matrix towards
-#' which each class' covariance matrix is shrunken
+#' @param pool logical value. If \code{TRUE}, the population covariance matrices
+#' are considered equal, and the MDEB shrinkage is applied to the (diagonal)
+#' pooled sample covariance matrix in the \code{var_pool} vector. If \code{FALSE}
+#' (default), the MDEB shrinkage estimator is computed for each class' (diagonal)
+#' covariance matrix in its corresponding vector, \code{var}.
 #' @return list of length \code{K} with MDEB shrinkage matrices
-mdeb_shrinkage <- function(obj, diag_mat = rep(1, p)) {
-  p <- obj$p
-  lapply(obj$est, function(class_est) {
-    shrink_coeff <- sum(class_est$var) / min(p, class_est$n)
-    shrink_coeff * diag_mat
-  })
+mdeb_shrinkage <- function(obj, pool = FALSE) {
+  if (pool) {
+    obj$shrinkage <- with(obj, sum(var_pool) + min(p, N))
+    obj$var_pool <- with(obj, var_pool + shrinkage)
+    
+  } else {
+    obj$est <- lapply(obj$est, function(class_est) {
+      class_est$shrinkage <- with(class_est, sum(var) / min(obj$p, n))
+      class_est$var <- with(class_est, var + shrinkage)
+      class_est
+    })
+  }
+
+  obj
 }
