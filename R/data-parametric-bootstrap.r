@@ -39,14 +39,14 @@
 #' generating data from the MVN distribution. After the data has been generated,
 #' we apply the inverse transformation to the generated data to attempt to
 #' restore the shape and scale of the underlying data.
-#' @param optim_lower the lower bound for the values considered in the numerical
-#' optimization function, \code{optim}, that is used to determine the
-#' pseudo-likelihood transformation estimators. Ignored if \code{transformation}
-#' is \code{none}.
 #' @param optim_method the specified numerical method to use for the
 #' transformation parameter estimation. By default, we use the \code{Nelder-Mead}
 #' option; for other values, see the \code{method} argument for the \code{optim}
 #' function.
+#' @param optim_lower the lower bound for the values considered in the numerical
+#' optimization function, \code{optim}, that is used to determine the
+#' pseudo-likelihood transformation estimators. Ignored if \code{transformation}
+#' is \code{none}.
 #' @param optim_upper the lower bound for the values considered in the numerical
 #' optimization function, \code{optim}, that is used to determine the
 #' pseudo-likelihood transformation estimators. Ignored if \code{transformation}

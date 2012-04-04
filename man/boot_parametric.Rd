@@ -35,17 +35,17 @@ bootsrapping technique with covariance matrix shrinkage.}
   to attempt to restore the shape and scale of the
   underlying data.}
 
-  \item{optim_lower}{the lower bound for the values
-  considered in the numerical optimization function,
-  \code{optim}, that is used to determine the
-  pseudo-likelihood transformation estimators. Ignored if
-  \code{transformation} is \code{none}.}
-
   \item{optim_method}{the specified numerical method to use
   for the transformation parameter estimation. By default,
   we use the \code{Nelder-Mead} option; for other values,
   see the \code{method} argument for the \code{optim}
   function.}
+
+  \item{optim_lower}{the lower bound for the values
+  considered in the numerical optimization function,
+  \code{optim}, that is used to determine the
+  pseudo-likelihood transformation estimators. Ignored if
+  \code{transformation} is \code{none}.}
 
   \item{optim_upper}{the lower bound for the values
   considered in the numerical optimization function,
