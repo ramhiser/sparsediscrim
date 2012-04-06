@@ -17,7 +17,7 @@
 #' the pseudo-likelihood functions for the given data. By default, the lower
 #' and upper bounds are \code{-Inf} and \code{Inf}, respectively, which can
 #' yield numerically unstable estimates in the optimization search. Practically,
-#' we wish to only consider values between -3 and 3, but we allow the user to
+#' we wish to only consider values between -4 and 4, but we allow the user to
 #' alter these values by way of the \code{optim_lower} and \code{optim_upper}
 #' arguments, respectively. See the \code{powerTransform} function in the
 #' \code{car} package for more details.
@@ -62,8 +62,8 @@
 #' TODO
 boot_parametric <- function(n, x, y, gamma = 1,
                             transformation = c("none", "Box-Cox", "Yeo-Johnson"),
-                            optim_method = "Nelder-Mead", optim_lower = -5,
-                            optim_upper = 5) {
+                            optim_method = "Nelder-Mead", optim_lower = -3,
+                            optim_upper = 3) {
   require('mvtnorm')
   n <- as.integer(n)
   x <- as.matrix(x)
@@ -91,7 +91,7 @@ boot_parametric <- function(n, x, y, gamma = 1,
   # transformation.
   if (transformation == "Yeo-Johnson") {
     yj_out <- tapply(seq_along(y), y, function(i) {
-      lambda <- powerTransform(x[i, ], family = "yjPower", method = optim_method,
+      lambda <- powerTransform(x[i, ], family = "yjPower", method = "L-BFGS-B",
                                lower = optim_lower, upper = optim_upper)$lambda
       list(
            lambda = lambda,
