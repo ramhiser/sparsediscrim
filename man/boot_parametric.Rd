@@ -4,9 +4,7 @@
 bootsrapping technique with covariance matrix shrinkage.}
 \usage{
   boot_parametric(n, x, y, gamma = 1,
-    transformation = c("none", "Box-Cox", "Yeo-Johnson"),
-    optim_method = "Nelder-Mead", optim_lower = -3,
-    optim_upper = 3)
+    transformation = c("none", "Box-Cox", "Yeo-Johnson"))
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class to

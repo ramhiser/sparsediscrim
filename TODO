@@ -2,6 +2,8 @@
 ** TODO Finish documentation for the 'boot_parametric' function
 ** TODO Add paper references to the 'bhatta_simdiag' function
 ** TODO Add paper references to the 'dimred_bhatta_simdiag' function
+** TODO Finish documentation for the 'yj_marginal' function
+** TODO Finish documentation for the 'yj_inverse' function
 ** TODO Create 'update' function for DLDA and DQDA that applies the MDEB shrinkage estimators.
 
 Rather than having to call functions with names I keep forgetting, it'd be much better if I

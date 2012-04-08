@@ -61,9 +61,8 @@
 #' @examples
 #' TODO
 boot_parametric <- function(n, x, y, gamma = 1,
-                            transformation = c("none", "Box-Cox", "Yeo-Johnson"),
-                            optim_method = "Nelder-Mead", optim_lower = -3,
-                            optim_upper = 3) {
+                            transformation = c("none", "Box-Cox", "Yeo-Johnson")
+                            ) {
   require('mvtnorm')
   n <- as.integer(n)
   x <- as.matrix(x)
@@ -85,19 +84,10 @@ boot_parametric <- function(n, x, y, gamma = 1,
   }
 
   # If the Yeo-Johnson transformation is selected, we marginally estimate
-  # the power parameters 'lambda' for each class. We use the 'powerTransform'
-  # function from the 'car' package to estimate the values for 'lambda' and
-  # then use the 'yjPower' function from the same package to perform the
-  # transformation.
+  # the power parameters 'lambda' for each class.
   if (transformation == "Yeo-Johnson") {
-    yj_out <- tapply(seq_along(y), y, function(i) {
-      lambda <- powerTransform(x[i, ], family = "yjPower", method = "L-BFGS-B",
-                               lower = optim_lower, upper = optim_upper)$lambda
-      list(
-           lambda = lambda,
-           x = as.matrix(yjPower(x[i, ], lambda = lambda))
-      )
-    })
+    yj_out <- yj_marginal(x = x, y = y)
+    
     # The list 'yj_lambda' stores the transformation parameters for each class.
     yj_lambda <- lapply(yj_out, function(z) z$lambda)
 
@@ -140,6 +130,56 @@ boot_parametric <- function(n, x, y, gamma = 1,
 
   list(x = x, y = y)
 }
+
+#' Computes the marginal Yeo-Johnson (YJ) transformation to near-normality for
+#' each class.
+#'
+#' For each class designated in \code{y}, we compute the marginal YJ
+#' transformation to near-normality. That is, within a given class, we estimate
+#' the YJ transformation parameter for each feature vector.
+#'
+#' The marginal YJ transformation to near-normality is a generalization of the
+#' marginal Box-Cox (BC) transformation that allows for observations to be
+#' unbounded on the real line, whereas the marginal BC transformation requires
+#' that observations be nonnegative.
+#'
+#' We use the \code{powerTransform} function from the \code{car} package to
+#' estimate the values for \code{lambda} and then use the \code{yjPower} function
+#' from the same package to perform the transformation.
+#'
+#' TODO: Provide the formulas for Yeo-Johnson transformation (given in paper)
+#' TODO: Cite Yeo-Johnson paper
+#' TODO: Reference the 'car' package to find the fitted 'lambda'
+#' @export
+#' @param x matrix of observations with observations on the rows and features on
+#' the columns.
+#' @param y vector of class labels for the observations (rows) in \code{x}.
+#' @return named list, where each element is a list named by its class with the
+#' following elements:
+#' \itemize{
+#'   \item \code{lambda}: vector of fitted YJ transformation parameters for each
+#' feature vector.
+#'   \item \code{x}: matrix of the feature vectors transformed by the YJ
+#' transformation with the fitted parameter values.
+#' }
+#' 
+#' @examples
+#' yj_marginal(iris[, -5], iris$Species)
+yj_marginal <- function(x, y) {
+  require('car')
+  tapply(seq_along(y), y, function(i) {
+    x_i <- x[i, ]
+    n_i <- nrow(x_i)
+    lambda <- apply(x_i, 2, function(xi_col) {
+      estimateTransform(X = rep(1, n_i), Y = xi_col, family = "yjPower")$lambda
+    })
+    list(
+         lambda = lambda,
+         x = unname(as.matrix(yjPower(x_i, lambda = lambda)))
+        )
+  })
+}
+
 
 #' Computes the inverse of Yeo-Johnson transformed random variate(s)
 #'
