@@ -53,6 +53,16 @@
 #' is ignored if a value for \code{q} is specified.
 #' @param tol a value indicating the magnitude below which eigenvalues are
 #' considered 0.
+#' @param bhatta_prop threshold value for the maximum cumulative proportion of
+#' the Bhattacharyya distance. We use the threshold to determine the reduced
+#' dimension \code{q}. When paired with the SimDiag method, the Bhattacharyya
+#' approach to dimension reduction generalizes the scree plot idea that is often
+#' utilized with Principal Components Analysis. Ignored if \code{bhattacharyya}
+#' is \code{FALSE}.
+#' @param bhatta_shrink By default, (if \code{TRUE}), we shrink each covariance
+#' matrix with the MDEB covariance matrix estimator. Otherwise, no shrinkage is
+#' applied.  Ignored if \code{bhattacharyya} is \code{FALSE}.
+
 #' @return a list containing:
 #' \itemize{
 #'   \item \code{Q}: simultaneous diagonalizing matrix of size \eqn{p \times q}
@@ -66,7 +76,8 @@ simdiag <- function(x, ...)
 #' @method simdiag default
 #' @S3method simdiag default
 simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-5) {
+                            fast_svd = TRUE, tol = 1e-5, bhatta_prop = 0.9,
+                            bhatta_shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -136,7 +147,8 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
     }
   } else {
     if (bhattacharyya) {
-      bhatta_out <- dimred_bhatta_simdiag(obj$x, y)
+      bhatta_out <- dimred_bhatta_simdiag(obj$x, y, bhatta_prop = bhatta_prop,
+                                          shrink = bhatta_shrink)
       obj$q <- bhatta_out$q
       obj$bhattacharyya <- bhatta_out$bhattacharyya
       obj$pct_change <- bhatta_out$pct_change
@@ -162,7 +174,8 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
 #' @method simdiag formula
 #' @S3method simdiag formula
 simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-5) {
+                            fast_svd = TRUE, tol = 1e-5, bhatta_prop = 0.9,
+                            bhatta_shrink = FALSE) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -175,7 +188,9 @@ simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
   y <- model.response(mf)
 
   obj <- simdiag.default(x, y, q = q, bhattacharyya = bhattacharyya,
-                         fast_svd = fast_svd, tol = tol)
+                         fast_svd = fast_svd, tol = tol,
+                         bhatta_prop = bhatta_prop,
+                         bhatta_shrink = bhatta_shrink)
   obj$call <- match.call()
   obj$formula <- formula
   obj

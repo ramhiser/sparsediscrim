@@ -9,10 +9,12 @@ generated from \code{K} classes.}
   simdiag(x, ...)
 
   \method{simdiag}{default} (x, y, q = NULL,
-    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05)
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05,
+    bhatta_prop = 0.9, bhatta_shrink = FALSE)
 
   \method{simdiag}{formula} (formula, data, q = NULL,
-    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05)
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05,
+    bhatta_prop = 0.9, bhatta_shrink = FALSE)
 
   \method{print}{simdiag} (x, ...)
 }
@@ -49,6 +51,20 @@ generated from \code{K} classes.}
 
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
+
+  \item{bhatta_prop}{threshold value for the maximum
+  cumulative proportion of the Bhattacharyya distance. We
+  use the threshold to determine the reduced dimension
+  \code{q}. When paired with the SimDiag method, the
+  Bhattacharyya approach to dimension reduction generalizes
+  the scree plot idea that is often utilized with Principal
+  Components Analysis. Ignored if \code{bhattacharyya} is
+  \code{FALSE}.}
+
+  \item{bhatta_shrink}{By default, (if \code{TRUE}), we
+  shrink each covariance matrix with the MDEB covariance
+  matrix estimator. Otherwise, no shrinkage is applied.
+  Ignored if \code{bhattacharyya} is \code{FALSE}.}
 
   \item{formula}{formula of the form \code{groups ~ x1 + x2
   + ...} That is, the response is the grouping factor and
