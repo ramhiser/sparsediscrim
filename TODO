@@ -1,4 +1,15 @@
 * Package
+** TODO Implement the Jade method for SimDiag
+*** Determine if the method is already implemented in another package
+
+I am fairly certain I have seen it in another package.
+
+*** If the method is not available, implement it.
+*** Add the Jade implementation to the 'simdiag_algorithmic' function
+*** TODO Rename the file 'joint-diagonalization.r' as 'jointdiag.r'
+** TODO Rewrite the R implementation of the Asfari function
+** TODO Finish documentation for the 'simdiag_algorithmic' function
+** TODO Add 3 example implementations of the 'simdiag_algorithmic' function with the Iris data set
 ** TODO Finish documentation for the 'boot_parametric' function
 ** TODO Add paper references to the 'bhatta_simdiag' function
 ** TODO Add paper references to the 'dimred_bhatta_simdiag' function

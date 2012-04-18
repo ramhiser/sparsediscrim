@@ -24,6 +24,24 @@ cov_mle <- function(x, diag = FALSE) {
   }
 }
 
+#' Computes the covariance matrix maximum likelihood estimators for each class
+#' and returns a list.
+#'
+#' For a sample matrix, \code{x}, we compute the sample covariance matrix for
+#' each class given in the vector, \code{y}.
+#' @export
+#' @param x data matrix with \code{n} observations and \code{p} feature vectors
+#' @param y class labels for observations (rows) in \code{x}
+#' @return list of the sample covariance matrices of size \eqn{p \times p} for
+#' each class given in \code{y}.
+cov_list <- function(x, y) {
+  x <- as.matrix(x)
+  y <- as.factor(y)
+  tapply(seq_along(y), y, function(i) {
+    cov_mle(x[i, ])
+  })
+}
+
 #' Computes the pooled maximum likelihood estimator for the common covariance
 #' matrix from \eqn{K} multivariate normal populations.
 #'

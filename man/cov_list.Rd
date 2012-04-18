@@ -1,0 +1,24 @@
+\name{cov_list}
+\alias{cov_list}
+\title{Computes the covariance matrix maximum likelihood estimators for each class
+and returns a list.}
+\usage{
+  cov_list(x, y)
+}
+\arguments{
+  \item{x}{data matrix with \code{n} observations and
+  \code{p} feature vectors}
+
+  \item{y}{class labels for observations (rows) in
+  \code{x}}
+}
+\value{
+  list of the sample covariance matrices of size \eqn{p
+  \times p} for each class given in \code{y}.
+}
+\description{
+  For a sample matrix, \code{x}, we compute the sample
+  covariance matrix for each class given in the vector,
+  \code{y}.
+}
+

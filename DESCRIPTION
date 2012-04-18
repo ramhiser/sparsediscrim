@@ -21,7 +21,6 @@ Collate:
     'asfari.r'
     'dlda.r'
     'dqda.r'
-    'joint-diagonalization.r'
     'rsdda.r'
     'sdlda.r'
     'sdqda.r'
@@ -40,3 +39,4 @@ Collate:
     'bhattacharyya.r'
     'helper-pct-change.r'
     'helper-fast-cov-eigen.r'
+    'simdiag-algorithmic.r'
