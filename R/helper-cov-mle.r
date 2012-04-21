@@ -32,13 +32,25 @@ cov_mle <- function(x, diag = FALSE) {
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param y class labels for observations (rows) in \code{x}
+#' @param shrink logical. If \code{TRUE}, each covariance matrix is shrunken
+#' toward the a scaled identity matrix to obtain a ridge-like covariance matrix
+#' estimator. We use the MDEB estimator to determine the shrinkage term. By
+#' default, the argument is \code{FALSE}, and no shrinkage is applied.
 #' @return list of the sample covariance matrices of size \eqn{p \times p} for
 #' each class given in \code{y}.
-cov_list <- function(x, y) {
+cov_list <- function(x, y, shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
+  p <- ncol(x)
   tapply(seq_along(y), y, function(i) {
-    cov_mle(x[i, ])
+    cov_est <- cov_mle(x[i, ])
+    if (shrink) {
+      n <- length(i)
+      trace_cov <- sum(diag(cov_est))
+      shrinkage <- trace_cov / min(n, p)
+      cov_est <- cov_est + shrinkage * diag(p)
+    }
+    cov_est
   })
 }
 
