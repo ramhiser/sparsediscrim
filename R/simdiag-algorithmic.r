@@ -25,6 +25,10 @@
 #' @param y vector of class labels for each training observation
 #' @param method character. The SimDiag algorithm to employ. See Details for more
 #' information.
+#' @param shrink logical. If \code{TRUE}, each covariance matrix is shrunken
+#' toward the a scaled identity matrix to obtain a ridge-like covariance matrix
+#' estimator. We use the MDEB estimator to determine the shrinkage term. By
+#' default, the argument is \code{FALSE}, and no shrinkage is applied.
 #' @param tol a tolerance value below which covergence is reached for the
 #' specified algorithm.
 #' @return a list containing:
@@ -75,7 +79,7 @@
 #' mean(sapply(ffdiag_cov, frob_diag))
 simdiag_algorithmic <- function(x, y,
                                 method = c("asfari", "jade", "jedi", "qdiag",
-                                  "ffdiag", "jadiag", "uwedge"),
+                                  "ffdiag", "jadiag", "uwedge"), shrink = FALSE,
                                 tol = .Machine$double.eps, max_iter = 250) {
   require('jointDiag')
   x <- as.matrix(x)
@@ -83,7 +87,7 @@ simdiag_algorithmic <- function(x, y,
   method <- match.arg(method)
 
   # Constructs a list of each class's sample covariance matrix (the MLEs).
-  l_covs <- cov_list(x, y)
+  l_covs <- cov_list(x, y, shrink = shrink)
 
 	if(method == "asfari") {
     # The current Asfari implementation requires that the sample covariance

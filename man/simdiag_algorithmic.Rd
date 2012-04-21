@@ -5,7 +5,8 @@ generated from \code{K} classes with one of several algorithmic approaches.}
 \usage{
   simdiag_algorithmic(x, y,
     method = c("asfari", "jade", "jedi", "qdiag", "ffdiag", "jadiag", "uwedge"),
-    tol = .Machine$double.eps, max_iter = 250)
+    shrink = FALSE, tol = .Machine$double.eps,
+    max_iter = 250)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -17,6 +18,13 @@ generated from \code{K} classes with one of several algorithmic approaches.}
 
   \item{method}{character. The SimDiag algorithm to employ.
   See Details for more information.}
+
+  \item{shrink}{logical. If \code{TRUE}, each covariance
+  matrix is shrunken toward the a scaled identity matrix to
+  obtain a ridge-like covariance matrix estimator. We use
+  the MDEB estimator to determine the shrinkage term. By
+  default, the argument is \code{FALSE}, and no shrinkage
+  is applied.}
 
   \item{tol}{a tolerance value below which covergence is
   reached for the specified algorithm.}
