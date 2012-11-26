@@ -80,6 +80,7 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
                             bhatta_shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
+  p <- ncol(x)
 
   # For now, we only simultaneously diagonalize the covariance matrices for two
   # classes.
@@ -156,8 +157,10 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
   }
 
   obj$Q <- obj$Q[seq_len(obj$q), ]
-  obj$x <- obj$x[, seq_len(obj$q)]               
-
+  obj$x <- obj$x[, seq_len(obj$q)]
+  obj$Lambda1 <- Lambda1
+  obj$Lambda2 <- Lambda2
+  
   # Creates an object of type 'simdiag' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "simdiag"
@@ -174,7 +177,7 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
 #' @method simdiag formula
 #' @S3method simdiag formula
 simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-5, bhatta_prop = 0.9,
+                            fast_svd = TRUE, tol = 1e-6, bhatta_prop = 0.9,
                             bhatta_shrink = FALSE) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
