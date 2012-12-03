@@ -176,9 +176,7 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
 #' @rdname simdiag
 #' @method simdiag formula
 #' @S3method simdiag formula
-simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-6, bhatta_prop = 0.9,
-                            bhatta_shrink = FALSE) {
+simdiag.formula <- function(formula, data, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -190,10 +188,7 @@ simdiag.formula <- function(formula, data, q = NULL, bhattacharyya = TRUE,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  obj <- simdiag.default(x, y, q = q, bhattacharyya = bhattacharyya,
-                         fast_svd = fast_svd, tol = tol,
-                         bhatta_prop = bhatta_prop,
-                         bhatta_shrink = bhatta_shrink)
+  obj <- simdiag.default(x, y, ...)
   obj$call <- match.call()
   obj$formula <- formula
   obj
