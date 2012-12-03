@@ -18,7 +18,6 @@ License: MIT
 URL: https://github.com/ramey/diagdiscrim,
     http://ramhiser.com
 Collate:
-    'asfari.r'
     'dlda.r'
     'dqda.r'
     'rsdda.r'
@@ -39,4 +38,3 @@ Collate:
     'bhattacharyya.r'
     'helper-pct-change.r'
     'helper-fast-cov-eigen.r'
-    'simdiag-algorithmic.r'

@@ -13,7 +13,7 @@ generated from \code{K} classes.}
     bhatta_prop = 0.9, bhatta_shrink = FALSE)
 
   \method{simdiag}{formula} (formula, data, q = NULL,
-    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-05,
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-06,
     bhatta_prop = 0.9, bhatta_shrink = FALSE)
 
   \method{print}{simdiag} (x, ...)
