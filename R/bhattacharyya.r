@@ -21,8 +21,13 @@
 #' calculate the Bhattacharyya distance. This approach is useful in determining
 #' an 'optimal' value for \code{q} over a range of candidate values.
 #'
-#' TODO: Provide a reference for Fukunaga's text for Bhattacharyya distance.
-#' TODO: Provide a reference for Srivastava and Kubokawa (2007).
+#' @references Fukunaga, Keinosuke (1990). Introduction to Statistical Pattern
+#' Recognition. Academic Press Inc., 2nd edition, 1990.
+#' \url{http://amzn.to/Ke9m6l}.
+#'
+#' @references Srivastava, M. S. and Kubokawa, T. (2007). Comparison of
+#' discrimination methods for high dimensional data. J. Japan Statist. Soc.,
+#' 37(1), 123–134.
 #'
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
@@ -107,8 +112,13 @@ bhatta_simdiag <- function(x, y, q = NULL, shrink = TRUE) {
 #' towards an identity matrix that is scaled by the average of the nonzero
 #' eigenvalues.
 #'
-#' TODO: Provide a reference for Fukunaga's text for Bhattacharyya distance.
-#' TODO: Provide a reference for Srivastava and Kubokawa (2007).
+#' @references Fukunaga, Keinosuke (1990). Introduction to Statistical Pattern
+#' Recognition. Academic Press Inc., 2nd edition, 1990.
+#' \url{http://amzn.to/Ke9m6l}.
+#'
+#' @references Srivastava, M. S. and Kubokawa, T. (2007). Comparison of
+#' discrimination methods for high dimensional data. J. Japan Statist. Soc.,
+#' 37(1), 123–134.
 #'
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
