@@ -4,7 +4,7 @@
 (MLE) of the covariance matrix for the data matrix \code{x} using the Fast
 Singular Value Decomposition (SVD).}
 \usage{
-  fast_cov_eigen(x, tol = 1e-05)
+  fast_cov_eigen(x, tol = 1e-06)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and

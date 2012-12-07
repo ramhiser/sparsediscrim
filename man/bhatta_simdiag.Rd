@@ -3,8 +3,8 @@
 \title{Dimension reduction of two simultaneously diagonalized populations based on
 the Bhattacharyya distance.}
 \usage{
-  bhatta_simdiag(x, y, bhatta_prop = 0.9, shrink = FALSE,
-    tol = 1e-06)
+  bhatta_simdiag(x, y, pct = 0.9, pool_cov = FALSE,
+    shrink = FALSE, tol = 1e-06)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and
@@ -13,12 +13,12 @@ the Bhattacharyya distance.}
   \item{y}{class labels for observations (rows) in
   \code{x}}
 
-  \item{bhatta_prop}{threshold value for the maximum
-  cumulative proportion of the Bhattacharyya distance. We
-  use the threshold to determine the reduced dimension
-  \code{q}. When paired with the SimDiag method, the
-  Bhattacharyya approach to dimension reduction generalizes
-  the scree plot idea that is often utilized with Principal
+  \item{pct}{threshold value for the maximum cumulative
+  proportion of the Bhattacharyya distance. We use the
+  threshold to determine the reduced dimension \code{q}.
+  When paired with the SimDiag method, the Bhattacharyya
+  approach to dimension reduction generalizes the scree
+  plot idea that is often utilized with Principal
   Components Analysis.}
 
   \item{shrink}{If \code{TRUE}, we shrink each covariance

@@ -2,23 +2,36 @@
 \alias{simdiag_cov}
 \title{Simultaneously diagonalizes two real symmetric matrices.}
 \usage{
-  simdiag_cov(A, B, q = NULL, tol = 1e-06)
+  simdiag_cov(x, y, fast_svd = FALSE, q = NULL,
+    reduced_rank = TRUE, shrink = FALSE, tol = 1e-06)
 }
 \arguments{
-  \item{A}{p x p real symmetric matrix}
+  \item{x}{matrix containing the training data. The rows
+  are the sample observations, and the columns are the
+  features.}
 
-  \item{B}{p x p real symmetric matrix}
+  \item{y}{vector of class labels for each training
+  observation}
+
+  \item{fast_svd}{TODO}
 
   \item{q}{the reduced dimension of the simultaneous
   diagonalizer.}
+
+  \item{reduced_rank}{Should we select \code{q} based on
+  the rank of the sample covariance matrices? Ignored if
+  \code{q} is given. See details.}
+
+  \item{shrink}{TODO}
 
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
 }
 \value{
   a list containing: the matrix Q that is the \eqn{p \times
-  q} simultaneous diagonalizing matrix the selected value
-  of \code{q}
+  q} simultaneous diagonalizing matrix the matrix x
+  consisting of the simultaneously diagonalized data the
+  selected value of \code{q}
 }
 \description{
   This function simultaneously diagonalizes two real
@@ -45,5 +58,8 @@
   matrix and \eqn{D} is the diagonal matrix with diagonal
   entries as the characteristic roots (generalized
   eigenvalues) of det(B - \\lambda A) = 0.
+
+  TODO: Discuss briefly that we set 'q' to the number of
+  nonzero eigenvalues if the Fast SVD is used.
 }
 

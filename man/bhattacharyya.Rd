@@ -3,7 +3,7 @@
 \title{Estimates the Bhattacharyya Distance between Two Multivariate Normal
 Populations}
 \usage{
-  bhattacharyya(x, y, diag = FALSE)
+  bhattacharyya(x, y, diag = FALSE, pool_cov = FALSE)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and

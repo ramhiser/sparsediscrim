@@ -19,7 +19,7 @@
 #' calculation
 #' @return the estimated Bhattacharyya distance between the two classes given in
 #' \code{y}.
-bhattacharyya <- function(x, y, diag = FALSE) {
+bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -41,18 +41,26 @@ bhattacharyya <- function(x, y, diag = FALSE) {
   # to be diagonal. This expedites substantially the Bhattacharyya-distance
   # calculation.
   if (diag) {
-    cov1 <- cov_mle(x1, diag = TRUE)
-    cov2 <- cov_mle(x2, diag = TRUE)
-    cov_avg <- (cov1 + cov2) / 2
-
+    if (pool_cov) {
+      cov1 <- cov2 <- cov_avg <- diag(cov_pool(x = x, y = y))
+    } else {
+      cov1 <- cov_mle(x1, diag = TRUE)
+      cov2 <- cov_mle(x2, diag = TRUE)
+      cov_avg <- (cov1 + cov2) / 2
+    }
+    
     # Calculates the determinants of the diagonal covariance matrices.
     det_1 <- prod(cov1)
     det_2 <- prod(cov2)
     det_avg <- prod(cov_avg)
   } else {
-    cov1 <- cov_mle(x1, diag = FALSE)
-    cov2 <- cov_mle(x2, diag = FALSE)
-    cov_avg <- (cov1 + cov2) / 2
+    if (pool_cov) {
+      cov1 <- cov2 <- cov_avg <- cov_pool(x = x, y = y)
+    } else {
+      cov1 <- cov_mle(x1, diag = FALSE)
+      cov2 <- cov_mle(x2, diag = FALSE)
+      cov_avg <- (cov1 + cov2) / 2
+    }
 
     # Calculates the determinants of the sample covariance matrices.
     det_1 <- det(cov1)
@@ -62,7 +70,9 @@ bhattacharyya <- function(x, y, diag = FALSE) {
 
   # Calculates the estimated Bhattacharyya distance between the two classes.
   distance <- (1/8) * sum(diff_xbar^2 / cov_avg)
-  distance <- distance + log(det_avg / sqrt(det_1 * det_2)) / 2
+  if (!pool_cov) {
+    distance <- distance + log(det_avg / sqrt(det_1 * det_2)) / 2
+  }
   distance
 }
 
@@ -101,7 +111,7 @@ bhattacharyya <- function(x, y, diag = FALSE) {
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param y class labels for observations (rows) in \code{x}
-#' @param bhatta_prop threshold value for the maximum cumulative proportion of
+#' @param pct threshold value for the maximum cumulative proportion of
 #' the Bhattacharyya distance. We use the threshold to determine the reduced
 #' dimension \code{q}. When paired with the SimDiag method, the Bhattacharyya
 #' approach to dimension reduction generalizes the scree plot idea that is often
@@ -120,23 +130,20 @@ bhattacharyya <- function(x, y, diag = FALSE) {
 #'   \item \code{cumprop}: the cumulative proportion of the sorted Bhattacharyya
 #'   distances for each column given in \code{x}.
 #' }
-bhatta_simdiag <- function(x, y, bhatta_prop = 0.9, shrink = FALSE, tol = 1e-6) {
-  train_cov <- cov_list(x = x, y = y, shrink = shrink)
-  simdiag_out <- simdiag2(A = train_cov[[1]], B = train_cov[[2]])
+bhatta_simdiag <- function(x, y, pct = 0.9, pool_cov = FALSE, shrink = FALSE, tol = 1e-6) {
+  simdiag_out <- simdiag_cov(x = x, y = y)
 
-  x <- simdiag_transform(obj = simdiag_out, x = x)
-
-  bhatta_dist <- sapply(seq_len(ncol(x)), function(j) {
-    bhatta(x[, j], y)
+  # TODO: Implement shrinkage
+  dist <- sapply(seq_len(ncol(simdiag_out$x)), function(j) {
+    bhattacharyya(simdiag_out$x[, j], y, diag = TRUE, pool_cov = pool_cov)
   })
-  sorted_bhatta_dist <- sort(bhatta_dist, decreasing = TRUE)
-  bhatta_cumprop <- cumsum(sorted_bhatta_dist) / sum(sorted_bhatta_dist)
+  sorted_dist <- sort(dist, decreasing = TRUE)
+  cumprop <- cumsum(sorted_dist) / sum(sorted_dist)
 
-  q <- sum(bhatta_cumprop <= bhatta_prop)
-  bhatta_dist_rank <- order(bhatta_dist, decreasing = TRUE)[seq_len(q)]
+  q <- sum(cumprop <= pct)
+  dist_rank <- order(dist, decreasing = TRUE)[seq_len(q)]
 
-  list(q = q, dist = bhatta_dist, dist_rank = bhatta_dist_rank,
-       cumprop = bhatta_cumprop)
+  list(q = q, dist = dist, dist_rank = dist_rank, cumprop = cumprop)
 }
 
 

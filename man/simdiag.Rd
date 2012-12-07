@@ -1,4 +1,6 @@
 \name{simdiag}
+\alias{plot.simdiag}
+\alias{predict.simdiag}
 \alias{print.simdiag}
 \alias{simdiag}
 \alias{simdiag.default}
@@ -8,13 +10,19 @@ generated from \code{K} classes.}
 \usage{
   simdiag(x, ...)
 
-  \method{simdiag}{default} (x, y, q = NULL,
-    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-06,
-    bhatta_prop = 0.9, bhatta_shrink = FALSE)
+  \method{simdiag}{default} (x, y,
+    classifier = c("linear", "quadratic"), q = NULL,
+    bhattacharyya = TRUE, fast_svd = TRUE,
+    pool_cov = FALSE, shrink = FALSE, pct = 0.9,
+    tol = 1e-06, ...)
 
   \method{simdiag}{formula} (formula, data, ...)
 
+  \method{predict}{simdiag} (object, newdata)
+
   \method{print}{simdiag} (x, ...)
+
+  \method{plot}{simdiag} (x, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -50,19 +58,22 @@ generated from \code{K} classes.}
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
 
-  \item{bhatta_prop}{threshold value for the maximum
-  cumulative proportion of the Bhattacharyya distance. We
-  use the threshold to determine the reduced dimension
-  \code{q}. When paired with the SimDiag method, the
-  Bhattacharyya approach to dimension reduction generalizes
-  the scree plot idea that is often utilized with Principal
+  \item{pct}{threshold value for the maximum cumulative
+  proportion of the Bhattacharyya distance. We use the
+  threshold to determine the reduced dimension \code{q}.
+  When paired with the SimDiag method, the Bhattacharyya
+  approach to dimension reduction generalizes the scree
+  plot idea that is often utilized with Principal
   Components Analysis. Ignored if \code{bhattacharyya} is
   \code{FALSE}.}
 
-  \item{bhatta_shrink}{By default, (if \code{TRUE}), we
-  shrink each covariance matrix with the MDEB covariance
-  matrix estimator. Otherwise, no shrinkage is applied.
-  Ignored if \code{bhattacharyya} is \code{FALSE}.}
+  \item{shrink}{By default, (if \code{TRUE}), we shrink
+  each covariance matrix with the MDEB covariance matrix
+  estimator. Otherwise, no shrinkage is applied.  Ignored
+  if \code{bhattacharyya} is \code{FALSE}.}
+
+  \item{...}{Additional arguments passed to the classifier.
+  See details.}
 
   \item{formula}{formula of the form \code{groups ~ x1 + x2
   + ...} That is, the response is the grouping factor and
@@ -72,7 +83,16 @@ generated from \code{K} classes.}
   \item{data}{data frame from which variables specified in
   \code{formula} are preferentially to be taken.}
 
+  \item{object}{object of class \code{simdiag}}
+
+  \item{newdata}{matrix of observations to predict. Each
+  row corresponds to a new observation.}
+
   \item{x}{object to print}
+
+  \item{...}{unused}
+
+  \item{x}{object of class \code{simdiag} to plot}
 
   \item{...}{unused}
 }
@@ -81,6 +101,8 @@ generated from \code{K} classes.}
   diagonalizing matrix of size \eqn{p \times q} \item
   \code{q}: the reduced dimension of the data \item
   \code{x}: the transformed data matrix, \code{x}. }
+
+  list predicted class memberships of each row in newdata
 }
 \description{
   This function determines the matrix, \code{Q}, that
@@ -90,8 +112,15 @@ generated from \code{K} classes.}
   reduction method that simultaneously diagonalizes them to
   a lower dimension, \code{q}.
 
+  First, we apply the simultaneous diagonalizer constructed
+  from a training data set. Then, we apply the diagonal
+  linear or quadratic classifier based on the user
+  specification to the \code{\link{simdiag}} function.
+
   Summarizes the simultaneous diagonalization information
   for a set of classes.
+
+  The object must be an object of class \code{simdiag}.
 }
 \details{
   The user can manually provides the dimension, \code{q}.

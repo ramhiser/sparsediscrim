@@ -70,9 +70,9 @@ cov_pool <- function(x, y) {
   y <- as.factor(y)
   n <- length(y)
   scatter_matrices <- tapply(seq_len(n), y, function(i) {
-    (length(i) - 1) * cov(x[i, ])
+    (length(i) - 1) * cov(as.matrix(x[i, ]))
   })
-  Reduce("+", scatter_matrices) / n
+  as.matrix(Reduce("+", scatter_matrices) / n)
 }
 
 #' Computes a shrunken version of the maximum likelihood estimator for the

@@ -21,7 +21,7 @@
 #' @return a list containing:
 #'   the eigenvectors of the covariance matrix MLE
 #'   the eigenvalues of the covariance matrix MLE
-fast_cov_eigen <- function(x, tol = 1e-5) {
+fast_cov_eigen <- function(x, tol = 1e-6) {
   require('corpcor')
   # First, we center 'x'
   x <- scale(x, center = TRUE, scale = FALSE)

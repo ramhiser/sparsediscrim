@@ -53,16 +53,16 @@
 #' is ignored if a value for \code{q} is specified.
 #' @param tol a value indicating the magnitude below which eigenvalues are
 #' considered 0.
-#' @param bhatta_prop threshold value for the maximum cumulative proportion of
+#' @param pct threshold value for the maximum cumulative proportion of
 #' the Bhattacharyya distance. We use the threshold to determine the reduced
 #' dimension \code{q}. When paired with the SimDiag method, the Bhattacharyya
 #' approach to dimension reduction generalizes the scree plot idea that is often
 #' utilized with Principal Components Analysis. Ignored if \code{bhattacharyya}
 #' is \code{FALSE}.
-#' @param bhatta_shrink By default, (if \code{TRUE}), we shrink each covariance
+#' @param shrink By default, (if \code{TRUE}), we shrink each covariance
 #' matrix with the MDEB covariance matrix estimator. Otherwise, no shrinkage is
 #' applied.  Ignored if \code{bhattacharyya} is \code{FALSE}.
-
+#' @param ... Additional arguments passed to the classifier. See details.
 #' @return a list containing:
 #' \itemize{
 #'   \item \code{Q}: simultaneous diagonalizing matrix of size \eqn{p \times q}
@@ -75,92 +75,55 @@ simdiag <- function(x, ...)
 #' @rdname simdiag
 #' @method simdiag default
 #' @S3method simdiag default
-simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-6, bhatta_prop = 0.9,
-                            bhatta_shrink = FALSE) {
+simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
+                            q = NULL, bhattacharyya = TRUE, fast_svd = TRUE,
+                            pool_cov = FALSE, shrink = FALSE, pct = 0.9,
+                            tol = 1e-6, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   p <- ncol(x)
 
-  # For now, we only simultaneously diagonalize the covariance matrices for two
-  # classes.
-  if (nlevels(y) < 2) {
-    stop("Only 1 class is given. Use PCA instead.")
-  } else if (nlevels(y) > 2) {
-    stop("Currently, we do not simultaneously diagonalize more than 2 classes.")
-  }
+  classifier <- match.arg(classifier)
 
-  # If a value for 'q' is provided, we check that it is between 1 and p,
+  simdiag_cov_out <- simdiag_cov(x = x, y = y, q = q, fast_svd = fast_svd,
+                                 shrink = shrink, tol = tol)
+
+  # Creates an object that contains the results returned.
+  obj <- list()
+  
+  # Selects the value for 'q' in one of three ways:
+  # 1. If a value for 'q' is provided, we check that it is between 1 and p,
   # inclusively. If not, an error is thrown.
+  # 2. Use the Bhattacharyya distance.
+  # 3. Use the rank of the sample covariance matrices
   if (!is.null(q)) {
     q <- as.integer(q)
     if (q < 1 || q > p) {
       stop("The value for 'q' must be between 1 and p, inclusively.")
     }
-  }
-
-  # Computes the MLEs of the covariance matrices for each class
-  # Because we assume rank(Sig1) >= rank(Sig2), we designate class 1 as the class
-  # with the larger sample size, which is our preliminary candidate value for 'q'.
-  class_label1 <- levels(y)[which.max(table(y))]
-  class_label2 <- levels(y)[which.min(table(y))]
-
-  x1 <- x[which(y == class_label1), ]
-  x2 <- x[which(y == class_label2), ]
-
-  cov1 <- cov_mle(x1)
-  cov2 <- cov_mle(x2)
-
-  if (fast_svd) {
-    cov1_eigen <- fast_cov_eigen(x1)
+    obj$q <- q
+  } else if (bhattacharyya) {
+    obj$bhattacharyya <- bhatta_simdiag(x = x, y = y, pct = pct,
+                                        pool_cov = pool_cov, shrink = shrink,
+                                        tol = tol)
+    obj$q <- obj$bhattacharyya$q
   } else {
-    cov1_eigen <- eigen(cov1, symmetric = TRUE)
+    obj$q <- simdiag_cov_out$q
   }
-  
-  Lambda1 <- cov1_eigen$values
-  q1 <- sum(Lambda1 >= tol)
-  U1 <- cov1_eigen$vectors[, seq_len(q1)]
-  Lambda1_pseudo <- 1 / Lambda1[seq_len(q1)]
-  Lambda1_pseudo_sqrt <- Lambda1_pseudo^(1/2)
-  Q1 <- tcrossprod(diag(Lambda1_pseudo_sqrt), U1)
 
-  eigen_out <- eigen(Q1 %*% tcrossprod(cov2, Q1), symmetric = TRUE)
-  U2 <- eigen_out$vectors
-  Lambda2 <- eigen_out$values
+  # Reduce the rank of the simultaneous diagonalizer and the transformed data
+  # set.
+  obj$Q <- simdiag_cov_out$Q[seq_len(obj$q), ]
+  obj$x <- simdiag_cov_out$x[, seq_len(obj$q)]
 
-  # Creates a list named 'obj' that will contain all of the returned information.
-  obj <- list()
-
-  obj$Q <- crossprod(U2, Q1)
-
-  # We transform the matrix 'x' and store it in the returned named list as 'x'.
-  obj$x <- tcrossprod(x, obj$Q)
-
-  # By default, we select the value of 'q' to be the number of rows of Q. If the
-  # user has specified a different value for 'q', we use it unless it exceeds
-  # the number of rows of Q, in which case we use the default value.
-  obj$q <- nrow(obj$Q)
-  if (!is.null(q)) {
-    if (q <= nrow(obj$Q)) {
-      obj$q <- q
-    } else {
-      warning("The value for 'q' exceeds the number of rows of 'Q'. Using 'nrow(Q)' instead.")
-    }
+  # Constructs the classifier from the transformed data set using DLDA or DQDA
+  # based on the user's specification.
+  if (classifier == "linear") {
+    obj$classifier <- dlda(x = obj$x, y = y, ...)
   } else {
-    if (bhattacharyya) {
-      bhatta_out <- bhatta_simdiag(x, y, bhatta_prop = bhatta_prop,
-                                   shrink = bhatta_shrink)
-      obj$q <- bhatta_out$q
-      obj$bhattacharyya <- bhatta_out$bhattacharyya
-      obj$pct_change <- bhatta_out$pct_change
-    }
+    obj$classifier <- dqda(x = obj$x, y = y, ...)
   }
 
-  obj$Q <- obj$Q[seq_len(obj$q), ]
-  obj$x <- obj$x[, seq_len(obj$q)]
-  obj$Lambda1 <- Lambda1
-  obj$Lambda2 <- Lambda2
-  
   # Creates an object of type 'simdiag' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "simdiag"
@@ -194,6 +157,37 @@ simdiag.formula <- function(formula, data, ...) {
   obj
 }
 
+#' SimDiag prediction of the class membership of a matrix of new observations.
+#'
+#' First, we apply the simultaneous diagonalizer constructed from a training
+#' data set. Then, we apply the diagonal linear or quadratic classifier based on
+#' the user specification to the \code{\link{simdiag}} function.
+#' 
+#' @rdname simdiag
+#' @method predict simdiag
+#' @S3method predict simdiag
+#' @export
+#'
+#' @param object object of class \code{simdiag}
+#' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
+#'
+#' @return list predicted class memberships of each row in newdata
+predict.simdiag <- function(object, newdata) {
+	if (!inherits(object, "simdiag"))  {
+		stop("object not of class 'simdiag'")
+	}
+	if (is.vector(newdata)) {
+    newdata <- matrix(newdata, nrow = 1)
+  }
+
+  # Transform the test data set with the simultaneous diagonalizer Q.
+  newdata <- simdiag_transform(object = object, x = newdata)
+
+  # Predict the class membership of the transformed test data set.
+	predict(object = object$classifier, newdata = newdata)
+}
+
+
 #' Outputs the summary for a 'simdiag' object.
 #'
 #' Summarizes the simultaneous diagonalization information for a set of classes.
@@ -208,5 +202,22 @@ simdiag.formula <- function(formula, data, ...) {
 print.simdiag <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
+}
+
+#' Plots the Bhattacharyya or Mahalanobis distances of the transformed features
+#' between the two classes after simultaneously diagonalizing the sample
+#' covariance matrices of each class.
+#'
+#' The object must be an object of class \code{simdiag}.
+#'
+#' @keywords internal
+#' @param x object of class \code{simdiag} to plot
+#' @param ... unused
+#' @rdname simdiag
+#' @method plot simdiag
+#' @S3method plot simdiag
+#' @export
+plot.simdiag <- function(x, ...) {
+  warning("Not yet implemented")
 }
 

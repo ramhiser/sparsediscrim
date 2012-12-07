@@ -22,51 +22,102 @@
 #' the diagonal matrix with diagonal entries as the characteristic roots
 #' (generalized eigenvalues) of det(B - \\lambda A) = 0.
 #'
+#' TODO: Discuss briefly that we set 'q' to the number of nonzero eigenvalues if
+#' the Fast SVD is used.
+#'
 #' @export
-#' @param A p x p real symmetric matrix
-#' @param B p x p real symmetric matrix
+#' @param x matrix containing the training data. The rows are the sample
+#' observations, and the columns are the features.
+#' @param y vector of class labels for each training observation
+#' @param fast_svd TODO
 #' @param q the reduced dimension of the simultaneous diagonalizer.
+#' @param reduced_rank Should we select \code{q} based on the rank of the
+#' sample covariance matrices? Ignored if \code{q} is given. See details.
+#' @param shrink TODO
 #' @param tol a value indicating the magnitude below which eigenvalues are
 #' considered 0.
 #' @return a list containing:
 #'	the matrix Q that is the \eqn{p \times q} simultaneous diagonalizing matrix
+#'  the matrix x consisting of the simultaneously diagonalized data
 #'	the selected value of \code{q}
-simdiag_cov <- function(A, B, q = NULL, tol = 1e-6) {
-  A <- as.matrix(A)
-  B <- as.matrix(B)
-  
-  if (nrow(A) != ncol(A)) {
-    stop("The matrix, 'A', must be square.")
+simdiag_cov <- function(x, y, fast_svd = FALSE, q = NULL, reduced_rank = TRUE,
+                        shrink = FALSE, tol = 1e-6) {
+  x <- as.matrix(x)
+  y <- as.factor(y)
+  p <- ncol(x)
+
+  # For now, we only simultaneously diagonalize the covariance matrices for two
+  # classes.
+  if (nlevels(y) < 2) {
+    stop("Only 1 class is given. Use PCA instead.")
+  } else if (nlevels(y) > 2) {
+    stop("Currently, we do not simultaneously diagonalize more than 2 classes.")
   }
 
-  if (nrow(B) != ncol(B)) {
-    stop("The matrix, 'B', must be square.")
-  }
-  if (nrow(A) != nrow(B)) {
-    stop("The matrices, 'A' and 'B', must have the same size.")
+  # Computes the sample covariance matrices of each class.
+  cov_mat <- cov_list(x = x, y = y, shrink = shrink)
+
+  # If the Fast SVD option is selected, we compute the eigenvalue decomposition
+  # of the first class' sample covariance matrix. Otherwise, we compute the
+  # eigenvalue decomposition manually.  
+  if (fast_svd) {
+    cov1_eigen <- fast_cov_eigen(x[y == levels(y)[1], ], tol = tol)
+    # If 'q' < the number of positive eigenvalues when the Fast SVD is used,
+    # we set 'q' to be the number of positive eigenvalues.   
+    if (!is.null(q) && length(cov1_eigen$values) < q) {
+      warning("The reduced dimension 'q' exceeds the number of positive eigenvalues.")
+      q <- length(cov1_eigen$values)
+    }
+  } else {
+    cov1_eigen <- eigen(cov_mat[[1]], symmetric = TRUE)
   }
 
-  # If a value for 'q' is provided, we check that it is between 1 and p,
-  # inclusively. If not, an error is thrown.
-  p <- nrow(A)
+  # Eigenvalue decomposition of the first sample covariance matrix.
+  Lambda1 <- cov1_eigen$values
+  U1 <- cov1_eigen$vectors
+
+  # Now, we select the reduced dimension, 'q'. Three options:
+  # 1. If a value for 'q' is provided, we check that it is between 1 and p,
+  # inclusively; if not, an error is thrown.
+  # 2. Select 'q' as the rank of the first sample covariance matrix. The rank is
+  # calculated as the number of eigenvalues exceeding the tolerance value 'tol'
+  # to compute numerically the number of nonzero eigenvalues.
+  # 3. Do not apply dimension reduction.
   if (!is.null(q)) {
     q <- as.integer(q)
     if (q < 1 || q > p) {
       stop("The value for 'q' must be between 1 and p, inclusively.")
     }
+  } else if (reduced_rank) {
+    q <- sum(Lambda1 > tol)
+  } else {
+    # No dimension reduction.
+    q <- p
   }
-  
-  eigen_A <- eigen(A, symmetric = TRUE)
-  if (is.null(q)) {
-    q <- sum(eigen_A$values > tol)
-  }
-  U1 <- eigen_A$vectors[, seq_len(q)]
-  Lambda_1_inv <- diag(eigen_A$values[seq_len(q)]^(-1/2))
-  Q1 <- tcrossprod(lambda_1_inv, U1)
 
-  eigen_2 <- eigen(Q1 %*% tcrossprod(B, Q1), symmetric = TRUE)
-  U2 <- eigen_2$vectors[, seq_len(q)]
+  # Reduce the rank of the eigenvalue decomposition.
+  Lambda1 <- Lambda1[seq_len(q)]
+  U1 <- U1[, seq_len(q)]
+
+  # We set the inverse of the zero eigenvalues to 0 as done with the
+  # Moore-Penrose pseudoinverse.
+  Lambda1_pseudo_sqrt <- Lambda1^(-1/2)
+  Lambda1_pseudo_sqrt <- replace(Lambda1_pseudo_sqrt, Lambda1 < tol, 0)
+  
+  # Whitening transform in a q-dimensional subspace
+  Q1 <- tcrossprod(diag(Lambda1_pseudo_sqrt), U1)
+
+  # Construct the simultaneous diagonalizer 'Q by diagonalizing
+  # Q1 %*% Sigma2 %*% t(Q1)
+  eigen_out <- eigen(Q1 %*% tcrossprod(cov_mat[[2]], Q1), symmetric = TRUE)
+  U2 <- eigen_out$vectors
+  Lambda2 <- eigen_out$values
+
+  # The simultaneous diagonalizer 'Q'
   Q <- crossprod(U2, Q1)
 
-  list(Q = Q, q = q)
+  # Simultaneously diagonalizes the data set 'x'
+  x <- tcrossprod(x, Q)
+
+  list(Q = Q, x = x, q = q)
 }
