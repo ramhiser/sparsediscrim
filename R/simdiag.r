@@ -76,7 +76,7 @@ simdiag <- function(x, ...)
 #' @method simdiag default
 #' @S3method simdiag default
 simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
-                            fast_svd = TRUE, tol = 1e-5, bhatta_prop = 0.9,
+                            fast_svd = TRUE, tol = 1e-6, bhatta_prop = 0.9,
                             bhatta_shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -148,8 +148,8 @@ simdiag.default <- function(x, y, q = NULL, bhattacharyya = TRUE,
     }
   } else {
     if (bhattacharyya) {
-      bhatta_out <- dimred_bhatta_simdiag(obj$x, y, bhatta_prop = bhatta_prop,
-                                          shrink = bhatta_shrink)
+      bhatta_out <- bhatta_simdiag(x, y, bhatta_prop = bhatta_prop,
+                                   shrink = bhatta_shrink)
       obj$q <- bhatta_out$q
       obj$bhattacharyya <- bhatta_out$bhattacharyya
       obj$pct_change <- bhatta_out$pct_change
@@ -182,7 +182,7 @@ simdiag.formula <- function(formula, data, ...) {
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
