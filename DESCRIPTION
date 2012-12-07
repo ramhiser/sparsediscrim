@@ -1,11 +1,15 @@
-Package: diagdiscrim
-Title: Diagonal Discriminant Analysis and its Variants
+Package: sparsediscrim
+Title: Sparse Discriminant Analysis
 Version: 0.1.0
-Date: 2012-12-06
+Date: 2012-12-07
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
-Description: Diagonal Discriminant Analysis and
-    shrinkage-based variants.
+Description: A collection of sparse discriminant analysis methods intended for
+    small-sample, high-dimensional data sets. The package includes the SimDiag
+    classifier, which simultaneously diagonalizes the sample covariance matrices
+    from each class in a linear subspace. Furthermore, the package includes
+    several Diagonal Discriminant Analysis methods, which are special cases of
+    the well-known Naive Bayes classifier.
 Depends:
     car,
     corpcor,
@@ -13,7 +17,7 @@ Depends:
 Suggests:
     bdsmatrix
 License: MIT
-URL: https://github.com/ramey/diagdiscrim,
+URL: https://github.com/ramey/sparsediscrim,
     http://ramhiser.com
 Collate:
     'dlda.r'
