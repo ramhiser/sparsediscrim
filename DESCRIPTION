@@ -36,3 +36,8 @@ Collate:
     'helper-mean-shrinkage.r'
     'data-parametric-bootstrap.r'
     'helper-pct-change.r'
+    'bhattacharyya.r'
+    'helper-fast-cov-eigen.r'
+    'helper-is-diagonal.r'
+    'helper-simdiag-cov.r'
+    'helper-transform.r'
