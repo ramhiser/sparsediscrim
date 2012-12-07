@@ -1,64 +1,131 @@
 \name{simdiag}
+\alias{print.simdiag}
 \alias{simdiag}
-\title{Simultaneously diagonalizes two real symmetric matrices.}
+\alias{simdiag.default}
+\alias{simdiag.formula}
+\title{Simultaneously diagonalizes the sample covariance matrices for a data set
+generated from \code{K} classes.}
 \usage{
-  simdiag(A, B, dim_reduce = F, k = NULL, eigen_pct = NULL,
-    tol = sqrt(.Machine$double.eps))
+  simdiag(x, ...)
+
+  \method{simdiag}{default} (x, y, q = NULL,
+    bhattacharyya = TRUE, fast_svd = TRUE, tol = 1e-06,
+    bhatta_prop = 0.9, bhatta_shrink = FALSE)
+
+  \method{simdiag}{formula} (formula, data, ...)
+
+  \method{print}{simdiag} (x, ...)
 }
 \arguments{
-  \item{A}{p x p real symmetric matrix}
+  \item{x}{matrix containing the training data. The rows
+  are the sample observations, and the columns are the
+  features.}
 
-  \item{B}{p x p real symmetric matrix}
+  \item{y}{vector of class labels for each training
+  observation}
 
-  \item{dim_reduce}{logical flag: Should we reduce the
-  dimension of the simultaneous diagonalization?}
+  \item{q}{the reduced dimension of the simultaneous
+  diagonalizer. If \code{NULL} (default), we choose
+  \code{q} via the Bhattacharyya distance method, discussed
+  below.}
 
-  \item{k}{the reduced dimension of the simultaneous
-  diagonalizer.}
+  \item{fast_svd}{logical value that indicates if we should
+  utilize the Fast SVD compute the eigenvalue decomposition
+  of the sample covariance matrix having larger rank. By
+  default, we use this Fast SVD method, which is
+  computationally far superior for 'wide data' (large
+  \code{p}, small {n}).}
 
-  \item{eigen_pct}{The percentage of eigenvalues to
-  preserve.}
+  \item{bhattacharyya}{logical value that indicates if we
+  should select the reduced dimension, \code{q}, via our
+  proposed Bhattacharyya method. If \code{TRUE}, we choose
+  the value for \code{q} to be the dimension, where the
+  Bhattacharyya distance between the two classes hardly
+  changes for \code{q + 1}. Our technique is similar, in
+  spirit, to the 'elbow criterion' in a Principal
+  Components Analysis scree plot. The \code{bhattacharyya}
+  argument is ignored if a value for \code{q} is
+  specified.}
 
   \item{tol}{a value indicating the magnitude below which
   eigenvalues are considered 0.}
+
+  \item{bhatta_prop}{threshold value for the maximum
+  cumulative proportion of the Bhattacharyya distance. We
+  use the threshold to determine the reduced dimension
+  \code{q}. When paired with the SimDiag method, the
+  Bhattacharyya approach to dimension reduction generalizes
+  the scree plot idea that is often utilized with Principal
+  Components Analysis. Ignored if \code{bhattacharyya} is
+  \code{FALSE}.}
+
+  \item{bhatta_shrink}{By default, (if \code{TRUE}), we
+  shrink each covariance matrix with the MDEB covariance
+  matrix estimator. Otherwise, no shrinkage is applied.
+  Ignored if \code{bhattacharyya} is \code{FALSE}.}
+
+  \item{formula}{formula of the form \code{groups ~ x1 + x2
+  + ...} That is, the response is the grouping factor and
+  the right hand side specifies the (non-factor)
+  discriminators.}
+
+  \item{data}{data frame from which variables specified in
+  \code{formula} are preferentially to be taken.}
+
+  \item{x}{object to print}
+
+  \item{...}{unused}
 }
 \value{
-  a list containing: the matrix Q that is the p x k
-  simultaneous diagonalizing matrix the selected value of k
+  a list containing: \itemize{ \item \code{Q}: simultaneous
+  diagonalizing matrix of size \eqn{p \times q} \item
+  \code{q}: the reduced dimension of the data \item
+  \code{x}: the transformed data matrix, \code{x}. }
 }
 \description{
-  This function simultaneously diagaonlizes two real
-  symmetric matrices. If the matrices are singular, we
-  employ a dimension reduction method that simultaneously
-  diagonalizes them in a lower dimension.
+  This function determines the matrix, \code{Q}, that
+  simultaneously diagonalizes the sample covariance
+  matrices for a data set generated from \code{K} classes.
+  If the matrices are singular, we employ a dimension
+  reduction method that simultaneously diagonalizes them to
+  a lower dimension, \code{q}.
+
+  Summarizes the simultaneous diagonalization information
+  for a set of classes.
 }
 \details{
-  If the user selects the dimension reduction option, the
-  user may specify a value of k. This is potentially useful
-  if a scree plot is utilized or a manual threshold is
-  desired. Otherwise, we select k automatically to be the
-  number of non-zero eigenvalues. To determine what
-  constitutes 'non-zero', we select all of the eigenvalues
-  larger than the specified tolerance, 'tol'.
+  The user can manually provides the dimension, \code{q}.
+  This is potentially useful if a scree plot is utilized or
+  a manual threshold is desired. Otherwise, we select
+  \code{q} automatically to be the number of non-zero
+  eigenvalues. To determine what constitutes 'non-zero', we
+  select all of the eigenvalues larger than the specified
+  tolerance, \code{tol}. This is similar to a typical
+  automatic approach to Principal Components Analysis
+  (PCA).
 
-  The eigen_pct is the percentage of eigenvalues to use, by
-  which we mean the cumulative sum of the eigenvalues
-  (scaled by the sum of the eigenvalues). This is similar
-  to the typical automatic approach to Principal Components
-  Analysis.
+  The returned simultaneous diagonalizing matrix, \code{Q},
+  is constructed such that
 
-  If the user does not wish to use the dimension reduction
-  method, then k is automatically computed as the number of
-  eigenvalues of B. Hence, in this case, k = p.
+  \deqn{Q \widehat{\\Sigma_k} Q' = D_k}
 
-  The returned simultaneous diagonalizing matrix, Q, is
-  constructed such that
+  for all \eqn{k = 1, \ldots, K}, where
+  \eqn{\widehat{\\Sigma_k}} is the maximum likelihood
+  estimator (under normality) for the \eqn{k}th class
+  covariance matrix, \eqn{\\Sigma_k}, where \eqn{D_k} is a
+  diagonal matrix.
 
-  Q' A Q = D, and Q' B Q = I_k,
+  The returned simultaneously-diagonalizing matrix,
+  \code{Q}, is of size \eqn{p \times q}.
 
-  where I_k denotes the k-dimensional identity matrix and
-  Lambda is the diagonal matrix with diagonal entries as
-  the characteristic roots (generalized eigenvalues) of
-  det(B - lambda A) = 0.
+  Currently, we only allow \eqn{K = 2}. The \eqn{K = 1}
+  case is equivalent to PCA. The \eqn{K \ge 2} case is of
+  ongoing research; note that a set of \code{K} positive
+  semidefinite matrices are simultaneously diagonalizable
+  if they are pairwise-commute (i.e. \eqn{A B = B A} for
+  any two matrices \eqn{A} and \eqn{B} in the set).
+  However, pairwise commuting is a strict assumption that
+  we wish to relax.
 }
+\keyword{internal}
 

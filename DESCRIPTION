@@ -1,31 +1,34 @@
 Package: diagdiscrim
 Title: Diagonal Discriminant Analysis and its Variants
-Version: 0.2.0
-Date: 2012-02-16
+Version: 0.1.0
+Date: 2012-12-06
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: Diagonal Discriminant Analysis and
-    shrinkage-based variants. Optionally, each method can
-    simultaneously diagonalize the covariance matrices to
-    improve the classification rates.
+    shrinkage-based variants.
 Depends:
-    foreach,
+    car,
+    corpcor,
     jointDiag
+Suggests:
+    bdsmatrix
 License: MIT
 URL: https://github.com/ramey/diagdiscrim,
     http://ramhiser.com
 Collate:
-    'asfari.r'
     'dlda.r'
     'dqda.r'
-    'eigendiag.r'
-    'general-eigen.r'
-    'joint-diagonalization.r'
-    'jointDiag.r'
-    'pool.r'
     'rsdda.r'
     'sdlda.r'
     'sdqda.r'
     'stein-shrinkage.r'
     'simdiag.r'
     'estimates.r'
+    'helper-intercept.r'
+    'data-intraclass.r'
+    'data-block-autocorrelation.r'
+    'helper-cov-mle.r'
+    'helper-shrinkage.r'
+    'helper-mean-shrinkage.r'
+    'data-parametric-bootstrap.r'
+    'helper-pct-change.r'

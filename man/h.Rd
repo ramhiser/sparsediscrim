@@ -13,7 +13,7 @@
   = -1 in Pang et al. (2009).}
 }
 \value{
-  number - bias correction
+  the bias correction value
 }
 \description{
   This function computes the function h_{nu, p}(t) on page

@@ -2,7 +2,8 @@
 \alias{diag_estimates}
 \title{Computes estimates and ancillary information for diagonal classifiers}
 \usage{
-  diag_estimates(x, y, prior = NULL)
+  diag_estimates(x, y, prior = NULL, pool = FALSE,
+    est_mean = c("mle", "tong"))
 }
 \arguments{
   \item{matrix}{containing the training data. The rows are
@@ -15,9 +16,18 @@
   \item{prior}{vector with prior probabilities for each
   class. If NULL (default), then equal probabilities are
   used. See details.}
+
+  \item{pool}{logical value. If TRUE, calculates the pooled
+  sample variances for each class.}
+
+  \item{est_mean}{the estimator for the class means. By
+  default, we use the maximum likelihood estimator (MLE).
+  To improve the estimation, we provide the option to use a
+  shrunken mean estimator proposed by Tong et al. (2012).}
 }
 \value{
-  list of MLEs and necessary ancillary information
+  named list with estimators for each class and necessary
+  ancillary information
 }
 \description{
   Computes the maximum likelihood estimators (MLEs) for

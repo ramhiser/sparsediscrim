@@ -31,14 +31,23 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return list of MLEs and necessary ancillary information
-diag_estimates <- function(x, y, prior = NULL) {
+#' @param pool logical value. If TRUE, calculates the pooled sample variances
+#' for each class.
+#' @param est_mean the estimator for the class means. By default, we use the
+#' maximum likelihood estimator (MLE). To improve the estimation, we provide the
+#' option to use a shrunken mean estimator proposed by Tong et al. (2012).
+#' @return named list with estimators for each class and necessary ancillary
+#' information
+diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
+                           est_mean = c("mle", "tong")) {
   obj <- list()
 	obj$labels <- y
 	obj$N <- length(y)
 	obj$p <- ncol(x)
 	obj$groups <- levels(y)
 	obj$num_groups <- nlevels(y)
+
+  est_mean <- match.arg(est_mean)
 
   # Error Checking
   if (!is.null(prior)) {
@@ -62,15 +71,25 @@ diag_estimates <- function(x, y, prior = NULL) {
     prior <- as.vector(table(y) / length(y))
   }
 
-  # For each class, we calculate the MLEs for each parameter used in the DLDA
-  # classifier. The 'est' list contains the estimators for each class.
+  # For each class, we calculate the MLEs (or specified alternative estimators)
+  # for each parameter used in the DLDA classifier. The 'est' list contains the
+  # estimators for each class.
   obj$est <- tapply(seq_along(y), y, function(i) {
     stats <- list()
     stats$n <- length(i)
-    stats$xbar <- colMeans(x[i,])
-    stats$var <- with(stats, (n - 1) * apply(x[i,], 2, var) / n)
+    if (est_mean == "mle") {
+      stats$xbar <- colMeans(x[i,])
+    } else if (est_mean == "tong") {
+      stats$xbar <- diagdiscrim:::tong_mean_shrinkage(x[i,])
+    }
+    stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
     stats
   })
+
+  # Calculates the pooled variance across all classes.
+  if (pool) {
+    obj$var_pool <- Reduce('+', lapply(obj$est, function(x) x$n * x$var)) / obj$N
+  }
 
   # Add each element in 'prior' to the corresponding obj$est$prior
   for(k in seq_len(obj$num_groups)) {

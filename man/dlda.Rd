@@ -8,9 +8,11 @@
 \usage{
   dlda(x, ...)
 
-  \method{dlda}{default} (x, y, prior = NULL)
+  \method{dlda}{default} (x, y, prior = NULL,
+    est_mean = c("mle", "tong"))
 
-  \method{dlda}{formula} (formula, data, prior = NULL, ...)
+  \method{dlda}{formula} (formula, data, prior = NULL,
+    est_mean = c("mle", "tong"), ...)
 
   \method{print}{dlda} (x, ...)
 
@@ -27,6 +29,11 @@
   \item{prior}{vector with prior probabilities for each
   class. If NULL (default), then equal probabilities are
   used. See details.}
+
+  \item{est_mean}{the estimator for the class means. By
+  default, we use the maximum likelihood estimator (MLE).
+  To improve the estimation, we provide the option to use a
+  shrunken mean estimator proposed by Tong et al. (2012).}
 
   \item{formula}{A formula of the form \code{groups ~ x1 +
   x2 + ...} That is, the response is the grouping factor
