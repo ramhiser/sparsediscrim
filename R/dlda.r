@@ -63,12 +63,13 @@ dlda <- function(x, ...)
 #' @rdname dlda
 #' @method dlda default
 #' @S3method dlda default
-dlda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong")) {
+dlda.default <- function(x, y, prior = NULL, shrink = FALSE,
+                         est_mean = c("mle", "tong")) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE,
-                                      est_mean = est_mean)
+  obj <- diag_estimates(x, y, prior, pool = TRUE, shrink = shrink,
+                        est_mean = est_mean)
 
   # Creates an object of type 'dlda' and adds the 'match.call' to the object
   obj$call <- match.call()
@@ -85,8 +86,7 @@ dlda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong")) {
 #' @rdname dlda
 #' @method dlda formula
 #' @S3method dlda formula
-dlda.formula <- function(formula, data, prior = NULL,
-                         est_mean = c("mle", "tong"), ...) {
+dlda.formula <- function(formula, data, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -98,7 +98,7 @@ dlda.formula <- function(formula, data, prior = NULL,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- dlda.default(x, y, prior, est_mean, ...)
+  est <- dlda.default(x, y, ...)
   est$call <- match.call()
   est$formula <- formula
   est

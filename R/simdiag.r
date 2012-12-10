@@ -122,9 +122,9 @@ simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
   # Constructs the classifier from the transformed data set using DLDA or DQDA
   # based on the user's specification.
   if (classifier == "linear") {
-    obj$classifier <- dlda(x = obj$x, y = y, ...)
+    obj$classifier <- dlda(x = obj$x, y = y, shrink = shrink, ...)
   } else {
-    obj$classifier <- dqda(x = obj$x, y = y, ...)
+    obj$classifier <- dqda(x = obj$x, y = y, shrink = shrink, ...)
   }
 
   # Creates an object of type 'simdiag' and adds the 'match.call' to the object

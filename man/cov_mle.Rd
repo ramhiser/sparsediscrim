@@ -3,7 +3,7 @@
 \title{Computes the maximum likelihood estimator for the sample covariance matrix
 under the assumption of multivariate normality.}
 \usage{
-  cov_mle(x, diag = FALSE)
+  cov_mle(x, diag = FALSE, shrink = FALSE)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and

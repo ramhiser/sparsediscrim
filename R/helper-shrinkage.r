@@ -31,7 +31,7 @@
 #' @return list of length \code{K} with MDEB shrinkage matrices
 mdeb_shrinkage <- function(obj, pool = FALSE) {
   if (pool) {
-    obj$shrinkage <- with(obj, sum(var_pool) + min(p, N))
+    obj$shrinkage <- with(obj, sum(var_pool) / min(p, N))
     obj$var_pool <- with(obj, var_pool + shrinkage)
     
   } else {

@@ -26,6 +26,7 @@
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
 #' 
+#' @export
 #' @param matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
@@ -38,7 +39,7 @@
 #' option to use a shrunken mean estimator proposed by Tong et al. (2012).
 #' @return named list with estimators for each class and necessary ancillary
 #' information
-diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
+diag_estimates <- function(x, y, prior = NULL, pool = FALSE, shrink = FALSE,
                            est_mean = c("mle", "tong")) {
   obj <- list()
 	obj$labels <- y
@@ -94,6 +95,11 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
   # Add each element in 'prior' to the corresponding obj$est$prior
   for(k in seq_len(obj$num_groups)) {
     obj$est[[k]]$prior <- prior[k]
+  }
+
+  # Shrink the variance estimates, if necessary.
+  if (shrink) {
+    obj <- mdeb_shrinkage(obj, pool = pool)
   }
   obj
 }

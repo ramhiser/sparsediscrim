@@ -3,7 +3,7 @@
 \title{Computes the pooled maximum likelihood estimator for the common covariance
 matrix from \eqn{K} multivariate normal populations.}
 \usage{
-  cov_pool(x, y)
+  cov_pool(x, y, shrink = FALSE)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and

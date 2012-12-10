@@ -9,10 +9,9 @@
   dqda(x, ...)
 
   \method{dqda}{default} (x, y, prior = NULL,
-    est_mean = c("mle", "tong"))
+    shrink = FALSE, est_mean = c("mle", "tong"))
 
-  \method{dqda}{formula} (formula, data, prior = NULL,
-    est_mean = c("mle", "tong"), ...)
+  \method{dqda}{formula} (formula, data, ...)
 
   \method{print}{dqda} (x, ...)
 

@@ -9,10 +9,9 @@
   dlda(x, ...)
 
   \method{dlda}{default} (x, y, prior = NULL,
-    est_mean = c("mle", "tong"))
+    shrink = FALSE, est_mean = c("mle", "tong"))
 
-  \method{dlda}{formula} (formula, data, prior = NULL,
-    est_mean = c("mle", "tong"), ...)
+  \method{dlda}{formula} (formula, data, ...)
 
   \method{print}{dlda} (x, ...)
 

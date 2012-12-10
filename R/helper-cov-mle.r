@@ -15,13 +15,21 @@
 #' is diagonal. By default, we assume that \code{diag} is \code{FALSE}.
 #' @return sample covariance matrix of size \eqn{p \times p}. If \code{diag} is
 #' \code{TRUE}, then a vector of length \code{p} is returned instead.
-cov_mle <- function(x, diag = FALSE) {
+cov_mle <- function(x, diag = FALSE, shrink = FALSE) {
   n <- nrow(x)
+  p <- ncol(x)
   if (diag) {
-    (n - 1) / n * apply(x, 2, var)
+    cov_out <- (n - 1) / n * apply(x, 2, var)
+    if (shrink) {
+      cov_out <- cov_out + sum(cov_out) / min(n, p)
+    }
   } else {
-    (n - 1) / n * cov(x)
+    cov_out <- (n - 1) / n * cov(x)
+    if (shrink) {
+      diag(cov_out) <- diag(cov_out) + sum(diag(cov_out)) / min(n, p)
+    }
   }
+  cov_out
 }
 
 #' Computes the covariance matrix maximum likelihood estimators for each class
@@ -65,14 +73,21 @@ cov_list <- function(x, y, shrink = FALSE) {
 #' @return pooled sample covariance matrix of size \eqn{p \times p}
 #' @examples
 #' cov_pool(iris[,-5], iris$Species)
-cov_pool <- function(x, y) {
+cov_pool <- function(x, y, shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- length(y)
+  p <- ncol(x)
+  
   scatter_matrices <- tapply(seq_len(n), y, function(i) {
     (length(i) - 1) * cov(as.matrix(x[i, ]))
   })
-  as.matrix(Reduce("+", scatter_matrices) / n)
+  cov_out <- as.matrix(Reduce("+", scatter_matrices) / n)
+  if (shrink) {
+    diag(cov_out) <- diag(cov_out) + sum(diag(cov_out)) / min(n, p)
+  }
+  
+  cov_out
 }
 
 #' Computes a shrunken version of the maximum likelihood estimator for the

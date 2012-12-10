@@ -3,7 +3,7 @@
 \title{Computes estimates and ancillary information for diagonal classifiers}
 \usage{
   diag_estimates(x, y, prior = NULL, pool = FALSE,
-    est_mean = c("mle", "tong"))
+    shrink = FALSE, est_mean = c("mle", "tong"))
 }
 \arguments{
   \item{matrix}{containing the training data. The rows are

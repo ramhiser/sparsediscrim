@@ -19,7 +19,7 @@
 #' calculation
 #' @return the estimated Bhattacharyya distance between the two classes given in
 #' \code{y}.
-bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE) {
+bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE, shrink = FALSE) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -42,10 +42,10 @@ bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE) {
   # calculation.
   if (diag) {
     if (pool_cov) {
-      cov1 <- cov2 <- cov_avg <- diag(cov_pool(x = x, y = y))
+      cov1 <- cov2 <- cov_avg <- diag(cov_pool(x = x, y = y, shrink = shrink))
     } else {
-      cov1 <- cov_mle(x1, diag = TRUE)
-      cov2 <- cov_mle(x2, diag = TRUE)
+      cov1 <- cov_mle(x1, diag = TRUE, shrink = shrink)
+      cov2 <- cov_mle(x2, diag = TRUE, shrink = shrink)
       cov_avg <- (cov1 + cov2) / 2
     }
     
@@ -55,10 +55,10 @@ bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE) {
     det_avg <- prod(cov_avg)
   } else {
     if (pool_cov) {
-      cov1 <- cov2 <- cov_avg <- cov_pool(x = x, y = y)
+      cov1 <- cov2 <- cov_avg <- cov_pool(x = x, y = y, shrink = shrink)
     } else {
-      cov1 <- cov_mle(x1, diag = FALSE)
-      cov2 <- cov_mle(x2, diag = FALSE)
+      cov1 <- cov_mle(x1, diag = FALSE, shrink = shrink)
+      cov2 <- cov_mle(x2, diag = FALSE, shrink = shrink)
       cov_avg <- (cov1 + cov2) / 2
     }
 
@@ -133,9 +133,8 @@ bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE) {
 bhatta_simdiag <- function(x, y, pct = 0.9, pool_cov = FALSE, shrink = FALSE, tol = 1e-6) {
   simdiag_out <- simdiag_cov(x = x, y = y)
 
-  # TODO: Implement shrinkage
   dist <- sapply(seq_len(ncol(simdiag_out$x)), function(j) {
-    bhattacharyya(simdiag_out$x[, j], y, diag = TRUE, pool_cov = pool_cov)
+    bhattacharyya(simdiag_out$x[, j], y, diag = TRUE, pool_cov = pool_cov, shrink = shrink)
   })
   sorted_dist <- sort(dist, decreasing = TRUE)
   cumprop <- cumsum(sorted_dist) / sum(sorted_dist)
