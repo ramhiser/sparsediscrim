@@ -96,25 +96,28 @@ simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
   # inclusively. If not, an error is thrown.
   # 2. Use the Bhattacharyya distance.
   # 3. Use the rank of the sample covariance matrices
-  if (!is.null(q)) {
-    q <- as.integer(q)
-    if (q < 1 || q > p) {
-      stop("The value for 'q' must be between 1 and p, inclusively.")
-    }
-    obj$q <- q
-  } else if (bhattacharyya) {
+  if (bhattacharyya) {
     obj$bhattacharyya <- bhatta_simdiag(x = x, y = y, pct = pct,
                                         pool_cov = pool_cov, shrink = shrink,
                                         tol = tol)
     obj$q <- obj$bhattacharyya$q
+    # Reduce the rank of the simultaneous diagonalizer and the transformed data
+    # set.
+    obj$Q <- simdiag_cov_out$Q[obj$bhattacharyya$dist_rank, ]
+    obj$x <- simdiag_cov_out$x[, obj$bhattacharyya$dist_rank]
   } else {
-    obj$q <- simdiag_cov_out$q
+    if (!is.null(q)) {
+      q <- as.integer(q)
+      if (q < 1 || q > p) {
+        stop("The value for 'q' must be between 1 and p, inclusively.")
+      }
+      obj$q <- q
+    } else {
+      obj$q <- simdiag_cov_out$q
+    }
+    obj$Q <- simdiag_cov_out$Q[seq_len(obj$q), ]
+    obj$x <- simdiag_cov_out$x[, seq_len(obj$q)]
   }
-
-  # Reduce the rank of the simultaneous diagonalizer and the transformed data
-  # set.
-  obj$Q <- simdiag_cov_out$Q[seq_len(obj$q), ]
-  obj$x <- simdiag_cov_out$x[, seq_len(obj$q)]
 
   # Constructs the classifier from the transformed data set using DLDA or DQDA
   # based on the user's specification.

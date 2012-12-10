@@ -55,13 +55,15 @@ simdiag_cov <- function(x, y, fast_svd = FALSE, q = NULL, reduced_rank = TRUE,
   }
 
   # Computes the sample covariance matrices of each class.
-  cov_mat <- cov_list(x = x, y = y, shrink = shrink)
+  class_larger <- levels(y)[which.max(table(y))]
+  x1 <- x[y == class_larger, ]
+  x2 <- x[y != class_larger, ]
 
   # If the Fast SVD option is selected, we compute the eigenvalue decomposition
   # of the first class' sample covariance matrix. Otherwise, we compute the
   # eigenvalue decomposition manually.  
   if (fast_svd) {
-    cov1_eigen <- fast_cov_eigen(x[y == levels(y)[1], ], tol = tol)
+    cov1_eigen <- fast_cov_eigen(x1, tol = tol)
     # If 'q' < the number of positive eigenvalues when the Fast SVD is used,
     # we set 'q' to be the number of positive eigenvalues.   
     if (!is.null(q) && length(cov1_eigen$values) < q) {
@@ -69,7 +71,8 @@ simdiag_cov <- function(x, y, fast_svd = FALSE, q = NULL, reduced_rank = TRUE,
       q <- length(cov1_eigen$values)
     }
   } else {
-    cov1_eigen <- eigen(cov_mat[[1]], symmetric = TRUE)
+    cov1 <- cov_mle(x1)
+    cov1_eigen <- eigen(cov1, symmetric = TRUE)
   }
 
   # Eigenvalue decomposition of the first sample covariance matrix.
@@ -109,7 +112,8 @@ simdiag_cov <- function(x, y, fast_svd = FALSE, q = NULL, reduced_rank = TRUE,
 
   # Construct the simultaneous diagonalizer 'Q by diagonalizing
   # Q1 %*% Sigma2 %*% t(Q1)
-  eigen_out <- eigen(Q1 %*% tcrossprod(cov_mat[[2]], Q1), symmetric = TRUE)
+  cov2 <- cov_mle(x2)
+  eigen_out <- eigen(Q1 %*% tcrossprod(cov2, Q1), symmetric = TRUE)
   U2 <- eigen_out$vectors
   Lambda2 <- eigen_out$values
 
