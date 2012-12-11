@@ -111,11 +111,11 @@ bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE, shrink = FALSE) 
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param y class labels for observations (rows) in \code{x}
+#' @param q the reduced dimension. By default, \code{q} is determined
+#' automatically.
 #' @param pct threshold value for the maximum cumulative proportion of
 #' the Bhattacharyya distance. We use the threshold to determine the reduced
-#' dimension \code{q}. When paired with the SimDiag method, the Bhattacharyya
-#' approach to dimension reduction generalizes the scree plot idea that is often
-#' utilized with Principal Components Analysis.
+#' dimension \code{q}. Ignored if \code{q} is specified.
 #' @param shrink If \code{TRUE}, we shrink each covariance matrix with the MDEB
 #' covariance matrix estimator. Otherwise, no shrinkage is applied.
 #' @param tol a value indicating the magnitude below which eigenvalues are
@@ -130,7 +130,7 @@ bhattacharyya <- function(x, y, diag = FALSE, pool_cov = FALSE, shrink = FALSE) 
 #'   \item \code{cumprop}: the cumulative proportion of the sorted Bhattacharyya
 #'   distances for each column given in \code{x}.
 #' }
-bhatta_simdiag <- function(x, y, pct = 0.9, pool_cov = FALSE, shrink = FALSE, tol = 1e-6) {
+bhatta_simdiag <- function(x, y, q = NULL, pct = 0.9, pool_cov = FALSE, shrink = FALSE, tol = 1e-6) {
   simdiag_out <- simdiag_cov(x = x, y = y)
 
   dist <- sapply(seq_len(ncol(simdiag_out$x)), function(j) {
@@ -139,7 +139,14 @@ bhatta_simdiag <- function(x, y, pct = 0.9, pool_cov = FALSE, shrink = FALSE, to
   sorted_dist <- sort(dist, decreasing = TRUE)
   cumprop <- cumsum(sorted_dist) / sum(sorted_dist)
 
-  q <- sum(cumprop <= pct)
+  
+  # If 'q' is specified, we use it. If it is not given (default), then we select
+  # 'q' to be the cumulative proportion less than the percentage specified.
+  if (!is.null(q)) {
+    q <- as.integer(q)
+  } else {
+    q <- sum(cumprop <= pct)
+  }
   dist_rank <- order(dist, decreasing = TRUE)[seq_len(q)]
 
   list(q = q, dist = dist, dist_rank = dist_rank, cumprop = cumprop)
