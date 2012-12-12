@@ -41,3 +41,4 @@ Collate:
     'helper-is-diagonal.r'
     'helper-simdiag-cov.r'
     'helper-transform.r'
+    'helper-cv.r'

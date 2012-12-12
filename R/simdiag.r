@@ -85,9 +85,6 @@ simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
 
   classifier <- match.arg(classifier)
 
-  simdiag_cov_out <- simdiag_cov(x = x, y = y, q = q, fast_svd = fast_svd,
-                                 shrink = shrink, tol = tol)
-
   # Creates an object that contains the results returned.
   obj <- list()
   
@@ -97,15 +94,21 @@ simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
   # 2. Use the Bhattacharyya distance.
   # 3. Use the rank of the sample covariance matrices
   if (bhattacharyya) {
-    obj$bhattacharyya <- bhatta_simdiag(x = x, y = y, pct = pct,
+    obj$bhattacharyya <- bhatta_simdiag(x = x, y = y, q = q, pct = pct,
                                         pool_cov = pool_cov, shrink = shrink,
                                         tol = tol)
     obj$q <- obj$bhattacharyya$q
     # Reduce the rank of the simultaneous diagonalizer and the transformed data
     # set.
+    simdiag_cov_out <- simdiag_cov(x = x, y = y, q = NULL, fast_svd = fast_svd,
+                                 shrink = shrink, tol = tol)
+
     obj$Q <- simdiag_cov_out$Q[obj$bhattacharyya$dist_rank, ]
     obj$x <- simdiag_cov_out$x[, obj$bhattacharyya$dist_rank]
   } else {
+    simdiag_cov_out <- simdiag_cov(x = x, y = y, q = q, fast_svd = fast_svd,
+                                   shrink = shrink, tol = tol)
+
     if (!is.null(q)) {
       q <- as.integer(q)
       if (q < 1 || q > p) {
@@ -115,6 +118,7 @@ simdiag.default <- function(x, y, classifier = c("linear", "quadratic"),
     } else {
       obj$q <- simdiag_cov_out$q
     }
+    
     obj$Q <- simdiag_cov_out$Q[seq_len(obj$q), ]
     obj$x <- simdiag_cov_out$x[, seq_len(obj$q)]
   }

@@ -138,7 +138,6 @@ bhatta_simdiag <- function(x, y, q = NULL, pct = 0.9, pool_cov = FALSE, shrink =
   })
   sorted_dist <- sort(dist, decreasing = TRUE)
   cumprop <- cumsum(sorted_dist) / sum(sorted_dist)
-
   
   # If 'q' is specified, we use it. If it is not given (default), then we select
   # 'q' to be the cumulative proportion less than the percentage specified.
@@ -152,5 +151,64 @@ bhatta_simdiag <- function(x, y, q = NULL, pct = 0.9, pool_cov = FALSE, shrink =
   list(q = q, dist = dist, dist_rank = dist_rank, cumprop = cumprop)
 }
 
+#' Cross-validation approach to select the optimal reduced dimension
+#'
+#' TODO
+#'
+#' @export
+#' @param x matrix containing the data. The rows are the observations, and the
+#' columns are the features
+#' @param y vector of class labels for each observation
+#' @param q vector of the reduced dimensions considered. By default, we ... TODO
+#'
+bhatta_cv <- function(x, y, q = NULL, num_folds = 10, ...) {
+  x <- as.matrix(x)
+  y <- as.factor(y)
+  p <- ncol(x)
 
+  # Partitions the data into the number of folds specified by the user.
+  cv_folds <- cv_partition(y = y, num_folds = num_folds)
 
+  # If the candidate values of 'q' are not specified, we determine them
+  # automatically to be the minimum value of the class with the maximum sample
+  # size across all cross-validation folds.
+  if (is.null(q)) {
+    q_max <- min(sapply(cv_folds, function(cv_fold) {
+      max(table(y[cv_fold$training]))
+    }))
+    q <- seq.int(2, q_max)
+  }
+  
+  # Traverse through each cross-validation fold and compute the number of
+  # cross-validation errors for each reduced dimension
+  cv_errors <- lapply(cv_folds, function(cv_fold) {
+    trn_x <- x[cv_fold$training, ]
+    trn_y <- y[cv_fold$training]
+    tst_x <- x[cv_fold$test, ]
+    tst_y <- y[cv_fold$test]
+
+    # For each reduced dimension considered, we calculate the number of test errors
+    # resulting for the current cross-validation fold.
+    cv_num_vars <- sapply(q, function(q_val) {
+      # Train the 'simdiag' classifier for the current value of 'q'
+      simdiag_out <- simdiag(x = trn_x, y = trn_y, bhattacharyya = TRUE, q = q_val,
+                             ...)
+    
+      # Calculate the number of cv errors from the test data set
+      sum(predict(simdiag_out, tst_x)$class != tst_y)
+    })
+  })
+  cv_errors <- colSums(do.call(rbind, cv_errors))
+
+  # Determines the optimal value of 'q' to be the one that yielded the minimized
+  # the cross-validation error rate. If there is a tie, we break the tie by
+  # choosing the smallest value of 'q' for parsimony.
+  q_optimal <- q[which.min(cv_errors)]
+
+  # Updates the cross-validation errors into a data.frame that is easier to
+  # follow:
+  # For each value of 'q', we record the number of cross-validation errors.
+  cv_errors <- cbind.data.frame(q = q, errors = cv_errors)
+
+  list(q = q_optimal, cv_errors = cv_errors)
+}
