@@ -92,7 +92,7 @@ dlda.formula <- function(formula, data, ...) {
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)

@@ -76,7 +76,7 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101,
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
+  obj <- diag_estimates(x, y, prior, est_mean = est_mean)
 
   # Calculates the shrinkage-based estimator for each diagonal sample class
   # covariance matrix. We add these to the corresponding obj$est$var_shrink
@@ -112,7 +112,7 @@ sdqda.formula <- function(formula, data, prior = NULL,
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)

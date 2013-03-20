@@ -39,7 +39,7 @@
 \details{
   This function computes the common estimates and ancillary
   information used in all of the diagonal classifiers in
-  the \code{diagdiscrim} package.
+  the \code{sparsediscrim} package.
 
   The matrix of training observations are given in
   \code{x}. The rows of \code{x} contain the sample

@@ -76,7 +76,7 @@ sdlda.default <- function(x, y, prior = NULL, num_alphas = 101,
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE,
+  obj <- diag_estimates(x, y, prior, pool = TRUE,
                                       est_mean = est_mean)
 
   # Calculates the shrinkage-based estimator of the pooled covariance matrix.
@@ -110,7 +110,7 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101,
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)

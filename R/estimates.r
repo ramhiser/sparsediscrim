@@ -6,7 +6,7 @@
 #' of features, etc.
 #'
 #' This function computes the common estimates and ancillary information used in
-#' all of the diagonal classifiers in the \code{diagdiscrim} package.
+#' all of the diagonal classifiers in the \code{sparsediscrim} package.
 #'
 #' The matrix of training observations are given in \code{x}. The rows of \code{x}
 #' contain the sample observations, and the columns contain the features for each
@@ -81,7 +81,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE, shrink = FALSE,
     if (est_mean == "mle") {
       stats$xbar <- colMeans(x[i,])
     } else if (est_mean == "tong") {
-      stats$xbar <- diagdiscrim:::tong_mean_shrinkage(x[i,])
+      stats$xbar <- tong_mean_shrinkage(x[i,])
     }
     stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
     stats
