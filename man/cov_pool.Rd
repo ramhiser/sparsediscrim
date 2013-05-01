@@ -1,7 +1,7 @@
 \name{cov_pool}
 \alias{cov_pool}
-\title{Computes the pooled maximum likelihood estimator for the common covariance
-matrix from \eqn{K} multivariate normal populations.}
+\title{Computes the pooled maximum likelihood estimator (MLE) for the common
+covariance matrix}
 \usage{
   cov_pool(x, y)
 }
@@ -16,9 +16,12 @@ matrix from \eqn{K} multivariate normal populations.}
   pooled sample covariance matrix of size \eqn{p \times p}
 }
 \description{
-  TODO: Description
+  For the matrix \code{x}, we compute the MLE for the
+  population covariance matrix under the assumption that
+  the data are sampled from \eqn{K} multivariate normal
+  populations having equal covariance matrices.
 }
 \examples{
-cov_pool(iris[,-5], iris$Species)
+cov_pool(iris[, -5], iris$Species)
 }
 

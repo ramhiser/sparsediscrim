@@ -1,0 +1,58 @@
+\name{cov_eigen}
+\alias{cov_eigen}
+\title{Computes the eigenvalue decomposition of the maximum likelihood estimators
+(MLE) of the covariance matrices for the given data matrix}
+\usage{
+  cov_eigen(x, y, pool = FALSE, fast = FALSE, tol = 1e-06)
+}
+\arguments{
+  \item{x}{data matrix with \code{n} observations and
+  \code{p} feature vectors}
+
+  \item{y}{class labels for observations (rows) in
+  \code{x}}
+
+  \item{tol}{tolerance value below which the singular
+  values of \code{x} are considered zero.}
+}
+\value{
+  a list containing the eigendecomposition for each class.
+  If \code{pool = TRUE}, then a single list is returned.
+}
+\description{
+  TODO
+}
+\details{
+  If the \code{fast} argument is selected, we utilize the
+  so-called Fast Singular Value Decomposition (SVD) to
+  quickly compute the eigenvalue decomposition. To compute
+  the Fast SVD, we use the \code{\link{fast.svd}} function,
+  which employs a well-known trick for tall data (large
+  \code{n}, small \code{p}) and wide data (large \code{p},
+  small \code{n}) to compute the SVD corresponding to the
+  nonzero singular values.
+
+  TODO: Describe how we use the SVD to compute the
+  eigenvalue decomposition.
+}
+\examples{
+cov_eigen(x = iris[, -5], y = iris[, 5])
+cov_eigen(x = iris[, -5], y = iris[, 5], pool = TRUE)
+cov_eigen(x = iris[, -5], y = iris[, 5], pool = TRUE, fast = TRUE)
+
+# Generates a data set having fewer observations than features.
+# We apply the Fast SVD to compute the eigendecomposition corresponding to the
+# nonzero eigenvalues of the covariance matrices.
+set.seed(42)
+n <- 5
+p <- 20
+num_classes <- 3
+x <- lapply(seq_len(num_classes), function(k) {
+  replicate(p, rnorm(n, mean = k))
+})
+x <- do.call(rbind, x)
+y <- gl(num_classes, n)
+cov_eigen(x = x, y = y, fast = TRUE)
+cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE)
+}
+
