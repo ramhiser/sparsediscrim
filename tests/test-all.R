@@ -1,4 +1,4 @@
 library('testthat')
-library('diagdiscrim')
+library('sparsediscrim')
 
-test_package('diagdiscrim')
+test_package('sparsediscrim')

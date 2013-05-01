@@ -1,5 +1,0 @@
-During the Alon sim, I noticed that var_shrink with SDLDA was constant for all 30 genes,
-even before diagonalization. Need to double-check that this is correctly implemented.
-
-After attempting a few simulations under normality, I noticed that for p >> N, alpha was most often 1. However, in other situations, alpha changed as the data changed. So, I'm ruling out any issues with my code for now; if there's an issue, perhaps it could be with the setup in Pang (2009).
-
