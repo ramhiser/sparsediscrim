@@ -1,12 +1,12 @@
 \name{cv_partition}
 \alias{cv_partition}
-\title{Partitions data for cross-validation.}
+\title{Randomly partitions data for cross-validation.}
 \usage{
   cv_partition(y, num_folds = 10, hold_out = NULL,
     seed = NULL)
 }
 \arguments{
-  \item{y}{a vector of the labels of the training data}
+  \item{y}{a vector of class labels}
 
   \item{num_folds}{the number of cross-validation folds.
   Ignored if \code{hold_out} is not \code{NULL}. See

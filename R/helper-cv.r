@@ -1,4 +1,4 @@
-#' Partitions data for cross-validation.
+#' Randomly partitions data for cross-validation.
 #'
 #' For a vector of training labels, we return a list of cross-validation folds,
 #' where each fold has the indices of the observations to leave out in the fold.
@@ -14,7 +14,7 @@
 #' \code{length(diag(3))} is 9.
 #'
 #' @export
-#' @param y a vector of the labels of the training data
+#' @param y a vector of class labels
 #' @param num_folds the number of cross-validation folds. Ignored if
 #' \code{hold_out} is not \code{NULL}. See Details.
 #' @param hold_out the hold-out size for cross-validation. See Details.
@@ -44,6 +44,6 @@ cv_partition <- function(y, num_folds = 10, hold_out = NULL, seed = NULL) {
       test = fold
     )
   })
-  names(folds) <- paste("Fold", names(folds), sep = "")
+  names(folds) <- paste0("Fold", names(folds))
   folds
 }

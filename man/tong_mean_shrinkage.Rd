@@ -1,6 +1,6 @@
 \name{tong_mean_shrinkage}
 \alias{tong_mean_shrinkage}
-\title{Tong et al. (2012)'s  Lindley-type Shrunken Mean Estimator}
+\title{Tong et al. (2012)'s Lindley-type Shrunken Mean Estimator}
 \usage{
   tong_mean_shrinkage(x, r_opt = NULL)
 }
@@ -20,7 +20,14 @@
   estimator
 }
 \description{
-  TODO: Describe the shrunken mean TODO: Provide citation
-  info.
+  An implementation of the Lindley-type shrunken mean
+  estimator utilized in shrinkage-mean-based diagonal
+  linear discriminant analysis (SmDLDA).
+}
+\references{
+  Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
+  Estimation and Its Application to Diagonal Discriminant
+  Analysis," Bioinformatics, 28, 4, 531-537.
+  \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 }
 

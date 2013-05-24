@@ -20,7 +20,10 @@
   If \code{pool = TRUE}, then a single list is returned.
 }
 \description{
-  TODO
+  For the classes given in the vector \code{y}, we compute
+  the eigenvalue (spectral) decomposition of the class
+  sample covariance matrices (MLEs) using the data matrix
+  \code{x}.
 }
 \details{
   If the \code{fast} argument is selected, we utilize the
@@ -30,10 +33,8 @@
   which employs a well-known trick for tall data (large
   \code{n}, small \code{p}) and wide data (large \code{p},
   small \code{n}) to compute the SVD corresponding to the
-  nonzero singular values.
-
-  TODO: Describe how we use the SVD to compute the
-  eigenvalue decomposition.
+  nonzero singular values. For more information about the
+  Fast SVD, see \code{\link[corpcor]{fast.svd}}.
 }
 \examples{
 cov_eigen(x = iris[, -5], y = iris[, 5])

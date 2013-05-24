@@ -1,8 +1,8 @@
 #' Shrinkage-based Diagonal Quadratic Discriminant Analysis (SDQDA)
 #'
 #' Given a set of training data, this function builds the Shrinkage-based
-#' Diagonal Quadratic Discriminant Analysis (SDQDA) classifier, which is based on
-#' the DQDA classifier, often attributed to Dudoit et al. (2002). The DQDA
+#' Diagonal Quadratic Discriminant Analysis (SDQDA) classifier, which is based
+#' on the DQDA classifier, often attributed to Dudoit et al. (2002). The DQDA
 #' classifier belongs to the family of Naive Bayes classifiers, where the
 #' distributions of each class are assumed to be multivariate normal. To improve
 #' the estimation of the class variances, Pang et al. (2009) proposed the SDQDA
@@ -18,9 +18,9 @@
 #' classifiers is that they are fast and have much fewer parameters to estimate,
 #' especially when the number of features is quite large.
 #'
-#' The matrix of training observations are given in \code{x}. The rows of \code{x}
-#' contain the sample observations, and the columns contain the features for each
-#' training observation.
+#' The matrix of training observations are given in \code{x}. The rows of
+#' \code{x} contain the sample observations, and the columns contain the
+#' features for each training observation.
 #'
 #' The vector of class labels given in \code{y} are coerced to a \code{factor}.
 #' The length of \code{y} should match the number of rows in \code{x}.
@@ -31,10 +31,10 @@
 #'
 #' The vector, \code{prior}, contains the \emph{a priori} class membership for
 #' each class. If \code{prior} is NULL (default), the class membership
-#' probabilities are estimated as the sample proportion of observations belonging
-#' to each class. Otherwise, \code{prior} should be a vector with the same length
-#' as the number of classes in \code{y}. The \code{prior} probabilties should be
-#' nonnegative and sum to one.
+#' probabilities are estimated as the sample proportion of observations
+#' belonging to each class. Otherwise, \code{prior} should be a vector with the
+#' same length as the number of classes in \code{y}. The \code{prior}
+#' probabilties should be nonnegative and sum to one.
 #'
 #' @export
 #'
@@ -65,8 +65,9 @@
 #' sdqda_out2 <- sdqda(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(sdqda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-sdqda <- function(x, ...)
+sdqda <- function(x, ...) {
   UseMethod("sdqda")
+}
 
 #' @rdname sdqda
 #' @method sdqda default
@@ -76,7 +77,7 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101,
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
+  obj <- sparsediscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
 
   # Calculates the shrinkage-based estimator for each diagonal sample class
   # covariance matrix. We add these to the corresponding obj$est$var_shrink
@@ -112,7 +113,7 @@ sdqda.formula <- function(formula, data, prior = NULL,
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- sparsediscrim:::no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
@@ -150,10 +151,10 @@ print.sdqda <- function(x, ...) {
 
 #' SDQDA prediction of the class membership of a matrix of new observations.
 #'
-#' The SDQDA classifier is a modification to QDA, where the off-diagonal elements
-#' of the pooled sample covariance matrix are set to zero. To improve the
-#' estimation of the pooled variances, we use a shrinkage method from Pang et al.
-#' (2009).
+#' The SDQDA classifier is a modification to QDA, where the off-diagonal
+#' elements of the pooled sample covariance matrix are set to zero. To improve
+#' the estimation of the pooled variances, we use a shrinkage method from Pang
+#' et al.  (2009).
 #' 
 #' @rdname sdqda
 #' @method predict sdqda
@@ -181,7 +182,8 @@ predict.sdqda <- function(object, newdata) {
 
 	scores <- apply(newdata, 1, function(obs) {
 		sapply(object$est, function(class_est) {
-			with(class_est, sum((obs - xbar)^2 / var_shrink + log(var_shrink)) + log(prior))
+			with(class_est, sum((obs - xbar)^2 / var_shrink + log(var_shrink))
+           + log(prior))
 		})
 	})
 	

@@ -39,7 +39,7 @@
 \details{
   This function computes the common estimates and ancillary
   information used in all of the diagonal classifiers in
-  the \code{diagdiscrim} package.
+  the \code{sparsediscrim} package.
 
   The matrix of training observations are given in
   \code{x}. The rows of \code{x} contain the sample
@@ -63,5 +63,11 @@
   be a vector with the same length as the number of classes
   in \code{y}. The \code{prior} probabilties should be
   nonnegative and sum to one.
+}
+\references{
+  Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
+  Estimation and Its Application to Diagonal Discriminant
+  Analysis," Bioinformatics, 28, 4, 531-537.
+  \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 }
 

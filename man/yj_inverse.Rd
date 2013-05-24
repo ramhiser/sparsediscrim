@@ -17,11 +17,27 @@
   the inverse of the Yeo-Johnson random variate, \code{y}
 }
 \description{
-  TODO: Briefly describe Yeo-Johnson is generalization of
-  Box-Cox TODO: Provide the formulas for Yeo-Johnson
-  transformation (given in paper) TODO: Provide the inverse
-  formulas for Yeo-Johnson (on whiteboard and iPhone) TODO:
-  Cite Yeo-Johnson paper TODO: Reference the 'car' package
-  to find the fitted 'lambda'
+  For a random variate that has been transformed with the
+  Yeo-Johnson transformation to near-normality, we invert
+  the random variate back to its original scale in this
+  function. The inversion requires the transformation value
+  \code{lambda} applied initially.
+}
+\details{
+  The YJ transformation to near-normality is a
+  generalization of the Box-Cox (BC) transformation that
+  allows for observations to be unbounded on the real line,
+  whereas the BC transformation requires that observations
+  be nonnegative.
+
+  The value for \code{\lambda} is typically obtained using
+  the \code{\link[car]{powerTransform}} function. The
+  transformed random variate is usually obtained from the
+  \code{\link[car]{yjPower}} function.
+}
+\references{
+  Yeo, I. K. and Johnson, R. A. (2000). "A new family of
+  power transformations to improve normality or symmetry,"
+  Biometrika, 87, 954-959.
 }
 

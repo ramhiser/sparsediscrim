@@ -7,32 +7,32 @@ population (class) has an intraclass covariance matrix.}
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class. The
-  \code{length} of \code{n} determines the number of
-  classes, \code{K}.}
+  length of \code{n} determines the number of classes
+  \code{K}.}
 
   \item{p}{the number of features (variables) in the data}
 
   \item{rho}{vector of the values of the off-diagonal
   elements for each intraclass covariance matrix. Must
-  equal the \code{length} of \code{n}.}
+  equal the length of \code{n}.}
 
   \item{sigma2}{vector of variances for each class. Must
-  equal the \code{length} of \code{n}. Default is 1 for
-  each class.}
+  equal the length of \code{n}. Default is 1 for each
+  class.}
 }
 \value{
   named list with elements: \itemize{ \item \code{x}:
-  matrix of observations with \code{sum(n)} rows and
-  \code{p} columns \item \code{y}: vector of class labels
-  that indicates class membership for each observation
-  (row) in \code{x}. }
+  matrix of observations with \code{n} rows and \code{p}
+  columns \item \code{y}: vector of class labels that
+  indicates class membership for each observation (row) in
+  \code{x}. }
 }
 \description{
   This function generates \code{K} multivariate normal data
   sets, where each data set is generated with a constant
   mean vector and an intraclass covariance matrix. The data
-  are returned as a single matrix, \code{x}, along with a
-  vector of class labels, \code{y}, that indicates class
+  are returned as a single matrix \code{x} along with a
+  vector of class labels \code{y} that indicates class
   membership.
 }
 \details{
@@ -57,8 +57,8 @@ population (class) has an intraclass covariance matrix.}
   p)^(-1)} and 1, exclusively, to ensure that the
   covariance matrix is positive definite.
 
-  The number of classes, \code{K}, is determined with lazy
-  evaluation as the \code{length} of \code{n}.
+  The number of classes \code{K} is determined with lazy
+  evaluation as the length of \code{n}.
 }
 \examples{
 # Generates data from K = 3 classes.

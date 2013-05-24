@@ -24,7 +24,6 @@ cov_mle <- function(x, diag = FALSE) {
   }
 }
 
-
 #' Computes the pooled maximum likelihood estimator (MLE) for the common
 #' covariance matrix
 #'
@@ -70,16 +69,17 @@ cov_list <- function(x, y) {
 #' Computes the eigenvalue decomposition of the maximum likelihood estimators
 #' (MLE) of the covariance matrices for the given data matrix
 #'
-#' TODO
+#' For the classes given in the vector \code{y}, we compute the eigenvalue
+#' (spectral) decomposition of the class sample covariance matrices (MLEs) using
+#' the data matrix \code{x}.
 #'
 #' If the \code{fast} argument is selected, we utilize the so-called Fast
 #' Singular Value Decomposition (SVD) to quickly compute the eigenvalue
 #' decomposition. To compute the Fast SVD, we use the \code{\link{fast.svd}}
 #' function, which employs a well-known trick for tall data (large \code{n},
 #' small \code{p}) and wide data (large \code{p}, small \code{n}) to compute the
-#' SVD corresponding to the nonzero singular values.
-#'
-#' TODO: Describe how we use the SVD to compute the eigenvalue decomposition.
+#' SVD corresponding to the nonzero singular values. For more information about
+#' the Fast SVD, see \code{\link[corpcor]{fast.svd}}.
 #' 
 #' @importFrom corpcor fast.svd
 #' @export
@@ -147,15 +147,20 @@ cov_eigen <- function(x, y, pool = FALSE, fast = FALSE, tol = 1e-6) {
   eigen_out
 }
 
-#' Computes the observation weights for each class for the RDA classifier
+#' Computes the observation weights for each class for the HDRDA classifier
 #'
-#' TODO: Add description
+#' This function calculates the weight for each observation in the data matrix
+#' \code{x} in order to calculate the covariance matrices employed in the HDRDA
+#' classifier, implemented in \code{\link{hdrda}}.
 #'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
 #' @param lambda the RDA pooling parameter. Must be between 0 and 1, inclusively.
 #' @return list containing the observations for each class given in \code{y}
+#'
+#' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+#' "High-Dimensional Regularized Discriminant Analysis."
 rda_weights <- function(x, y, lambda = 1) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -169,7 +174,9 @@ rda_weights <- function(x, y, lambda = 1) {
 
 #' Calculates the RDA covariance-matrix estimators for each class
 #'
-#' TODO: Add description
+#' For the classes given in the vector \code{y}, this function calculates the
+#' class covariance-matrix estimators employed in the HDRDA classifier,
+#' implemented in \code{\link{hdrda}}.
 #'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
@@ -177,6 +184,9 @@ rda_weights <- function(x, y, lambda = 1) {
 #' @param lambda the RDA pooling parameter. Must be between 0 and 1, inclusively.
 #' @return list containing the RDA covariance-matrix estimators for each class
 #' given in \code{y}
+#'
+#' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+#' "High-Dimensional Regularized Discriminant Analysis."
 rda_cov <- function(x, y, lambda = 1) {
   x_centered <- center_data(x = x, y = y)
   weights <- rda_weights(x = x, y = y, lambda = lambda)
@@ -189,33 +199,36 @@ rda_cov <- function(x, y, lambda = 1) {
 #' Computes a shrunken version of the maximum likelihood estimator for the
 #' sample covariance matrix under the assumption of multivariate normality.
 #'
-#' For a sample matrix, \code{x}, we compute the sample covariance matrix
-#' as the maximum likelihood estimator (MLE) of the population covariance
-#' matrix and shrink it towards its diagonal.
+#' For a sample matrix, \code{x}, we compute the sample covariance matrix as the
+#' maximum likelihood estimator (MLE) of the population covariance matrix and
+#' shrink it towards its diagonal.
 #'
 #' Let \eqn{\widehat{\Sigma}} be the MLE of the covariance matrix \eqn{\Sigma}.
 #' Then, we shrink the MLE towards its diagonal by computing
-#' \deqn{\widehat{\Sigma}(\gamma) = \gamma \widehat{\Sigma} + (1 - \gamma) \widehat{\Sigma} \circ I_p},
-#' where \eqn{\circ} denotes the Hadamard product and \eqn{\gamma \in [0,1]}.
+#' \deqn{\widehat{\Sigma}(\gamma) = \gamma \widehat{\Sigma} + (1 - \gamma)
+#' \widehat{\Sigma} \circ I_p,} where \eqn{\circ} denotes the Hadamard product
+#' and \eqn{\gamma \in [0,1]}.
 #'
 #' For \eqn{\gamma < 1}, the resulting shrunken covariance matrix estimator is
 #' positive definite, and for \eqn{\gamma = 1}, we simply have the MLE, which can
 #' potentially be positive semidefinite (singular).
 #'
-#' The estimator given here is based on Section 18.3.1 of the text,
-#' "Elements of Statistical Learning."
-#'
-#' TODO: Cite the text.
+#' The estimator given here is based on Section 18.3.1 of the Hastie et
+#' al. (2008) text.
 #'
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param gamma the shrinkage parameter. Must be between 0 and 1, inclusively.
 #' By default, the shrinkage parameter is 1, which simply yields the MLE.
 #' @return shrunken sample covariance matrix of size \eqn{p \times p}
+#'
+#' @references Hastie, T., Tibshirani, R., and Friedman, J. (2008), "The
+#' Elements of Statistical Learning: Data Mining, Inference, and Prediction,"
+#' 2nd edition. \url{http://www-stat.stanford.edu/~tibs/ElemStatLearn/}
 cov_shrink_diag <- function(x, gamma = 1) {
   if (gamma < 0 || gamma > 1) {
     stop("The value of 'gamma' must be between 0 and 1, inclusively.")
   }
-  cov_x <- diagdiscrim:::cov_mle(x)
+  cov_x <- sparsediscrim:::cov_mle(x)
   gamma * cov_x + (1 - gamma) * diag(diag(cov_x))
 }

@@ -2,9 +2,9 @@
 #' population (class) has an intraclass covariance matrix.
 #'
 #' This function generates \code{K} multivariate normal data sets, where each
-#' data set is generated with a constant mean vector and an intraclass covariance
-#' matrix. The data are returned as a single matrix, \code{x}, along with a
-#' vector of class labels, \code{y}, that indicates class membership.
+#' data set is generated with a constant mean vector and an intraclass
+#' covariance matrix. The data are returned as a single matrix \code{x} along
+#' with a vector of class labels \code{y} that indicates class membership.
 #' 
 #' For simplicity, we assume that a class mean vector is constant for each
 #' feature. That is, we assume that the mean vector of the \eqn{k}th class is
@@ -17,26 +17,26 @@
 #' \eqn{p \times p} identity matrix.
 #'
 #' By default, with \eqn{sigma_k^2 = 1}, the diagonal elements of the intraclass
-#' covariance matrix are all 1, while the off-diagonal elements of the matrix are
-#' all \code{rho}.
+#' covariance matrix are all 1, while the off-diagonal elements of the matrix
+#' are all \code{rho}.
 #' 
 #' The values of \code{rho} must be between \eqn{(1 - p)^(-1)} and 1,
 #' exclusively, to ensure that the covariance matrix is positive definite.
 #'
-#' The number of classes, \code{K}, is determined with lazy evaluation as the
-#' \code{length} of \code{n}.
+#' The number of classes \code{K} is determined with lazy evaluation as the
+#' length of \code{n}.
 #'
 #' @export
-#' @param n vector of the sample sizes of each class. The \code{length} of
-#' \code{n} determines the number of classes, \code{K}.
+#' @param n vector of the sample sizes of each class. The length of \code{n}
+#' determines the number of classes \code{K}.
 #' @param p the number of features (variables) in the data
 #' @param rho vector of the values of the off-diagonal elements for each
-#' intraclass covariance matrix. Must equal the \code{length} of \code{n}.
-#' @param sigma2 vector of variances for each class. Must equal the \code{length}
-#' of \code{n}. Default is 1 for each class.
+#' intraclass covariance matrix. Must equal the length of \code{n}.
+#' @param sigma2 vector of variances for each class. Must equal the length of
+#' \code{n}. Default is 1 for each class.
 #' @return named list with elements:
 #' \itemize{
-#'   \item \code{x}: matrix of observations with \code{sum(n)} rows and \code{p}
+#'   \item \code{x}: matrix of observations with \code{n} rows and \code{p}
 #' columns
 #'   \item \code{y}: vector of class labels that indicates class membership for
 #' each observation (row) in \code{x}.
@@ -54,6 +54,7 @@
 #' data$x
 #' data$y
 generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
+  # TODO: Update 'require' statements to @import
   require('mvtnorm')
   p <- as.integer(p)
   rho <- as.numeric(rho)
@@ -73,7 +74,7 @@ generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
   x <- lapply(seq_len(K), function(k) {
     mvtnorm:::rmvnorm(n = n[k], mean = rep(mu[k], p),
                       sigma = cov_intraclass(p = p, rho = rho[k],
-                        sigma2 = sigma2[k]))
+                      sigma2 = sigma2[k]))
   })
   x <- do.call(rbind, x)
   y <- factor(rep(seq_along(n), n))
@@ -84,7 +85,7 @@ generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
 #' Generates a \eqn{p \times p} intraclass covariance matrix
 #'
 #' This function generates a \eqn{p \times p} intraclass covariance matrix with
-#' correlation, \code{rho}. The variance, \code{sigma2}, is constant for each
+#' correlation \code{rho}. The variance \code{sigma2} is constant for each
 #' feature and defaulted to 1.
 #'
 #' The intraclass covariance matrix is defined as:
@@ -93,8 +94,8 @@ generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
 #' \eqn{p \times p} identity matrix.
 #'
 #' By default, with \code{sigma2 = 1}, the diagonal elements of the intraclass
-#' covariance matrix are all 1, while the off-diagonal elements of the matrix are
-#' all \code{rho}.
+#' covariance matrix are all 1, while the off-diagonal elements of the matrix
+#' are all \code{rho}.
 #' 
 #' The value of \code{rho} must be between \eqn{(1 - p)^(-1)} and 1,
 #' exclusively, to ensure that the covariance matrix is positive definite.

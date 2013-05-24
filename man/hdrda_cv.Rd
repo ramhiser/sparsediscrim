@@ -1,6 +1,6 @@
 \name{hdrda_cv}
 \alias{hdrda_cv}
-\title{Helper function to optimize the HDRDA classifier via cross-validation (cv).}
+\title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
   hdrda_cv(x, y, num_folds = 10, num_lambda = 21,
     num_gamma = 7, ...)
@@ -30,7 +30,11 @@
   summarizes the cross-validation results.
 }
 \description{
-  Helper function to optimize the HDRDA classifier via
-  cross-validation (cv).
+  For a given data set, we apply cross-validation (cv) to
+  select the optimal HDRDA tuning parameters.
+}
+\details{
+  The number of cross-validation folds is given in
+  \code{num_folds}.
 }
 

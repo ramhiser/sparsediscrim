@@ -1,9 +1,13 @@
-#' Tong et al. (2012)'s  Lindley-type Shrunken Mean Estimator
+#' Tong et al. (2012)'s Lindley-type Shrunken Mean Estimator
 #'
-#' TODO: Describe the shrunken mean
-#' TODO: Provide citation info.
+#' An implementation of the Lindley-type shrunken mean estimator utilized in
+#' shrinkage-mean-based diagonal linear discriminant analysis (SmDLDA).
 #'
 #' @export
+#' @references Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
+#' Estimation and Its Application to Diagonal Discriminant Analysis,"
+#' Bioinformatics, 28, 4, 531-537.
+#' \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 #' @param x a matrix with \code{n} rows and \code{p} columns.
 #' @param r_opt the shrinkage coefficient. If \code{NULL} (default), we calculate
 #' the shrinkage coefficient with the formula given just above Equation 5 on page

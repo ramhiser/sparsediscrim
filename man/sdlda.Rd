@@ -80,7 +80,7 @@
   off-diagonal elements of the pooled sample covariance
   matrix are set to zero. To improve the estimation of the
   pooled variances, we use a shrinkage method from Pang et
-  al. (2009).
+  al.  (2009).
 }
 \details{
   The DLDA classifier is a modification to the well-known

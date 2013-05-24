@@ -30,8 +30,15 @@ autocorrelated blocks.}
   to 1.
 }
 \details{
-  The autocorrelated covariance matrix is defined as: TODO:
-  Give definition.
+  The autocorrelated covariance matrix is defined as:
+  \deqn{\Sigma = \Sigma^{(\rho)} \oplus \Sigma^{(-\rho)}
+  \oplus \ldots \oplus \Sigma^{(\rho)},} where \eqn{\oplus}
+  denotes the direct sum and the \eqn{(i,j)}th entry of
+  \eqn{\Sigma^{(\rho)}} is \deqn{\Sigma_{ij}^{(\rho)} = \{
+  \rho^{| i - j|} \}.}
+
+  The matrix \eqn{\Sigma^{(\rho)}} is the autocorrelated
+  block discussed above.
 
   The value of \code{rho} must be such that \eqn{\abs{\rho}
   < 1} to ensure that the covariance matrix is positive

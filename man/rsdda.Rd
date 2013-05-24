@@ -19,7 +19,7 @@
   Given a set of training data, this function builds the
   RSDDA classifier. To improve the estimation of the pooled
   variances, we use a shrinkage method from Pang et al.
-  (2009). This yields the SDQDA classifier.
+  (2009).  This yields the SDQDA classifier.
 }
 \details{
   The RSDDA classifier is a regularized version of SDQDA,

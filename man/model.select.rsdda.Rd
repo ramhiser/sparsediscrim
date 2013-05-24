@@ -21,8 +21,11 @@
   leave-k-out crossvalidation.
 }
 \details{
-  of the pooled variances, we use a shrinkage method from
-  Pang et al. (2009). This yields the SDQDA classifier.
+  The DQDA classifier is a modification to LDA, where the
+  off-diagonal elements of the pooled sample covariance
+  matrix are set to zero. To improve the estimation of the
+  pooled variances, we use a shrinkage method from Pang et
+  al. (2009).  This yields the SDQDA classifier.
 
   The RSDDA classifier is a regularized version of SDQDA,
   where the off-diagonal elements of the pooled sample

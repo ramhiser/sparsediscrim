@@ -57,8 +57,9 @@
 #' dlda_out2 <- dlda(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(dlda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-dlda <- function(x, ...)
+dlda <- function(x, ...) {
   UseMethod("dlda")
+}
 
 #' @rdname dlda
 #' @method dlda default
@@ -67,7 +68,7 @@ dlda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong")) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE,
+  obj <- sparsediscrim:::diag_estimates(x, y, prior, pool = TRUE,
                                       est_mean = est_mean)
 
   # Creates an object of type 'dlda' and adds the 'match.call' to the object
@@ -92,7 +93,7 @@ dlda.formula <- function(formula, data, prior = NULL,
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- sparsediscrim:::no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)

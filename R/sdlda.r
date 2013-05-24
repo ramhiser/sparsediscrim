@@ -4,10 +4,10 @@
 #' Diagonal Linear Discriminant Analysis (SDLDA) classifier, which is based on
 #' the DLDA classifier, often attributed to Dudoit et al. (2002). The DLDA
 #' classifier belongs to the family of Naive Bayes classifiers, where the
-#' distributions of each class are assumed to be multivariate normal and to share
-#' a common covariance matrix. To improve the estimation of the pooled variances,
-#' Pang et al. (2009) proposed the SDLDA classifier which uses a shrinkage-based
-#' estimators of the pooled covariance matrix.
+#' distributions of each class are assumed to be multivariate normal and to
+#' share a common covariance matrix. To improve the estimation of the pooled
+#' variances, Pang et al. (2009) proposed the SDLDA classifier which uses a
+#' shrinkage-based estimators of the pooled covariance matrix.
 #'
 #' The DLDA classifier is a modification to the well-known LDA classifier, where
 #' the off-diagonal elements of the pooled covariance matrix are assumed to be
@@ -18,9 +18,9 @@
 #' classifiers is that they are fast and have much fewer parameters to estimate,
 #' especially when the number of features is quite large.
 #'
-#' The matrix of training observations are given in \code{x}. The rows of \code{x}
-#' contain the sample observations, and the columns contain the features for each
-#' training observation.
+#' The matrix of training observations are given in \code{x}. The rows of
+#' \code{x} contain the sample observations, and the columns contain the
+#' features for each training observation.
 #'
 #' The vector of class labels given in \code{y} are coerced to a \code{factor}.
 #' The length of \code{y} should match the number of rows in \code{x}.
@@ -31,10 +31,10 @@
 #'
 #' The vector, \code{prior}, contains the \emph{a priori} class membership for
 #' each class. If \code{prior} is NULL (default), the class membership
-#' probabilities are estimated as the sample proportion of observations belonging
-#' to each class. Otherwise, \code{prior} should be a vector with the same length
-#' as the number of classes in \code{y}. The \code{prior} probabilties should be
-#' nonnegative and sum to one.
+#' probabilities are estimated as the sample proportion of observations
+#' belonging to each class. Otherwise, \code{prior} should be a vector with the
+#' same length as the number of classes in \code{y}. The \code{prior}
+#' probabilties should be nonnegative and sum to one.
 #'
 #' @export
 #'
@@ -65,8 +65,9 @@
 #' sdlda_out2 <- sdlda(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(sdlda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-sdlda <- function(x, ...)
+sdlda <- function(x, ...) {
   UseMethod("sdlda")
+}
 
 #' @rdname sdlda
 #' @method sdlda default
@@ -76,7 +77,7 @@ sdlda.default <- function(x, y, prior = NULL, num_alphas = 101,
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- diagdiscrim:::diag_estimates(x, y, prior, pool = TRUE,
+  obj <- sparsediscrim:::diag_estimates(x, y, prior, pool = TRUE,
                                       est_mean = est_mean)
 
   # Calculates the shrinkage-based estimator of the pooled covariance matrix.
@@ -110,7 +111,7 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101,
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
-  formula <- diagdiscrim:::no_intercept(formula, data)
+  formula <- sparsediscrim:::no_intercept(formula, data)
   
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
@@ -148,10 +149,10 @@ print.sdlda <- function(x, ...) {
 
 #' SDLDA prediction of the class membership of a matrix of new observations.
 #'
-#' The SDLDA classifier is a modification to LDA, where the off-diagonal elements
-#' of the pooled sample covariance matrix are set to zero. To improve the
-#' estimation of the pooled variances, we use a shrinkage method from Pang et al.
-#' (2009).
+#' The SDLDA classifier is a modification to LDA, where the off-diagonal
+#' elements of the pooled sample covariance matrix are set to zero. To improve
+#' the estimation of the pooled variances, we use a shrinkage method from Pang
+#' et al.  (2009).
 #' 
 #' @rdname sdlda
 #' @method predict sdlda

@@ -17,13 +17,14 @@
 }
 \description{
   This function generates a \eqn{p \times p} autocorrelated
-  covariance matrix with autocorrelation parameter,
-  \code{rho}. The variance, \code{sigma2}, is constant for
+  covariance matrix with autocorrelation parameter
+  \code{rho}. The variance \code{sigma2} is constant for
   each feature and defaulted to 1.
 }
 \details{
-  The autocorrelated covariance matrix is defined as: TODO:
-  Give definition.
+  The autocorrelated covariance matrix is defined as: The
+  \eqn{(i,j)}th entry of the autocorrelated covariance
+  matrix is defined as: \eqn{\rho^{| i - j|}}.
 
   The value of \code{rho} must be such that \eqn{\abs{\rho}
   < 1} to ensure that the covariance matrix is positive

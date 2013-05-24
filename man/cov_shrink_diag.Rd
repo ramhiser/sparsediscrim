@@ -28,7 +28,7 @@ sample covariance matrix under the assumption of multivariate normality.}
   matrix \eqn{\Sigma}. Then, we shrink the MLE towards its
   diagonal by computing \deqn{\widehat{\Sigma}(\gamma) =
   \gamma \widehat{\Sigma} + (1 - \gamma) \widehat{\Sigma}
-  \circ I_p}, where \eqn{\circ} denotes the Hadamard
+  \circ I_p,} where \eqn{\circ} denotes the Hadamard
   product and \eqn{\gamma \in [0,1]}.
 
   For \eqn{\gamma < 1}, the resulting shrunken covariance
@@ -37,8 +37,12 @@ sample covariance matrix under the assumption of multivariate normality.}
   potentially be positive semidefinite (singular).
 
   The estimator given here is based on Section 18.3.1 of
-  the text, "Elements of Statistical Learning."
-
-  TODO: Cite the text.
+  the Hastie et al. (2008) text.
+}
+\references{
+  Hastie, T., Tibshirani, R., and Friedman, J. (2008), "The
+  Elements of Statistical Learning: Data Mining, Inference,
+  and Prediction," 2nd edition.
+  \url{http://www-stat.stanford.edu/~tibs/ElemStatLearn/}
 }
 

@@ -16,6 +16,10 @@
   a \code{hdrda} object with updated estimates
 }
 \description{
-  TODO
+  This function updates some of the quantities in the HDRDA
+  classifier based on updated values of \code{lambda} and
+  \code{gamma}. The update can greatly expedite
+  cross-validation to examine a large grid of values for
+  \code{lambda} and \code{gamma}.
 }
 

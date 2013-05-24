@@ -6,7 +6,7 @@
 #' of features, etc.
 #'
 #' This function computes the common estimates and ancillary information used in
-#' all of the diagonal classifiers in the \code{diagdiscrim} package.
+#' all of the diagonal classifiers in the \code{sparsediscrim} package.
 #'
 #' The matrix of training observations are given in \code{x}. The rows of \code{x}
 #' contain the sample observations, and the columns contain the features for each
@@ -38,6 +38,11 @@
 #' option to use a shrunken mean estimator proposed by Tong et al. (2012).
 #' @return named list with estimators for each class and necessary ancillary
 #' information
+#'
+#' @references Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
+#' Estimation and Its Application to Diagonal Discriminant Analysis,"
+#' Bioinformatics, 28, 4, 531-537.
+#' \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
                            est_mean = c("mle", "tong")) {
   obj <- list()
@@ -80,7 +85,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
     if (est_mean == "mle") {
       stats$xbar <- colMeans(x[i,])
     } else if (est_mean == "tong") {
-      stats$xbar <- diagdiscrim:::tong_mean_shrinkage(x[i,])
+      stats$xbar <- sparsediscrim:::tong_mean_shrinkage(x[i, ])
     }
     stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
     stats
@@ -148,7 +153,8 @@ regdiscrim_estimates <- function(x, y, cov = TRUE, prior = NULL) {
   # Error Checking
   if (!is.null(prior)) {
     if (length(prior) != obj$num_groups) {
-      stop("The number of 'prior' probabilities must match the number of classes in 'y'.")
+      stop("The number of 'prior' probabilities must match the number of
+            classes in 'y'.")
     }
     if (any(prior <= 0)) {
       stop("The 'prior' probabilities must be nonnegative.")

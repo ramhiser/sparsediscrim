@@ -16,8 +16,8 @@
 }
 \description{
   This function generates a \eqn{p \times p} intraclass
-  covariance matrix with correlation, \code{rho}. The
-  variance, \code{sigma2}, is constant for each feature and
+  covariance matrix with correlation \code{rho}. The
+  variance \code{sigma2} is constant for each feature and
   defaulted to 1.
 }
 \details{

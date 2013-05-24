@@ -1,7 +1,7 @@
 \name{yj_marginal}
 \alias{yj_marginal}
-\title{Computes the marginal Yeo-Johnson (YJ) transformation to near-normality for
-each class.}
+\title{Computes the marginal Yeo-Johnson transformation to near-normality for each
+class.}
 \usage{
   yj_marginal(x, y)
 }
@@ -22,9 +22,10 @@ each class.}
 }
 \description{
   For each class designated in \code{y}, we compute the
-  marginal YJ transformation to near-normality. That is,
-  within a given class, we estimate the YJ transformation
-  parameter for each feature vector.
+  marginal Yeo-Johnson (YJ) transformation to
+  near-normality. That is, within a given class, we
+  estimate the YJ transformation parameter for each feature
+  vector.
 }
 \details{
   The marginal YJ transformation to near-normality is a
@@ -33,16 +34,17 @@ each class.}
   unbounded on the real line, whereas the marginal BC
   transformation requires that observations be nonnegative.
 
-  We use the \code{powerTransform} function from the
-  \code{car} package to estimate the values for
-  \code{lambda} and then use the \code{yjPower} function
-  from the same package to perform the transformation.
-
-  TODO: Provide the formulas for Yeo-Johnson transformation
-  (given in paper) TODO: Cite Yeo-Johnson paper TODO:
-  Reference the 'car' package to find the fitted 'lambda'
+  We use the \code{\link[car]{powerTransform}} function to
+  estimate the values for \code{lambda} and then use the
+  \code{\link[car]{yjPower}} function to perform the
+  transformation.
 }
 \examples{
 yj_marginal(iris[, -5], iris$Species)
+}
+\references{
+  Yeo, I. K. and Johnson, R. A. (2000). "A new family of
+  power transformations to improve normality or symmetry,"
+  Biometrika, 87, 954-959.
 }
 

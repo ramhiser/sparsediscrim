@@ -1,6 +1,6 @@
 \name{rda_weights}
 \alias{rda_weights}
-\title{Computes the observation weights for each class for the RDA classifier}
+\title{Computes the observation weights for each class for the HDRDA classifier}
 \usage{
   rda_weights(x, y, lambda = 1)
 }
@@ -20,6 +20,13 @@
   \code{y}
 }
 \description{
-  TODO: Add description
+  This function calculates the weight for each observation
+  in the data matrix \code{x} in order to calculate the
+  covariance matrices employed in the HDRDA classifier,
+  implemented in \code{\link{hdrda}}.
+}
+\references{
+  Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+  "High-Dimensional Regularized Discriminant Analysis."
 }
 

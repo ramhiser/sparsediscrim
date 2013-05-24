@@ -20,6 +20,13 @@
   each class given in \code{y}
 }
 \description{
-  TODO: Add description
+  For the classes given in the vector \code{y}, this
+  function calculates the class covariance-matrix
+  estimators employed in the HDRDA classifier, implemented
+  in \code{\link{hdrda}}.
+}
+\references{
+  Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+  "High-Dimensional Regularized Discriminant Analysis."
 }
 

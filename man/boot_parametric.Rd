@@ -8,8 +8,8 @@ bootsrapping technique with covariance matrix shrinkage.}
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class to
-  generate. The \code{length} of \code{n} should match the
-  number of classes given in \code{y}.}
+  generate. The length of \code{n} should match the number
+  of classes given in \code{y}.}
 
   \item{x}{matrix of observations with observations on the
   rows and features on the columns}
@@ -62,31 +62,35 @@ bootsrapping technique with covariance matrix shrinkage.}
   This function generates \code{K} multivariate data sets,
   where each data set is generated with a mean vector and a
   covariance matrix calculated from the data provided in
-  \code{x}. The data are returned as a single matrix,
-  \code{x}, along with a vector of class labels, \code{y},
-  that indicates class membership.
+  \code{x}. The data are returned as a list containing a
+  single matrix \code{x} along with a vector of class
+  labels \code{y} that indicates class membership.
 }
 \details{
-  TODO: Define the covariance matrix, \eqn{\Sigma_k}. TODO:
-  Define the shrinkage covariance matrix estimator.
+  The covariance matrices for each class are constructed
+  using the maximum likelihood estimators under
+  multivariate normality. For high-dimensional data, these
+  covariance matrices are likely singular, in which case we
+  appy shrinkage to the covariance matrix estimators.
 
-  We use the \code{car} package's implementation of the
-  Box-Cox and Yeo-Johnson transformation methods. To
+  We use the \code{\link{car}} package's implementation of
+  the Box-Cox and Yeo-Johnson transformation methods. To
   compute the pseudo-likelihood estimators, we use the
-  \code{powerTransform} function in the \code{car} package.
-  In this function, the author uses the \code{optim}
+  \code{\link[car]{powerTransform}} function. In this
+  function, the author uses the \code{\link{optim}}
   function to numerically optimize the pseudo-likelihood
   functions for the given data. By default, the lower and
   upper bounds are \code{-Inf} and \code{Inf},
   respectively, which can yield numerically unstable
   estimates in the optimization search. Practically, we
-  wish to only consider values between -4 and 4, but we
+  wish to consider only values between -4 and 4, but we
   allow the user to alter these values by way of the
   \code{optim_lower} and \code{optim_upper} arguments,
-  respectively. See the \code{powerTransform} function in
-  the \code{car} package for more details.
+  respectively. See \code{\link[car]{powerTransform}} for
+  more details.
 }
 \examples{
-TODO
+TODO: Add examples
+TODO: Import functions from 'mvtnorm' and 'car' packages
 }
 

@@ -1,31 +1,32 @@
 #' Generates data from \code{K} multivariate data populations via a parametric
 #' bootsrapping technique with covariance matrix shrinkage.
 #'
-#' This function generates \code{K} multivariate data sets, where each
-#' data set is generated with a mean vector and a covariance matrix calculated
-#' from the data provided in \code{x}. The data are returned as a single matrix,
-#' \code{x}, along with a vector of class labels, \code{y}, that indicates class
-#' membership.
+#' This function generates \code{K} multivariate data sets, where each data set
+#' is generated with a mean vector and a covariance matrix calculated from the
+#' data provided in \code{x}. The data are returned as a list containing a
+#' single matrix \code{x} along with a vector of class labels \code{y} that
+#' indicates class membership.
 #' 
-#' TODO: Define the covariance matrix, \eqn{\Sigma_k}.
-#' TODO: Define the shrinkage covariance matrix estimator.
+#' The covariance matrices for each class are constructed using the maximum
+#' likelihood estimators under multivariate normality. For high-dimensional
+#' data, these covariance matrices are likely singular, in which case we appy
+#' shrinkage to the covariance matrix estimators.
 #'
-#' We use the \code{car} package's implementation of the Box-Cox and Yeo-Johnson
-#' transformation methods. To compute the pseudo-likelihood estimators, we use
-#' the \code{powerTransform} function in the \code{car} package. In this
-#' function, the author uses the \code{optim} function to numerically optimize
-#' the pseudo-likelihood functions for the given data. By default, the lower
-#' and upper bounds are \code{-Inf} and \code{Inf}, respectively, which can
-#' yield numerically unstable estimates in the optimization search. Practically,
-#' we wish to only consider values between -4 and 4, but we allow the user to
-#' alter these values by way of the \code{optim_lower} and \code{optim_upper}
-#' arguments, respectively. See the \code{powerTransform} function in the
-#' \code{car} package for more details.
+#' We use the \code{\link{car}} package's implementation of the Box-Cox and
+#' Yeo-Johnson transformation methods. To compute the pseudo-likelihood
+#' estimators, we use the \code{\link[car]{powerTransform}} function. In this
+#' function, the author uses the \code{\link{optim}} function to numerically
+#' optimize the pseudo-likelihood functions for the given data. By default, the
+#' lower and upper bounds are \code{-Inf} and \code{Inf}, respectively, which
+#' can yield numerically unstable estimates in the optimization
+#' search. Practically, we wish to consider only values between -4 and 4, but we
+#' allow the user to alter these values by way of the \code{optim_lower} and
+#' \code{optim_upper} arguments, respectively. See
+#' \code{\link[car]{powerTransform}} for more details.
 #'
 #' @export
-#' @param n vector of the sample sizes of each class to generate. The
-#' \code{length} of \code{n} should match the number of classes given in
-#' \code{y}.
+#' @param n vector of the sample sizes of each class to generate. The length of
+#' \code{n} should match the number of classes given in \code{y}.
 #' @param x matrix of observations with observations on the rows and features on
 #' the columns
 #' @param y vector of class labels for the observations (rows) in \code{x}.
@@ -59,10 +60,11 @@
 #' each observation (row) in \code{x}.
 #' }
 #' @examples
-#' TODO
+#' TODO: Add examples
+#' TODO: Import functions from 'mvtnorm' and 'car' packages
 boot_parametric <- function(n, x, y, gamma = 1,
-                            transformation = c("none", "Box-Cox", "Yeo-Johnson")
-                            ) {
+                            transformation = c("none", "Box-Cox", "Yeo-Johnson")) {
+  # TODO: Update 'require' statements to @import
   require('mvtnorm')
   n <- as.integer(n)
   x <- as.matrix(x)
@@ -80,11 +82,12 @@ boot_parametric <- function(n, x, y, gamma = 1,
   }
 
   if (transformation == "Box-Cox") {
-    stop("The Box-Cox transformation has not yet been implemented. Use Yeo-Johnson instead.")
+    stop("The Box-Cox transformation has not yet been implemented. Use
+          Yeo-Johnson instead.")
   }
 
-  # If the Yeo-Johnson transformation is selected, we marginally estimate
-  # the power parameters 'lambda' for each class.
+  # If the Yeo-Johnson transformation is selected, we marginally estimate the
+  # power parameters 'lambda' for each class.
   if (transformation == "Yeo-Johnson") {
     yj_out <- yj_marginal(x = x, y = y)
     
@@ -113,9 +116,9 @@ boot_parametric <- function(n, x, y, gamma = 1,
   }, sample_sizes, levels(y), SIMPLIFY = FALSE, USE.NAMES = FALSE)
   y <- as.factor(do.call(c, y))
   
-  # If the Yeo-Johnson transformation is selected, we now apply the inverse
-  # of the Yeo-Johnson transformation based on the estimated values of 'lambda'
-  # for each class. These values are stored in the list 'yj_lambda'.
+  # If the Yeo-Johnson transformation is selected, we now apply the inverse of
+  # the Yeo-Johnson transformation based on the estimated values of 'lambda' for
+  # each class. These values are stored in the list 'yj_lambda'.
   if (transformation == "Yeo-Johnson") {
     # The row indices for each class.
     class_indices <- tapply(seq_along(y), y, identity)
@@ -131,25 +134,22 @@ boot_parametric <- function(n, x, y, gamma = 1,
   list(x = x, y = y)
 }
 
-#' Computes the marginal Yeo-Johnson (YJ) transformation to near-normality for
-#' each class.
+#' Computes the marginal Yeo-Johnson transformation to near-normality for each
+#' class.
 #'
-#' For each class designated in \code{y}, we compute the marginal YJ
-#' transformation to near-normality. That is, within a given class, we estimate
-#' the YJ transformation parameter for each feature vector.
+#' For each class designated in \code{y}, we compute the marginal Yeo-Johnson
+#' (YJ) transformation to near-normality. That is, within a given class, we
+#' estimate the YJ transformation parameter for each feature vector.
 #'
 #' The marginal YJ transformation to near-normality is a generalization of the
 #' marginal Box-Cox (BC) transformation that allows for observations to be
 #' unbounded on the real line, whereas the marginal BC transformation requires
 #' that observations be nonnegative.
 #'
-#' We use the \code{powerTransform} function from the \code{car} package to
-#' estimate the values for \code{lambda} and then use the \code{yjPower} function
-#' from the same package to perform the transformation.
+#' We use the \code{\link[car]{powerTransform}} function to estimate the values
+#' for \code{lambda} and then use the \code{\link[car]{yjPower}} function to
+#' perform the transformation.
 #'
-#' TODO: Provide the formulas for Yeo-Johnson transformation (given in paper)
-#' TODO: Cite Yeo-Johnson paper
-#' TODO: Reference the 'car' package to find the fitted 'lambda'
 #' @export
 #' @param x matrix of observations with observations on the rows and features on
 #' the columns.
@@ -162,10 +162,15 @@ boot_parametric <- function(n, x, y, gamma = 1,
 #'   \item \code{x}: matrix of the feature vectors transformed by the YJ
 #' transformation with the fitted parameter values.
 #' }
+#'
+#' @references
+#' Yeo, I. K. and Johnson, R. A. (2000). "A new family of power transformations
+#' to improve normality or symmetry," Biometrika, 87, 954-959.
 #' 
 #' @examples
 #' yj_marginal(iris[, -5], iris$Species)
 yj_marginal <- function(x, y) {
+  # TODO: Update 'require' statements to @import
   require('car')
   tapply(seq_along(y), y, function(i) {
     x_i <- x[i, ]
@@ -183,18 +188,30 @@ yj_marginal <- function(x, y) {
 
 #' Computes the inverse of Yeo-Johnson transformed random variate(s)
 #'
-#' TODO: Briefly describe Yeo-Johnson is generalization of Box-Cox
-#' TODO: Provide the formulas for Yeo-Johnson transformation (given in paper)
-#' TODO: Provide the inverse formulas for Yeo-Johnson (on whiteboard and iPhone)
-#' TODO: Cite Yeo-Johnson paper
-#' TODO: Reference the 'car' package to find the fitted 'lambda'
+#' For a random variate that has been transformed with the Yeo-Johnson
+#' transformation to near-normality, we invert the random variate back to its
+#' original scale in this function. The inversion requires the transformation
+#' value \code{lambda} applied initially.
+#'
+#' The YJ transformation to near-normality is a generalization of the Box-Cox
+#' (BC) transformation that allows for observations to be unbounded on the real
+#' line, whereas the BC transformation requires that observations be
+#' nonnegative.
+#'
+#' The value for \code{\lambda} is typically obtained using the
+#' \code{\link[car]{powerTransform}} function. The transformed random variate is
+#' usually obtained from the \code{\link[car]{yjPower}} function.
 #'
 #' @export
 #' @param y vector of random variate(s)
 #' @param lambda numeric Yeo-Johnson power transformation parameter value
 #' @param tol numeric tolerance value that determines numerical equality
 #' @return the inverse of the Yeo-Johnson random variate, \code{y}
-yj_inverse <- function(y, lambda, tol = sqrt(.Machine$double.eps)) {
+#'
+#' @references
+#' Yeo, I. K. and Johnson, R. A. (2000). "A new family of power transformations
+#' to improve normality or symmetry," Biometrika, 87, 954-959.
+yj_inverse <- Vectorize(function(y, lambda, tol = sqrt(.Machine$double.eps)) {
   if (y >= 0) {
     # Case: lambda = 0 (numerically)
     if (abs(lambda) < tol) {
@@ -211,5 +228,4 @@ yj_inverse <- function(y, lambda, tol = sqrt(.Machine$double.eps)) {
     }
   }
   x
-}
-yj_inverse <- Vectorize(yj_inverse, vectorize.args = c("y", "lambda"))
+}, vectorize.args = c("y", "lambda"))
