@@ -30,7 +30,7 @@
   whereas the BC transformation requires that observations
   be nonnegative.
 
-  The value for \code{\lambda} is typically obtained using
+  The value for \code{lambda} is typically obtained using
   the \code{\link[car]{powerTransform}} function. The
   transformed random variate is usually obtained from the
   \code{\link[car]{yjPower}} function.
