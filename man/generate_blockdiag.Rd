@@ -20,7 +20,7 @@ autocorrelation matrices.}
 
   \item{rho}{vector of the values of the autocorrelation
   parameter for each class covariance matrix. Must equal
-  the length of \code{n} (i.e. equal to \code{K}).}
+  the length of \code{n} (i.e., equal to \code{K}).}
 
   \item{sigma2}{vector of the variance coefficients for
   each class covariance matrix. Must equal the length of
