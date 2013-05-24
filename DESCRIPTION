@@ -19,7 +19,6 @@ URL: https://github.com/ramey/sparsediscrim,
 Collate:
     'dlda.r'
     'dqda.r'
-    'rsdda.r'
     'sdlda.r'
     'sdqda.r'
     'stein-shrinkage.r'
