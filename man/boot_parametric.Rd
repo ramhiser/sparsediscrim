@@ -91,6 +91,5 @@ bootsrapping technique with covariance matrix shrinkage.}
 }
 \examples{
 TODO: Add examples
-TODO: Import functions from 'mvtnorm' and 'car' packages
 }
 

@@ -53,7 +53,7 @@ autocorrelation matrices.}
   \oplus \ldots \oplus \Sigma^{(\rho)},} where \eqn{\oplus}
   denotes the direct sum and the \eqn{(i,j)}th entry of
   \eqn{\Sigma^{(\rho)}} is \deqn{\Sigma_{ij}^{(\rho)} = \{
-  \rho^{| i - j|} \}.}
+  \rho^{|i - j|} \}.}
 
   The matrix \eqn{\Sigma^{(\rho)}} is referred to as a
   block. Its dimensions are provided in the

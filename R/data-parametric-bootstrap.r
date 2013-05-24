@@ -24,6 +24,8 @@
 #' \code{optim_upper} arguments, respectively. See
 #' \code{\link[car]{powerTransform}} for more details.
 #'
+#' @importFrom mvtnorm rmvnorm
+#' @import car
 #' @export
 #' @param n vector of the sample sizes of each class to generate. The length of
 #' \code{n} should match the number of classes given in \code{y}.
@@ -61,11 +63,8 @@
 #' }
 #' @examples
 #' TODO: Add examples
-#' TODO: Import functions from 'mvtnorm' and 'car' packages
 boot_parametric <- function(n, x, y, gamma = 1,
                             transformation = c("none", "Box-Cox", "Yeo-Johnson")) {
-  # TODO: Update 'require' statements to @import
-  require('mvtnorm')
   n <- as.integer(n)
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -150,6 +149,7 @@ boot_parametric <- function(n, x, y, gamma = 1,
 #' for \code{lambda} and then use the \code{\link[car]{yjPower}} function to
 #' perform the transformation.
 #'
+#' @import car
 #' @export
 #' @param x matrix of observations with observations on the rows and features on
 #' the columns.
@@ -170,18 +170,15 @@ boot_parametric <- function(n, x, y, gamma = 1,
 #' @examples
 #' yj_marginal(iris[, -5], iris$Species)
 yj_marginal <- function(x, y) {
-  # TODO: Update 'require' statements to @import
-  require('car')
   tapply(seq_along(y), y, function(i) {
     x_i <- x[i, ]
     n_i <- nrow(x_i)
     lambda <- apply(x_i, 2, function(xi_col) {
       estimateTransform(X = rep(1, n_i), Y = xi_col, family = "yjPower")$lambda
     })
-    list(
-         lambda = lambda,
+    list(lambda = lambda,
          x = unname(as.matrix(yjPower(x_i, lambda = lambda)))
-        )
+    )
   })
 }
 

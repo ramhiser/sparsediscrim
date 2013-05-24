@@ -26,6 +26,7 @@
 #' The number of classes \code{K} is determined with lazy evaluation as the
 #' length of \code{n}.
 #'
+#' @importFrom mvtnorm rmvnorm
 #' @export
 #' @param n vector of the sample sizes of each class. The length of \code{n}
 #' determines the number of classes \code{K}.
@@ -54,8 +55,6 @@
 #' data$x
 #' data$y
 generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
-  # TODO: Update 'require' statements to @import
-  require('mvtnorm')
   p <- as.integer(p)
   rho <- as.numeric(rho)
   n <- as.integer(n)
@@ -72,9 +71,8 @@ generate_intraclass <- function(n, p, rho, mu, sigma2 = rep(1, K)) {
   }
 
   x <- lapply(seq_len(K), function(k) {
-    mvtnorm:::rmvnorm(n = n[k], mean = rep(mu[k], p),
-                      sigma = cov_intraclass(p = p, rho = rho[k],
-                      sigma2 = sigma2[k]))
+    rmvnorm(n = n[k], mean = rep(mu[k], p),
+            sigma = cov_intraclass(p = p, rho = rho[k], sigma2 = sigma2[k]))
   })
   x <- do.call(rbind, x)
   y <- factor(rep(seq_along(n), n))
