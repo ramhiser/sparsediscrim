@@ -9,11 +9,10 @@ Description: A collection of sparse and regularized discriminant analysis
     includes the High-Dimensional Regularized Discriminant Analysis classifier.
     Furthermore, the package includes several Diagonal Discriminant Analysis
     methods, which are special cases of the well-known Naive Bayes classifier.
-Depends:
-    corpcor
-Suggests:
+Imports:
+    corpcor,
     bdsmatrix,
-    car
+    mvtnorm
 License: MIT
 URL: https://github.com/ramey/sparsediscrim,
     http://ramhiser.com

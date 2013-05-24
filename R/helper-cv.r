@@ -21,12 +21,11 @@
 #' @param seed optional random number seed for splitting the data for cross-validation
 #' @return list the indices of the training and test observations for each fold.
 #' @examples
-#' library(MASS)
 #' # The following three calls to \code{cv_partition} yield the same partitions.
 #' set.seed(42)
 #' cv_partition(iris$Species)
 #' cv_partition(iris$Species, num_folds = 10, seed = 42)
-#' cv_partitions(iris$Species, hold_out = 15, seed = 42)
+#' cv_partition(iris$Species, hold_out = 15, seed = 42)
 cv_partition <- function(y, num_folds = 10, hold_out = NULL, seed = NULL) {
   if(!is.null(seed)) {
     set.seed(seed)
