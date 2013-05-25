@@ -9,14 +9,14 @@
   sdqda(x, ...)
 
   \method{sdqda}{default} (x, y, prior = NULL,
-    num_alphas = 101, est_mean = c("mle", "tong"))
+    num_alphas = 101, est_mean = c("mle", "tong"), ...)
 
   \method{sdqda}{formula} (formula, data, prior = NULL,
-    est_mean = c("mle", "tong"), ...)
+    num_alphas = 101, est_mean = c("mle", "tong"), ...)
 
   \method{print}{sdqda} (x, ...)
 
-  \method{predict}{sdqda} (object, newdata)
+  \method{predict}{sdqda} (object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -54,6 +54,8 @@
 
   \item{newdata}{matrix of observations to predict. Each
   row corresponds to a new observation.}
+
+  \item{...}{additional arguments}
 }
 \value{
   \code{sdqda} object that contains the trained SDQDA
@@ -119,6 +121,7 @@
   nonnegative and sum to one.
 }
 \examples{
+set.seed(42)
 n <- nrow(iris)
 train <- sample(seq_len(n), n / 2)
 sdqda_out <- sdqda(Species ~ ., data = iris[train, ])

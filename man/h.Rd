@@ -9,8 +9,10 @@
 
   \item{p}{the feature space dimension.}
 
-  \item{t}{a constant specified by the user. By default, t
-  = -1 in Pang et al. (2009).}
+  \item{t}{a constant specified by the user that indicates
+  the exponent to use with the variance estimator. By
+  default, t = -1 as in Pang et al. See the paper for more
+  details.}
 }
 \value{
   the bias correction value

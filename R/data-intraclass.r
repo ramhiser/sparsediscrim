@@ -33,6 +33,8 @@
 #' @param p the number of features (variables) in the data
 #' @param rho vector of the values of the off-diagonal elements for each
 #' intraclass covariance matrix. Must equal the length of \code{n}.
+#' @param mu vector containing the mean for each class. Must equal the length of
+#' \code{n} (i.e., equal to \code{K}).
 #' @param sigma2 vector of variances for each class. Must equal the length of
 #' \code{n}. Default is 1 for each class.
 #' @return named list with elements:

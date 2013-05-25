@@ -9,14 +9,14 @@
   dqda(x, ...)
 
   \method{dqda}{default} (x, y, prior = NULL,
-    est_mean = c("mle", "tong"))
+    est_mean = c("mle", "tong"), ...)
 
   \method{dqda}{formula} (formula, data, prior = NULL,
     est_mean = c("mle", "tong"), ...)
 
   \method{print}{dqda} (x, ...)
 
-  \method{predict}{dqda} (object, newdata)
+  \method{predict}{dqda} (object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -51,6 +51,8 @@
 
   \item{newdata}{matrix of observations to predict. Each
   row corresponds to a new observation.}
+
+  \item{...}{additional arguments}
 }
 \value{
   \code{dqda} object that contains the trained DQDA

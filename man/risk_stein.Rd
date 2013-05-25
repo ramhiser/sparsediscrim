@@ -7,10 +7,18 @@
 \arguments{
   \item{N}{the sample size.}
 
-  \item{the}{number of classes.}
+  \item{K}{the number of classes.}
 
   \item{var_feature}{a vector of the sample variances for
   each dimension.}
+
+  \item{num_alphas}{The number of values used to find the
+  optimal amount of shrinkage.}
+
+  \item{t}{a constant specified by the user that indicates
+  the exponent to use with the variance estimator. By
+  default, t = -1 as in Pang et al. See the paper for more
+  details.}
 }
 \value{
   list with \itemize{ \item \code{alpha}: the alpha that

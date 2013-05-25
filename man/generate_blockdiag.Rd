@@ -9,8 +9,8 @@ autocorrelation matrices.}
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class. The
-  \code{length} of \code{n} determines the number of
-  classes \code{K}.}
+  length of \code{n} determines the number of classes
+  \code{K}.}
 
   \item{block_size}{the dimensions of the square block
   matrix. See details.}
@@ -21,6 +21,9 @@ autocorrelation matrices.}
   \item{rho}{vector of the values of the autocorrelation
   parameter for each class covariance matrix. Must equal
   the length of \code{n} (i.e., equal to \code{K}).}
+
+  \item{mu}{vector containing the mean for each class. Must
+  equal the length of \code{n} (i.e., equal to \code{K}).}
 
   \item{sigma2}{vector of the variance coefficients for
   each class covariance matrix. Must equal the length of
@@ -68,14 +71,14 @@ autocorrelation matrices.}
 }
 \examples{
 # Generates data from K = 3 classes.
-data <- generate_blockdiag(n = 3:5, p = 5, rho = seq(.1, .9, length = 3),
-                            mu = c(0, 3, -2))
+data <- generate_blockdiag(n = c(15, 15, 15), block_size = 3, num_blocks = 3,
+rho = seq(.1, .9, length = 3), mu = c(0, 3, -2))
 data$x
 data$y
 
 # Generates data from K = 4 classes. Notice that we use specify a variance.
-data <- generate_blockdiag(n = 3:6, p = 4, rho = seq(0, .9, length = 4),
-                            mu = c(0, 3, -2, 6), sigma2 = 1:4)
+data <- generate_blockdiag(n = c(15, 15, 15, 20), block_size = 3, num_blocks = 3,
+rho = seq(.1, .9, length = 4), mu = c(0, 3, -2, 6))
 data$x
 data$y
 }

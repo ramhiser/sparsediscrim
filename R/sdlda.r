@@ -73,12 +73,12 @@ sdlda <- function(x, ...) {
 #' @method sdlda default
 #' @S3method sdlda default
 sdlda.default <- function(x, y, prior = NULL, num_alphas = 101,
-                          est_mean = c("mle", "tong")) {
+                          est_mean = c("mle", "tong"), ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- sparsediscrim:::diag_estimates(x, y, prior, pool = TRUE,
-                                      est_mean = est_mean)
+                                      est_mean = est_mean, ...)
 
   # Calculates the shrinkage-based estimator of the pooled covariance matrix.
   obj$var_shrink <- var_shrinkage(
@@ -117,7 +117,8 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- sdlda.default(x, y, prior, num_alphas, est_mean, ...)
+  est <- sdlda.default(x = x, y = y, prior = prior, num_alphas = num_alphas,
+                       est_mean = est_mean, ...)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -162,7 +163,7 @@ print.sdlda <- function(x, ...) {
 #' @param object trained SDLDA object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
-#'
+#' @param ... additional arguments
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
@@ -170,7 +171,7 @@ print.sdlda <- function(x, ...) {
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
 #' Biometrics, 65, 4, 1021-1029.
 #' @return list predicted class memberships of each row in newdata
-predict.sdlda <- function(object, newdata) {
+predict.sdlda <- function(object, newdata, ...) {
 	if (!inherits(object, "sdlda"))  {
 		stop("object not of class 'sdlda'")
 	}

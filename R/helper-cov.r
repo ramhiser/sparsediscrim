@@ -85,6 +85,8 @@ cov_list <- function(x, y) {
 #' @export
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param y class labels for observations (rows) in \code{x}
+#' @param pool logical. Should the sample covariance matrices be pooled?
+#' @param fast logical. Should the Fast SVD be used? See details.
 #' @param tol tolerance value below which the singular values of \code{x} are
 #' considered zero.
 #' @return a list containing the eigendecomposition for each class. If

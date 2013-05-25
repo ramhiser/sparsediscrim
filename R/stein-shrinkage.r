@@ -5,8 +5,9 @@
 #'
 #' @param nu a specified constant (nu = N - K)
 #' @param p the feature space dimension.
-#' @param t a constant specified by the user. By default, t = -1 in Pang et al.
-#' (2009).
+#' @param t a constant specified by the user that indicates the exponent to use
+#' with the variance estimator. By default, t = -1 as in Pang et al. See the
+#' paper for more details.
 #'
 #' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
@@ -33,8 +34,13 @@ h <- function(nu, p, t = -1) {
 #' page 1023 of Pang et al. (2009).
 #'
 #' @param N the sample size.
-#' @param the number of classes.
+#' @param K the number of classes.
 #' @param var_feature a vector of the sample variances for each dimension.
+#' @param num_alphas The number of values used to find the optimal amount of
+#' shrinkage.
+#' @param t a constant specified by the user that indicates the exponent to use
+#' with the variance estimator. By default, t = -1 as in Pang et al. See the
+#' paper for more details.
 #' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
 #' Biometrics, 65, 4, 1021-1029.
@@ -85,12 +91,13 @@ risk_stein <- function(N, K, var_feature, num_alphas = 101, t = -1) {
 #' feature (variable) from Pang et al. (2009) for the SDLDA classifier.
 #'
 #' @param N the sample size.
-#' @param the number of classes.
+#' @param K the number of classes.
 #' @param var_feature a vector of the sample variances for each feature.
 #' @param num_alphas The number of values used to find the optimal amount of
 #' shrinkage.
-#' @param t a constant specified by the user. By default, t = -1 in Pang et al.
-#' (2009).
+#' @param t a constant specified by the user that indicates the exponent to use
+#' with the variance estimator. By default, t = -1 as in Pang et al. See the
+#' paper for more details.
 #'
 #' @references Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based Diagonal
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"

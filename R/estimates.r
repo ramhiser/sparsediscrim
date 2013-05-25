@@ -26,7 +26,7 @@
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
 #' 
-#' @param matrix containing the training data. The rows are the sample
+#' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL

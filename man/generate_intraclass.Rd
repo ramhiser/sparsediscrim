@@ -16,6 +16,9 @@ population (class) has an intraclass covariance matrix.}
   elements for each intraclass covariance matrix. Must
   equal the length of \code{n}.}
 
+  \item{mu}{vector containing the mean for each class. Must
+  equal the length of \code{n} (i.e., equal to \code{K}).}
+
   \item{sigma2}{vector of variances for each class. Must
   equal the length of \code{n}. Default is 1 for each
   class.}

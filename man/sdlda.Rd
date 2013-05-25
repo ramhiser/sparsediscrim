@@ -9,14 +9,14 @@
   sdlda(x, ...)
 
   \method{sdlda}{default} (x, y, prior = NULL,
-    num_alphas = 101, est_mean = c("mle", "tong"))
+    num_alphas = 101, est_mean = c("mle", "tong"), ...)
 
   \method{sdlda}{formula} (formula, data, prior = NULL,
     num_alphas = 101, est_mean = c("mle", "tong"), ...)
 
   \method{print}{sdlda} (x, ...)
 
-  \method{predict}{sdlda} (object, newdata)
+  \method{predict}{sdlda} (object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -54,6 +54,8 @@
 
   \item{newdata}{matrix of observations to predict. Each
   row corresponds to a new observation.}
+
+  \item{...}{additional arguments}
 }
 \value{
   \code{sdlda} object that contains the trained SDLDA

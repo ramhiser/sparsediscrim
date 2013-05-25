@@ -62,7 +62,7 @@ hdrda <- function(x, ...) {
 #' @method hdrda default
 #' @S3method hdrda default
 hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
-                         prior = NULL, tol = 1e-6) {
+                         prior = NULL, tol = 1e-6, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   lambda <- as.numeric(lambda)
@@ -82,7 +82,7 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
     stop("The value for 'gamma' must be nonnegative.")
   }
 
-  obj <- regdiscrim_estimates(x = x, y = y, cov = FALSE, prior = prior)
+  obj <- regdiscrim_estimates(x = x, y = y, cov = FALSE, prior = prior, ...)
   x_centered <- center_data(x = x, y = y)
   K <- obj$num_groups
 
@@ -167,22 +167,25 @@ hdrda.formula <- function(formula, data, ...) {
 #' For a given \code{hdrda} object, we predict the class of each observation
 #' (row) of the the matrix given in \code{newdata}.
 #'
+#' @rdname hdrda
+#' @method predict hdrda
+#' @S3method predict hdrda
 #' @export
-#' @param obj object of type \code{hdrda} that contains the trained HDRDA
+#' @param object object of type \code{hdrda} that contains the trained HDRDA
 #' classifier
 #' @param newdata matrix containing the unlabeled observations to classify. Each
 #' row corresponds to a new observation.
 #' @return list with predicted class and discriminant scores for each of the K
 #' classes
-predict.hdrda <- function(obj, newdata) {
+predict.hdrda <- function(object, newdata, ...) {
   if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
   newdata <- as.matrix(newdata)
 
-  scores <- sapply(obj$est, function(class_est) {
+  scores <- sapply(object$est, function(class_est) {
     # The call to 'as.vector' removes the attributes returned by 'determinant'
-    log_det <- as.vector(determinant(class_est$Q, log = TRUE)$modulus)
+    log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
     log_det <- log_det + sum(log(class_est$Gamma))
 
     # Center the 'newdata' by the class sample mean
@@ -193,7 +196,7 @@ predict.hdrda <- function(obj, newdata) {
     # approach below increases the number of computations that must be performed
     # for each observation. For the p >> n case, this hardly matters though.
     # The quadratic forms lie on the diagonal of the resulting matrix
-    U1_x <- crossprod(obj$U_1, t(x_centered))
+    U1_x <- crossprod(object$U_1, t(x_centered))
     quad_forms <- diag(quadform(class_est$W_inv, U1_x))
     quad_forms + log_det - 2 * log(class_est$prior)
   })
@@ -209,7 +212,7 @@ predict.hdrda <- function(obj, newdata) {
     posterior <- exp(-(scores - apply(scores, 1, min)))
   }
 
-  class <- with(obj, factor(groups[min_scores], levels = groups))
+  class <- with(object, factor(groups[min_scores], levels = groups))
 
   list(class = class, scores = scores, posterior = posterior)
 }

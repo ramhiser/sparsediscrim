@@ -57,6 +57,7 @@
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
 #' Biometrics, 65, 4, 1021-1029.
 #' @examples
+#' set.seed(42)
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
 #' sdqda_out <- sdqda(Species ~ ., data = iris[train, ])
@@ -73,11 +74,11 @@ sdqda <- function(x, ...) {
 #' @method sdqda default
 #' @S3method sdqda default
 sdqda.default <- function(x, y, prior = NULL, num_alphas = 101,
-                          est_mean = c("mle", "tong")) {
+                          est_mean = c("mle", "tong"), ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- sparsediscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
+  obj <- sparsediscrim:::diag_estimates(x, y, prior, est_mean = est_mean, ...)
 
   # Calculates the shrinkage-based estimator for each diagonal sample class
   # covariance matrix. We add these to the corresponding obj$est$var_shrink
@@ -106,7 +107,7 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101,
 #' @rdname sdqda
 #' @method sdqda formula
 #' @S3method sdqda formula
-sdqda.formula <- function(formula, data, prior = NULL,
+sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101,
                           est_mean = c("mle", "tong"), ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -119,7 +120,8 @@ sdqda.formula <- function(formula, data, prior = NULL,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- sdqda.default(x, y, prior, est_mean, ...)
+  est <- sdqda.default(x = x, y = y, prior = prior, num_alphas = num_alphas,
+                       est_mean = est_mean, ...)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -164,7 +166,7 @@ print.sdqda <- function(x, ...) {
 #' @param object trained SDQDA object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
-#'
+#' @param ... additional arguments
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
@@ -172,7 +174,7 @@ print.sdqda <- function(x, ...) {
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
 #' Biometrics, 65, 4, 1021-1029.
 #' @return list predicted class memberships of each row in newdata
-predict.sdqda <- function(object, newdata) {
+predict.sdqda <- function(object, newdata, ...) {
 	if (!inherits(object, "sdqda"))  {
 		stop("object not of class 'sdqda'")
 	}

@@ -11,7 +11,7 @@
 #' @return formula with no intercept term
 #' @examples
 #' iris_formula <- formula(Species ~ .)
-#' no_intercept(iris_formula, data = iris)
+#' sparsediscrim:::no_intercept(iris_formula, data = iris)
 no_intercept <- function(formula, data) {
   # The 'terms' must be collected in case the dot (.) notation is used
   update(formula(terms(formula, data = data)), . ~ . - 1)

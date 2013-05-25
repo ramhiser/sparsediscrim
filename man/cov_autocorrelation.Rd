@@ -26,8 +26,8 @@
   \eqn{(i,j)}th entry of the autocorrelated covariance
   matrix is defined as: \eqn{\rho^{|i - j|}}.
 
-  The value of \code{rho} must be such that \eqn{\abs{\rho}
-  < 1} to ensure that the covariance matrix is positive
+  The value of \code{rho} must be such that \eqn{|\rho| <
+  1} to ensure that the covariance matrix is positive
   definite.
 }
 

@@ -40,8 +40,8 @@ autocorrelated blocks.}
   The matrix \eqn{\Sigma^{(\rho)}} is the autocorrelated
   block discussed above.
 
-  The value of \code{rho} must be such that \eqn{\abs{\rho}
-  < 1} to ensure that the covariance matrix is positive
+  The value of \code{rho} must be such that \eqn{|\rho| <
+  1} to ensure that the covariance matrix is positive
   definite.
 
   The size of the resulting matrix is \eqn{p \times p},

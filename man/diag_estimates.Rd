@@ -6,8 +6,8 @@
     est_mean = c("mle", "tong"))
 }
 \arguments{
-  \item{matrix}{containing the training data. The rows are
-  the sample observations, and the columns are the
+  \item{x}{matrix containing the training data. The rows
+  are the sample observations, and the columns are the
   features.}
 
   \item{y}{vector of class labels for each training

@@ -24,6 +24,6 @@
 }
 \examples{
 iris_formula <- formula(Species ~ .)
-no_intercept(iris_formula, data = iris)
+sparsediscrim:::no_intercept(iris_formula, data = iris)
 }
 

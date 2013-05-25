@@ -12,6 +12,12 @@
   \item{y}{class labels for observations (rows) in
   \code{x}}
 
+  \item{pool}{logical. Should the sample covariance
+  matrices be pooled?}
+
+  \item{fast}{logical. Should the Fast SVD be used? See
+  details.}
+
   \item{tol}{tolerance value below which the singular
   values of \code{x} are considered zero.}
 }

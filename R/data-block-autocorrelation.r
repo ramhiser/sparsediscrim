@@ -31,13 +31,15 @@
 #'
 #' @importFrom mvtnorm rmvnorm
 #' @export
-#' @param n vector of the sample sizes of each class. The \code{length} of
-#' \code{n} determines the number of classes \code{K}.
+#' @param n vector of the sample sizes of each class. The length of \code{n}
+#' determines the number of classes \code{K}.
 #' @param block_size the dimensions of the square block matrix. See details.
 #' @param num_blocks the number of block matrices. See details.
 #' @param rho vector of the values of the autocorrelation parameter for each
 #' class covariance matrix. Must equal the length of \code{n} (i.e., equal to
 #' \code{K}).
+#' @param mu vector containing the mean for each class. Must equal the length of
+#' \code{n} (i.e., equal to \code{K}).
 #' @param sigma2 vector of the variance coefficients for each class covariance
 #' matrix. Must equal the length of \code{n} (i.e., equal to \code{K}).
 #' @return named list with elements:
@@ -49,14 +51,14 @@
 #' }
 #' @examples
 #' # Generates data from K = 3 classes.
-#' data <- generate_blockdiag(n = 3:5, p = 5, rho = seq(.1, .9, length = 3),
-#'                             mu = c(0, 3, -2))
+#' data <- generate_blockdiag(n = c(15, 15, 15), block_size = 3, num_blocks = 3,
+#' rho = seq(.1, .9, length = 3), mu = c(0, 3, -2))
 #' data$x
 #' data$y
 #' 
 #' # Generates data from K = 4 classes. Notice that we use specify a variance.
-#' data <- generate_blockdiag(n = 3:6, p = 4, rho = seq(0, .9, length = 4),
-#'                             mu = c(0, 3, -2, 6), sigma2 = 1:4)
+#' data <- generate_blockdiag(n = c(15, 15, 15, 20), block_size = 3, num_blocks = 3,
+#' rho = seq(.1, .9, length = 4), mu = c(0, 3, -2, 6))
 #' data$x
 #' data$y
 generate_blockdiag <- function(n, block_size, num_blocks, rho, mu,
@@ -102,7 +104,7 @@ generate_blockdiag <- function(n, block_size, num_blocks, rho, mu,
 #'
 #' The matrix \eqn{\Sigma^{(\rho)}} is the autocorrelated block discussed above.
 #'
-#' The value of \code{rho} must be such that \eqn{\abs{\rho} < 1} to ensure that
+#' The value of \code{rho} must be such that \eqn{|\rho| < 1} to ensure that
 #' the covariance matrix is positive definite.
 #'
 #' The size of the resulting matrix is \eqn{p \times p}, where
@@ -132,7 +134,7 @@ cov_block_autocorrelation <- function(num_blocks, block_size, rho, sigma2 = 1) {
 #' The \eqn{(i,j)}th entry of the autocorrelated covariance matrix is defined as:
 #' \eqn{\rho^{|i - j|}}.
 #'
-#' The value of \code{rho} must be such that \eqn{\abs{\rho} < 1} to ensure that
+#' The value of \code{rho} must be such that \eqn{|\rho| < 1} to ensure that
 #' the covariance matrix is positive definite.
 #'
 #' @param p the size of the covariance matrix

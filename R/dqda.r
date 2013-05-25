@@ -65,11 +65,12 @@ dqda <- function(x, ...) {
 #' @rdname dqda
 #' @method dqda default
 #' @S3method dqda default
-dqda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong")) {
+dqda.default <- function(x, y, prior = NULL, est_mean = c("mle", "tong"), ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
-  obj <- sparsediscrim:::diag_estimates(x, y, prior, est_mean = est_mean)
+  obj <- sparsediscrim:::diag_estimates(x = x, y = y, prior = prior,
+                                        est_mean = est_mean, ...)
 
   # Creates an object of type 'dqda' and adds the 'match.call' to the object
   obj$call <- match.call()
@@ -99,7 +100,7 @@ dqda.formula <- function(formula, data, prior = NULL,
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- dqda.default(x, y, prior, est_mean, ...)
+  est <- dqda.default(x = x, y = y, prior = prior, est_mean = est_mean, ...)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -142,12 +143,12 @@ print.dqda <- function(x, ...) {
 #' @param object trained DQDA object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
-#'
+#' @param ... additional arguments
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
-predict.dqda <- function(object, newdata) {
+predict.dqda <- function(object, newdata, ...) {
 	if (!inherits(object, "dqda"))  {
 		stop("object not of class 'dqda'")
 	}
