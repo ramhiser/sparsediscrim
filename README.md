@@ -2,12 +2,11 @@
 
 The R package `sparsediscrim` provides a collection of sparse discriminant analysis methods that are especially useful for applying supervised learning to small-sample, high-dimensional data sets. We include implementations of the following classifiers (the R functions are included in parentheses):
 
-* SimDiag (`simdiag`)
+* High-Dimensional Regularized Discriminant Analysis (`hdrda`)
 * Diagonal Linear Discriminant Analysis (`dlda`)
 * Diagonal Quadratic Discriminant Analysis (`dqda`)
 * Shrinkage-based Diagonal Linear Discriminant Analysis (`sdlda`)
 * Shrinkage-based Diagonal Quadratic Discriminant Analysis (`sdqda`)
-* Regularized Shrinkage-based Diagonal Discriminant Analysis (`rsdda`)
 
 
 ## Installation
