@@ -45,10 +45,11 @@
 #' @param y vector of class labels for each training observation
 #' @param lambda the HDRDA pooling parameter. Must be between 0 and 1,
 #' inclusively.
-#' @param alpha numeric vector of length \code{K} that scales the convex
-#' combination of covariance matrices in the HDRDA classifier. By default, each
-#' value is 1. See Ramey et al. (2013) for details.
 #' @param gamma a numeric values used for the shrinkage parameter.
+#' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
+#' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' details.
 #' @param prior vector with prior probabilities for each class. If \code{NULL}
 #' (default), then the sample proportion of observations belonging to each class
 #' equal probabilities are used. See details.
@@ -61,12 +62,14 @@ hdrda <- function(x, ...) {
 #' @rdname hdrda
 #' @method hdrda default
 #' @S3method hdrda default
-hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
-                         prior = NULL, tol = 1e-6, ...) {
+hdrda.default <- function(x, y, lambda = 1, gamma = 0,
+                          shrinkage_type = c("ridge", "convex"), prior = NULL,
+                          tol = 1e-6, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   lambda <- as.numeric(lambda)
   gamma <- as.numeric(gamma)
+  shrinkage_type <- match.arg(shrinkage_type)
 
   # If p < n, throw warning because it is untested and possibly does not work
   if (ncol(x) < nrow(x)) {
@@ -86,10 +89,6 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
   x_centered <- center_data(x = x, y = y)
   K <- obj$num_groups
 
-  if (length(alpha) != K) {
-    stop("The length of 'alpha' must equal the number of classes in 'y'.")
-  }
-
   # Computes the eigenvalue decomposition of the pooled sample covariance matrix
   # using the Fast SVD approach.
   cov_pool_eigen <- cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE, tol = tol)
@@ -97,6 +96,14 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
   obj$D_q <- cov_pool_eigen$values
   obj$U_1 <- cov_pool_eigen$vectors
   obj$q <- length(obj$D_q)
+  obj$shrinkage_type <- shrinkage_type
+
+  if (shrinkage_type == "ridge") {
+    alpha <- 1
+  } else {
+    # shinkage_family == "convex"
+    alpha <- 1 - gamma
+  }
 
   # For each class, we calculate the following quantities necessary to train the
   # HDRDA classifier.
@@ -106,20 +113,20 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
   for (k in seq_len(K)) {
     # Although 'Gamma_k' is a diagonal matrix, we store only its diagonal
     # elements.
-    Gamma <- alpha[k] * lambda * obj$D_q + gamma
+    Gamma <- alpha * lambda * obj$D_q + gamma
     Gamma_inv <- Gamma^(-1)
     X_k <- x_centered[y == levels(y)[k], ]
     n_k <- nrow(X_k)
 
     XU <- X_k %*% obj$U_1
-    Q <- diag(n_k) + alpha[k] * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
+    Q <- diag(n_k) + alpha * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
 
-    W_inv <- alpha[k] * (1 - lambda) * diag(Gamma_inv) %*%
+    W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
       crossprod(XU, solve(Q, XU)) %*% diag(Gamma_inv)
     W_inv <- diag(Gamma_inv) - W_inv
 
     obj$est[[k]]$n_k <- n_k
-    obj$est[[k]]$alpha <- alpha[k]
+    obj$est[[k]]$alpha <- alpha
     obj$est[[k]]$XU <- XU
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
@@ -231,12 +238,18 @@ predict.hdrda <- function(object, newdata, ...) {
 #' @param num_folds the number of cross-validation folds.
 #' @param num_lambda The number of values of \code{lambda} to consider
 #' @param num_gamma The number of values of \code{gamma} to consider
+#' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
+#' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' details.
 #' @param ... Additional arguments passed to \code{\link{hdrda}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as
 #' well as a \code{data.frame} that summarizes the cross-validation results.
-hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) {
+hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
+                     shrinkage_type = c("ridge", "convex"), ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
+  shrinkage_type <- match.arg(shrinkage_type)
   
   cv_folds <- cv_partition(y = y, num_folds = num_folds)
 
@@ -245,7 +258,13 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
   # preferred because they assume that the covariance matrices are equal. This
   # preference is further based on model parsimony.
   seq_lambda <- seq(0, 1, length = num_lambda)
-  seq_gamma <- 10^seq.int(-1, num_gamma - 2)
+
+  if (shrinkage_type == "ridge") {
+    seq_gamma <- 10^seq.int(-1, num_gamma - 2)
+  } else  {
+    # shrinkage_type == "convex"
+    seq_gamma <- seq(0, 1, length = num_gamma)
+  }
 
   tuning_grid <- expand.grid(lambda = seq_lambda, gamma = seq_gamma)
   tuning_grid <- tuning_grid[do.call(order, tuning_grid), ]
@@ -296,18 +315,16 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
 #' @return a \code{hdrda} object with updated estimates
 update_hdrda <- function(obj, lambda = 1, gamma = 0) {
   for (k in seq_len(obj$num_groups)) {
-    XU <- obj$est[[k]]$XU
-    alpha <- obj$est[[k]]$alpha
-    n_k <- obj$est[[k]]$n_k
+    Gamma <- obj$est[[k]]$alpha * lambda * obj$D_q + gamma
+    Gamma_inv <- diag(Gamma^(-1))
     
-    Gamma <- alpha * lambda * obj$D_q + gamma
-    Gamma_inv <- Gamma^(-1)
-    
-    Q <- diag(n_k) + alpha * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
-    
-    W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
-      crossprod(XU, solve(Q, XU)) %*% diag(Gamma_inv)
-    W_inv <- diag(Gamma_inv) - W_inv
+    Q <- diag(obj$est[[k]]$n_k) +
+      obj$est[[k]]$alpha * (1 - lambda) * obj$est[[k]]$XU %*%
+      tcrossprod(Gamma_inv, obj$est[[k]]$XU)
+
+    W_inv <- obj$est[[k]]$alpha * (1 - lambda) * Gamma_inv %*%
+      crossprod(obj$est[[k]]$XU, solve(Q, obj$est[[k]]$XU)) %*% Gamma_inv
+    W_inv <- Gamma_inv - W_inv
     
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q

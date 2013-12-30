@@ -3,7 +3,8 @@
 \title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
   hdrda_cv(x, y, num_folds = 10, num_lambda = 21,
-    num_gamma = 7, ...)
+    num_gamma = 7, shrinkage_type = c("ridge", "convex"),
+    ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -20,6 +21,12 @@
 
   \item{num_gamma}{The number of values of \code{gamma} to
   consider}
+
+  \item{shrinkage_type}{the type of covariance-matrix
+  shrinkage to apply. By default, a ridge-like shrinkage is
+  applied. If \code{convex} is given, then shrinkage
+  similar to Friedman (1989) is applied. See Ramey et al.
+  (2013) for details.}
 
   \item{...}{Additional arguments passed to
   \code{\link{hdrda}}.}

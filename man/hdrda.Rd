@@ -7,8 +7,8 @@
 \usage{
   hdrda(x, ...)
 
-  \method{hdrda}{default} (x, y, lambda = 1,
-    alpha = rep(1, K), gamma = 0, prior = NULL,
+  \method{hdrda}{default} (x, y, lambda = 1, gamma = 0,
+    shrinkage_type = c("ridge", "convex"), prior = NULL,
     tol = 1e-06, ...)
 
   \method{hdrda}{formula} (formula, data, ...)
@@ -26,13 +26,14 @@
   \item{lambda}{the HDRDA pooling parameter. Must be
   between 0 and 1, inclusively.}
 
-  \item{alpha}{numeric vector of length \code{K} that
-  scales the convex combination of covariance matrices in
-  the HDRDA classifier. By default, each value is 1. See
-  Ramey et al. (2013) for details.}
-
   \item{gamma}{a numeric values used for the shrinkage
   parameter.}
+
+  \item{shrinkage_type}{the type of covariance-matrix
+  shrinkage to apply. By default, a ridge-like shrinkage is
+  applied. If \code{convex} is given, then shrinkage
+  similar to Friedman (1989) is applied. See Ramey et al.
+  (2013) for details.}
 
   \item{prior}{vector with prior probabilities for each
   class. If \code{NULL} (default), then the sample
