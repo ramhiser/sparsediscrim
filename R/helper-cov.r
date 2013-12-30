@@ -16,6 +16,7 @@
 #' @return sample covariance matrix of size \eqn{p \times p}. If \code{diag} is
 #' \code{TRUE}, then a vector of length \code{p} is returned instead.
 cov_mle <- function(x, diag = FALSE) {
+  x <- as.matrix(x)
   n <- nrow(x)
   if (diag) {
     (n - 1) / n * apply(x, 2, var)

@@ -1,0 +1,53 @@
+sparsediscrim 0.1
+-----------------
+
+NEW FEATURES
+
+* First version of the `sparsediscrim` package. With this package, we aim to
+  provide a large collection of regularized and sparse discriminant analysis
+  classifiers intended for high-dimensional classification.
+
+CLASSIFIERS
+
+* `hdrda()` is an implementation of the High-Dimensional Regularized
+  Discriminant Analysis classifier from Ramey, Stein, and Young (2013).
+
+* `dlda()` is an implementation of the Diagonal Linear Discriminant Analysis
+  classifier from Dudoit, Fridlyand, and Speed (2002).
+
+* `dqda()` is an implementation of the Diagonal Quadratic Discriminant Analysis
+  classifier from Dudoit, Fridlyand, and Speed (2002).
+
+* `sdlda()` is an implementation of the Shrinkage-based Diagonal Linear
+  Discriminant Analysis classifier from Pang, Tong, and Zhao (2009).
+
+* `sdqda()` is an implementation of the Shrinkage-based Diagonal Quadratic
+  Discriminant Analysis classifier from Pang, Tong, and Zhao (2009).
+
+SIMULATED DATA SETS
+
+* `generate_blockdiag()` generates random variates from K multivariate normal
+  populations, where each class is generated with a constant mean vector and a
+  covariance matrix consisting of block-diagonal autocorrelation matrices.
+
+* `generate_intraclass()` generates random variates from K multivariate normal
+  populations, where class is generated with a constant mean vector and an
+  intraclass covariance matrix.
+
+MISCELLANEOUS
+
+* `cv_partition()` randomly partitions data for cross-validation.
+
+* `no_intercept()` removes the intercept term from a formula if it is included.
+
+* `cov_mle()` computes the maximum likelihood estimator for the sample
+  covariance matrix under the assumption of multivariate normality.
+
+* `cov_pool()` computes the pooled maximum likelihood estimator for the common
+  covariance matrix under the assumption of multivariate normality.
+
+* `cov_eigen()` computes the eigenvalue decomposition of the maximum likelihood
+  estimators of the covariance matrices for the given data matrix. We provide an
+  option to calculate the eigenvalue decomposition using the Fast Singular Value
+  Decomposition, which can greatly expedite the eigenvalue decomposition for
+  very tall data (large n, small p) or very wide data (small n, large p).

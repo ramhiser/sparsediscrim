@@ -32,11 +32,10 @@ population (class) has an intraclass covariance matrix.}
 }
 \description{
   This function generates \code{K} multivariate normal data
-  sets, where each data set is generated with a constant
-  mean vector and an intraclass covariance matrix. The data
-  are returned as a single matrix \code{x} along with a
-  vector of class labels \code{y} that indicates class
-  membership.
+  sets, where each class is generated with a constant mean
+  vector and an intraclass covariance matrix. The data are
+  returned as a single matrix \code{x} along with a vector
+  of class labels \code{y} that indicates class membership.
 }
 \details{
   For simplicity, we assume that a class mean vector is

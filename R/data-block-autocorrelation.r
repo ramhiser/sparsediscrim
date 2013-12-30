@@ -3,7 +3,7 @@
 #' autocorrelation matrices.
 #'
 #' This function generates \code{K} multivariate normal data sets, where each
-#' data set is generated with a constant mean vector and a covariance matrix
+#' class is generated with a constant mean vector and a covariance matrix
 #' consisting of block-diagonal autocorrelation matrices. The data are returned
 #' as a single matrix \code{x} along with a vector of class labels \code{y} that
 #' indicates class membership.
