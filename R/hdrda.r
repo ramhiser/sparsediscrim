@@ -105,6 +105,9 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     alpha <- 1 - gamma
   }
 
+  # Transforms the centered data
+  XU <- x_centered %*% obj$U_1
+
   # For each class, we calculate the following quantities necessary to train the
   # HDRDA classifier.
   #   1. \Gamma_k
@@ -118,16 +121,18 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     X_k <- x_centered[y == levels(y)[k], ]
     n_k <- nrow(X_k)
 
-    XU <- X_k %*% obj$U_1
-    Q <- diag(n_k) + alpha * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
+    # Extracts the transformed, centered data
+    # No need to calculate it for the classes individually
+    XU_k <- XU[y == levels(y)[k], ]
+    Q <- diag(n_k) + alpha * (1 - lambda) * XU_k %*% tcrossprod(diag(Gamma_inv), XU_k)
 
     W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
-      crossprod(XU, solve(Q, XU)) %*% diag(Gamma_inv)
+      crossprod(XU_k, solve(Q, XU_k)) %*% diag(Gamma_inv)
     W_inv <- diag(Gamma_inv) - W_inv
 
     obj$est[[k]]$n_k <- n_k
     obj$est[[k]]$alpha <- alpha
-    obj$est[[k]]$XU <- XU
+    obj$est[[k]]$XU <- XU_k
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
