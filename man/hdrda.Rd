@@ -13,7 +13,8 @@
 
   \method{hdrda}{formula} (formula, data, ...)
 
-  \method{predict}{hdrda} (object, newdata, ...)
+  \method{predict}{hdrda} (object, newdata,
+    projected = FALSE, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -59,6 +60,12 @@
   \item{newdata}{matrix containing the unlabeled
   observations to classify. Each row corresponds to a new
   observation.}
+
+  \item{projected}{logical indicating whether
+  \code{newdata} have already been projected to a
+  q-dimensional subspace. This argument can yield large
+  gains in speed when the linear transformation has already
+  been performed.}
 }
 \value{
   \code{hdrda} object that contains the trained HDRDA
