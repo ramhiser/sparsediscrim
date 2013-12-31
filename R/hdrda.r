@@ -124,6 +124,10 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     # Extracts the transformed, centered data
     # No need to calculate it for the classes individually
     XU_k <- XU[y == levels(y)[k], ]
+
+    # Transforms the sample mean to the lower dimension
+    xbar_U1 <- crossprod(obj$U_1, obj$est[[k]]$xbar)
+    
     Q <- diag(n_k) + alpha * (1 - lambda) * XU_k %*% tcrossprod(diag(Gamma_inv), XU_k)
 
     W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
@@ -133,6 +137,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     obj$est[[k]]$n_k <- n_k
     obj$est[[k]]$alpha <- alpha
     obj$est[[k]]$XU <- XU_k
+    obj$est[[k]]$xbar_U1 <- xbar_U1
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
