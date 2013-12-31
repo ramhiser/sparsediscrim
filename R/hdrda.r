@@ -94,7 +94,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   cov_pool_eigen <- cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE, tol = tol)
 
   obj$D_q <- cov_pool_eigen$values
-  obj$U_1 <- cov_pool_eigen$vectors
+  obj$U1 <- cov_pool_eigen$vectors
   obj$q <- length(obj$D_q)
   obj$shrinkage_type <- shrinkage_type
 
@@ -106,7 +106,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   }
 
   # Transforms the centered data
-  XU <- x_centered %*% obj$U_1
+  XU <- x_centered %*% obj$U1
 
   # For each class, we calculate the following quantities necessary to train the
   # HDRDA classifier.
@@ -126,7 +126,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     XU_k <- XU[y == levels(y)[k], ]
 
     # Transforms the sample mean to the lower dimension
-    xbar_U1 <- crossprod(obj$U_1, obj$est[[k]]$xbar)
+    xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
     
     Q <- diag(n_k) + alpha * (1 - lambda) * XU_k %*% tcrossprod(diag(Gamma_inv), XU_k)
 
@@ -213,6 +213,7 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
       # Center the 'newdata' by the projected class sample mean
       U1_x <- scale(newdata, center = class_est$xbar_U1, scale = FALSE)
 
+      quad_forms <- diag(drop(tcrossprod(U1_x %*% class_est$W_inv, U1_x)))
     } else {
       # Center the 'newdata' by the class sample mean
       x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
@@ -222,9 +223,11 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
       # approach below increases the number of computations that must be performed
       # for each observation. For the p >> n case, this hardly matters though.
       # The quadratic forms lie on the diagonal of the resulting matrix
-      U1_x <- crossprod(object$U_1, t(x_centered))
+      U1_x <- crossprod(object$U1, t(x_centered))
+
+      quad_forms <- diag(quadform(class_est$W_inv, U1_x))
     }
-    quad_forms <- diag(quadform(class_est$W_inv, U1_x))
+    
     quad_forms + log_det - 2 * log(class_est$prior)
   })
 
