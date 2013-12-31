@@ -192,9 +192,12 @@ hdrda.formula <- function(formula, data, ...) {
 #' classifier
 #' @param newdata matrix containing the unlabeled observations to classify. Each
 #' row corresponds to a new observation.
+#' @param projected logical indicating whether \code{newdata} have already been
+#' projected to a q-dimensional subspace. This argument can yield large gains in
+#' speed when the linear transformation has already been performed.
 #' @return list with predicted class and discriminant scores for each of the K
 #' classes
-predict.hdrda <- function(object, newdata, ...) {
+predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
@@ -205,15 +208,22 @@ predict.hdrda <- function(object, newdata, ...) {
     log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
     log_det <- log_det + sum(log(class_est$Gamma))
 
-    # Center the 'newdata' by the class sample mean
-    x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
+    if (projected) {
+      # The newdata have already been projected. Yay for speed!
+      # Center the 'newdata' by the projected class sample mean
+      U1_x <- scale(newdata, center = class_est$xbar_U1, scale = FALSE)
 
-    # We calculate the quadratic form explicitly for each observation to prevent
-    # storing a large 'p x p' inverse matrix in memory. However, note that our
-    # approach below increases the number of computations that must be performed
-    # for each observation. For the p >> n case, this hardly matters though.
-    # The quadratic forms lie on the diagonal of the resulting matrix
-    U1_x <- crossprod(object$U_1, t(x_centered))
+    } else {
+      # Center the 'newdata' by the class sample mean
+      x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
+
+      # We calculate the quadratic form explicitly for each observation to prevent
+      # storing a large 'p x p' inverse matrix in memory. However, note that our
+      # approach below increases the number of computations that must be performed
+      # for each observation. For the p >> n case, this hardly matters though.
+      # The quadratic forms lie on the diagonal of the resulting matrix
+      U1_x <- crossprod(object$U_1, t(x_centered))
+    }
     quad_forms <- diag(quadform(class_est$W_inv, U1_x))
     quad_forms + log_det - 2 * log(class_est$prior)
   })
@@ -287,6 +297,11 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
 
     hdrda_out <- hdrda(x = train_x, y = train_y, lambda = 1, gamma = 0, ...)
 
+    # Projects the test data to the q-dimensional subspace.
+    # No need to do this for each lambda/gamma pair.
+    # NOTE: It's not centered yet.
+    test_x <- test_x %*% hdrda_out$U1
+
     # For each value of lambda and gamma, we train the HDRDA classifier,
     # classify the test observations, and record the number of classification
     # errors.
@@ -295,7 +310,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
         # Updates Gamma, Q, and W_inv for each class in hdrda_out
         # If an error is thrown, we return 'NA'.
         hdrda_updated <- update_hdrda(hdrda_out, lambda, gamma)
-        sum(predict(hdrda_updated, test_x)$class != test_y)
+        sum(predict(hdrda_updated, test_x, projected = TRUE)$class != test_y)
       }, silent = TRUE)
 
       errors
