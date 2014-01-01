@@ -128,11 +128,13 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     # Transforms the sample mean to the lower dimension
     xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
     
-    Q <- diag(n_k) + alpha * (1 - lambda) * XU_k %*% tcrossprod(diag(Gamma_inv), XU_k)
-
-    W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
-      crossprod(XU_k, solve(Q, XU_k)) %*% diag(Gamma_inv)
-    W_inv <- diag(Gamma_inv) - W_inv
+    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+    # We compute the matrix once and use it where necessary to avoid unnecessary
+    # computations.
+    XU_Gamma_inv <- XU_k %*% diag(Gamma_inv)
+    Q <- diag(n_k) + alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, XU_k)
+    W_inv <- alpha * (1 - lambda) * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+    W_inv <- Gamma_inv - W_inv
 
     obj$est[[k]]$n_k <- n_k
     obj$est[[k]]$alpha <- alpha
@@ -206,7 +208,6 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   scores <- sapply(object$est, function(class_est) {
     # The call to 'as.vector' removes the attributes returned by 'determinant'
     log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
-    log_det <- log_det + sum(log(class_est$Gamma))
 
     if (projected) {
       # The newdata have already been projected. Yay for speed!
@@ -342,18 +343,24 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
 #' @param gamma a numeric value (nonnegative)
 #' @return a \code{hdrda} object with updated estimates
 update_hdrda <- function(obj, lambda = 1, gamma = 0) {
-  for (k in seq_len(obj$num_groups)) {
-    Gamma <- obj$est[[k]]$alpha * lambda * obj$D_q + gamma
-    Gamma_inv <- diag(Gamma^(-1))
-    
-    Q <- diag(obj$est[[k]]$n_k) +
-      obj$est[[k]]$alpha * (1 - lambda) * obj$est[[k]]$XU %*%
-      tcrossprod(Gamma_inv, obj$est[[k]]$XU)
+  # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1 for
+  # all k. As a result, Gamma and Gamma_inv are constant across all k. We
+  # compute both before looping through all K classes.
+  Gamma <- obj$est[[1]]$alpha * lambda * obj$D_q + gamma
+  Gamma_inv <- diag(Gamma^(-1))
 
-    W_inv <- obj$est[[k]]$alpha * (1 - lambda) * Gamma_inv %*%
-      crossprod(obj$est[[k]]$XU, solve(Q, obj$est[[k]]$XU)) %*% Gamma_inv
+  for (k in seq_len(obj$num_groups)) {
+    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+    # We compute the matrix once and use it where necessary to avoid unnecessary
+    # computations.
+    XU_Gamma_inv <- obj$est[[k]]$XU %*% Gamma_inv
+    Q <- diag(obj$est[[k]]$n_k) +
+      obj$est[[k]]$alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, obj$est[[k]]$XU)
+
+    W_inv <- obj$est[[k]]$alpha * (1 - lambda) *
+        crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
     W_inv <- Gamma_inv - W_inv
-    
+
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv

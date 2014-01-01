@@ -1,0 +1,21 @@
+\name{solve_chol}
+\alias{solve_chol}
+\title{Computes the inverse of a symmetric, positive-definite matrix using the
+Cholesky decomposition}
+\usage{
+  solve_chol(x)
+}
+\arguments{
+  \item{x}{symmetric, positive-definite matrix}
+}
+\value{
+  the inverse of \code{x}
+}
+\description{
+  This often faster than \code{\link{solve}} for larger
+  matrices. See, for example:
+  \url{http://blog.phytools.org/2012/12/faster-inversion-of-square-symmetric.html}
+  and
+  \url{http://stats.stackexchange.com/questions/14951/efficient-calculation-of-matrix-inverse-in-r}.
+}
+

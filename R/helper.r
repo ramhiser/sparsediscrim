@@ -62,3 +62,19 @@ center_data <- function(x, y) {
   x_centered[orig_ordering, ] <- x_centered
   x_centered
 }
+
+#' Computes the inverse of a symmetric, positive-definite matrix using the
+#' Cholesky decomposition
+#'
+#' This often faster than \code{\link{solve}} for larger matrices.
+#' See, for example:
+#' \url{http://blog.phytools.org/2012/12/faster-inversion-of-square-symmetric.html}
+#' and
+#' \url{http://stats.stackexchange.com/questions/14951/efficient-calculation-of-matrix-inverse-in-r}.
+#'
+#' @export 
+#' @param x symmetric, positive-definite matrix
+#' @return the inverse of \code{x}
+solve_chol <- function(x) {
+  chol2inv(chol(x))
+}
