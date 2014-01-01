@@ -1,7 +1,7 @@
 Package: sparsediscrim
 Title: Sparse Discriminant Analysis
-Version: 0.1.0
-Date: 2013-05-25
+Version: 0.1.1
+Date: 2014-01-01
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of sparse and regularized discriminant analysis
