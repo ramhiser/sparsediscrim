@@ -117,7 +117,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     # Although 'Gamma_k' is a diagonal matrix, we store only its diagonal
     # elements.
     Gamma <- alpha * lambda * obj$D_q + gamma
-    Gamma_inv <- Gamma^(-1)
+    Gamma_inv <- diag(Gamma^(-1))
     X_k <- x_centered[y == levels(y)[k], ]
     n_k <- nrow(X_k)
 
@@ -131,7 +131,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
     # We compute the matrix once and use it where necessary to avoid unnecessary
     # computations.
-    XU_Gamma_inv <- XU_k %*% diag(Gamma_inv)
+    XU_Gamma_inv <- XU_k %*% Gamma_inv
     Q <- diag(n_k) + alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, XU_k)
     W_inv <- alpha * (1 - lambda) * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
     W_inv <- Gamma_inv - W_inv
