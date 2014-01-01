@@ -45,10 +45,11 @@
 #' @param y vector of class labels for each training observation
 #' @param lambda the HDRDA pooling parameter. Must be between 0 and 1,
 #' inclusively.
-#' @param alpha numeric vector of length \code{K} that scales the convex
-#' combination of covariance matrices in the HDRDA classifier. By default, each
-#' value is 1. See Ramey et al. (2013) for details.
 #' @param gamma a numeric values used for the shrinkage parameter.
+#' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
+#' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' details.
 #' @param prior vector with prior probabilities for each class. If \code{NULL}
 #' (default), then the sample proportion of observations belonging to each class
 #' equal probabilities are used. See details.
@@ -61,12 +62,14 @@ hdrda <- function(x, ...) {
 #' @rdname hdrda
 #' @method hdrda default
 #' @S3method hdrda default
-hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
-                         prior = NULL, tol = 1e-6, ...) {
+hdrda.default <- function(x, y, lambda = 1, gamma = 0,
+                          shrinkage_type = c("ridge", "convex"), prior = NULL,
+                          tol = 1e-6, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   lambda <- as.numeric(lambda)
   gamma <- as.numeric(gamma)
+  shrinkage_type <- match.arg(shrinkage_type)
 
   # If p < n, throw warning because it is untested and possibly does not work
   if (ncol(x) < nrow(x)) {
@@ -86,17 +89,24 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
   x_centered <- center_data(x = x, y = y)
   K <- obj$num_groups
 
-  if (length(alpha) != K) {
-    stop("The length of 'alpha' must equal the number of classes in 'y'.")
-  }
-
   # Computes the eigenvalue decomposition of the pooled sample covariance matrix
   # using the Fast SVD approach.
   cov_pool_eigen <- cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE, tol = tol)
 
   obj$D_q <- cov_pool_eigen$values
-  obj$U_1 <- cov_pool_eigen$vectors
+  obj$U1 <- cov_pool_eigen$vectors
   obj$q <- length(obj$D_q)
+  obj$shrinkage_type <- shrinkage_type
+
+  if (shrinkage_type == "ridge") {
+    alpha <- 1
+  } else {
+    # shinkage_family == "convex"
+    alpha <- 1 - gamma
+  }
+
+  # Transforms the centered data
+  XU <- x_centered %*% obj$U1
 
   # For each class, we calculate the following quantities necessary to train the
   # HDRDA classifier.
@@ -106,21 +116,30 @@ hdrda.default <- function(x, y, lambda = 1, alpha = rep(1, K), gamma = 0,
   for (k in seq_len(K)) {
     # Although 'Gamma_k' is a diagonal matrix, we store only its diagonal
     # elements.
-    Gamma <- alpha[k] * lambda * obj$D_q + gamma
-    Gamma_inv <- Gamma^(-1)
+    Gamma <- alpha * lambda * obj$D_q + gamma
+    Gamma_inv <- diag(Gamma^(-1))
     X_k <- x_centered[y == levels(y)[k], ]
     n_k <- nrow(X_k)
 
-    XU <- X_k %*% obj$U_1
-    Q <- diag(n_k) + alpha[k] * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
+    # Extracts the transformed, centered data
+    # No need to calculate it for the classes individually
+    XU_k <- XU[y == levels(y)[k], ]
 
-    W_inv <- alpha[k] * (1 - lambda) * diag(Gamma_inv) %*%
-      crossprod(XU, solve(Q, XU)) %*% diag(Gamma_inv)
-    W_inv <- diag(Gamma_inv) - W_inv
+    # Transforms the sample mean to the lower dimension
+    xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
+    
+    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+    # We compute the matrix once and use it where necessary to avoid unnecessary
+    # computations.
+    XU_Gamma_inv <- XU_k %*% Gamma_inv
+    Q <- diag(n_k) + alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, XU_k)
+    W_inv <- alpha * (1 - lambda) * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+    W_inv <- Gamma_inv - W_inv
 
     obj$est[[k]]$n_k <- n_k
-    obj$est[[k]]$alpha <- alpha[k]
-    obj$est[[k]]$XU <- XU
+    obj$est[[k]]$alpha <- alpha
+    obj$est[[k]]$XU <- XU_k
+    obj$est[[k]]$xbar_U1 <- xbar_U1
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
@@ -175,9 +194,12 @@ hdrda.formula <- function(formula, data, ...) {
 #' classifier
 #' @param newdata matrix containing the unlabeled observations to classify. Each
 #' row corresponds to a new observation.
+#' @param projected logical indicating whether \code{newdata} have already been
+#' projected to a q-dimensional subspace. This argument can yield large gains in
+#' speed when the linear transformation has already been performed.
 #' @return list with predicted class and discriminant scores for each of the K
 #' classes
-predict.hdrda <- function(object, newdata, ...) {
+predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
@@ -186,18 +208,27 @@ predict.hdrda <- function(object, newdata, ...) {
   scores <- sapply(object$est, function(class_est) {
     # The call to 'as.vector' removes the attributes returned by 'determinant'
     log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
-    log_det <- log_det + sum(log(class_est$Gamma))
 
-    # Center the 'newdata' by the class sample mean
-    x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
+    if (projected) {
+      # The newdata have already been projected. Yay for speed!
+      # Center the 'newdata' by the projected class sample mean
+      U1_x <- scale(newdata, center = class_est$xbar_U1, scale = FALSE)
 
-    # We calculate the quadratic form explicitly for each observation to prevent
-    # storing a large 'p x p' inverse matrix in memory. However, note that our
-    # approach below increases the number of computations that must be performed
-    # for each observation. For the p >> n case, this hardly matters though.
-    # The quadratic forms lie on the diagonal of the resulting matrix
-    U1_x <- crossprod(object$U_1, t(x_centered))
-    quad_forms <- diag(quadform(class_est$W_inv, U1_x))
+      quad_forms <- diag(drop(tcrossprod(U1_x %*% class_est$W_inv, U1_x)))
+    } else {
+      # Center the 'newdata' by the class sample mean
+      x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
+
+      # We calculate the quadratic form explicitly for each observation to prevent
+      # storing a large 'p x p' inverse matrix in memory. However, note that our
+      # approach below increases the number of computations that must be performed
+      # for each observation. For the p >> n case, this hardly matters though.
+      # The quadratic forms lie on the diagonal of the resulting matrix
+      U1_x <- crossprod(object$U1, t(x_centered))
+
+      quad_forms <- diag(quadform(class_est$W_inv, U1_x))
+    }
+    
     quad_forms + log_det - 2 * log(class_est$prior)
   })
 
@@ -231,12 +262,18 @@ predict.hdrda <- function(object, newdata, ...) {
 #' @param num_folds the number of cross-validation folds.
 #' @param num_lambda The number of values of \code{lambda} to consider
 #' @param num_gamma The number of values of \code{gamma} to consider
+#' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
+#' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' details.
 #' @param ... Additional arguments passed to \code{\link{hdrda}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as
 #' well as a \code{data.frame} that summarizes the cross-validation results.
-hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) {
+hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
+                     shrinkage_type = c("ridge", "convex"), ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
+  shrinkage_type <- match.arg(shrinkage_type)
   
   cv_folds <- cv_partition(y = y, num_folds = num_folds)
 
@@ -245,7 +282,13 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
   # preferred because they assume that the covariance matrices are equal. This
   # preference is further based on model parsimony.
   seq_lambda <- seq(0, 1, length = num_lambda)
-  seq_gamma <- 10^seq.int(-1, num_gamma - 2)
+
+  if (shrinkage_type == "ridge") {
+    seq_gamma <- 10^seq.int(-1, num_gamma - 2)
+  } else  {
+    # shrinkage_type == "convex"
+    seq_gamma <- seq(0, 1, length = num_gamma)
+  }
 
   tuning_grid <- expand.grid(lambda = seq_lambda, gamma = seq_gamma)
   tuning_grid <- tuning_grid[do.call(order, tuning_grid), ]
@@ -258,6 +301,11 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
 
     hdrda_out <- hdrda(x = train_x, y = train_y, lambda = 1, gamma = 0, ...)
 
+    # Projects the test data to the q-dimensional subspace.
+    # No need to do this for each lambda/gamma pair.
+    # NOTE: It's not centered yet.
+    test_x <- test_x %*% hdrda_out$U1
+
     # For each value of lambda and gamma, we train the HDRDA classifier,
     # classify the test observations, and record the number of classification
     # errors.
@@ -266,7 +314,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
         # Updates Gamma, Q, and W_inv for each class in hdrda_out
         # If an error is thrown, we return 'NA'.
         hdrda_updated <- update_hdrda(hdrda_out, lambda, gamma)
-        sum(predict(hdrda_updated, test_x)$class != test_y)
+        sum(predict(hdrda_updated, test_x, projected = TRUE)$class != test_y)
       }, silent = TRUE)
 
       errors
@@ -295,20 +343,24 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7, ...) 
 #' @param gamma a numeric value (nonnegative)
 #' @return a \code{hdrda} object with updated estimates
 update_hdrda <- function(obj, lambda = 1, gamma = 0) {
+  # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1 for
+  # all k. As a result, Gamma and Gamma_inv are constant across all k. We
+  # compute both before looping through all K classes.
+  Gamma <- obj$est[[1]]$alpha * lambda * obj$D_q + gamma
+  Gamma_inv <- diag(Gamma^(-1))
+
   for (k in seq_len(obj$num_groups)) {
-    XU <- obj$est[[k]]$XU
-    alpha <- obj$est[[k]]$alpha
-    n_k <- obj$est[[k]]$n_k
-    
-    Gamma <- alpha * lambda * obj$D_q + gamma
-    Gamma_inv <- Gamma^(-1)
-    
-    Q <- diag(n_k) + alpha * (1 - lambda) * XU %*% tcrossprod(diag(Gamma_inv), XU)
-    
-    W_inv <- alpha * (1 - lambda) * diag(Gamma_inv) %*%
-      crossprod(XU, solve(Q, XU)) %*% diag(Gamma_inv)
-    W_inv <- diag(Gamma_inv) - W_inv
-    
+    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+    # We compute the matrix once and use it where necessary to avoid unnecessary
+    # computations.
+    XU_Gamma_inv <- obj$est[[k]]$XU %*% Gamma_inv
+    Q <- diag(obj$est[[k]]$n_k) +
+      obj$est[[k]]$alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, obj$est[[k]]$XU)
+
+    W_inv <- obj$est[[k]]$alpha * (1 - lambda) *
+        crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+    W_inv <- Gamma_inv - W_inv
+
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
