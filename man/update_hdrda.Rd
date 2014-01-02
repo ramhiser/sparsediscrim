@@ -22,4 +22,10 @@
   cross-validation to examine a large grid of values for
   \code{lambda} and \code{gamma}.
 }
+\details{
+  When \eqn{p < N}, the HDRDA covariance-matrix estimator
+  is singular when \eqn{(lambda, gamma) = (0, 0)}. In this
+  case, we set \eqn{gamma} to 0.01 to shrink the estimators
+  slightly to ensure positive-definiteness.
+}
 

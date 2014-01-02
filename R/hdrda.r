@@ -34,6 +34,10 @@
 #' probabilties should be nonnegative and sum to one. The order of the prior
 #' probabilties is assumed to match the levels of \code{factor(y)}.
 #'
+#' When \eqn{p < N}, the HDRDA covariance-matrix estimator is singular when
+#' \eqn{(lambda, gamma) = (0, 0)}. In this case, we set \eqn{gamma} to 0.01 to
+#' shrink the estimators slightly to ensure positive-definiteness.
+#'
 #' @export
 #' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
 #' "High-Dimensional Regularized Discriminant Analysis."
@@ -83,6 +87,13 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 
   if (gamma < 0) {
     stop("The value for 'gamma' must be nonnegative.")
+  }
+
+  # When p < N, the HDRDA covariance-matrix estimator is singular when (lambda,
+  # gamma) = (0, 0). In this case, we set gamma to a small value to shrink the
+  # estimators slightly.
+  if (lambda == 0 && gamma == 0) {
+    gamma <- 0.01
   }
 
   obj <- regdiscrim_estimates(x = x, y = y, cov = FALSE, prior = prior, ...)
@@ -338,11 +349,22 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
 #' expedite cross-validation to examine a large grid of values for \code{lambda}
 #' and \code{gamma}.
 #'
+#' When \eqn{p < N}, the HDRDA covariance-matrix estimator is singular when
+#' \eqn{(lambda, gamma) = (0, 0)}. In this case, we set \eqn{gamma} to 0.01 to
+#' shrink the estimators slightly to ensure positive-definiteness.
+#' 
 #' @param obj a \code{hdrda} object
 #' @param lambda a numeric value between 0 and 1, inclusively
 #' @param gamma a numeric value (nonnegative)
 #' @return a \code{hdrda} object with updated estimates
 update_hdrda <- function(obj, lambda = 1, gamma = 0) {
+  # When p < N, the HDRDA covariance-matrix estimator is singular when (lambda,
+  # gamma) = (0, 0). In this case, we set gamma to a small value to shrink the
+  # estimators slightly.
+  if (lambda == 0 && gamma == 0) {
+    gamma <- 0.01
+  }
+    
   # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1 for
   # all k. As a result, Gamma and Gamma_inv are constant across all k. We
   # compute both before looping through all K classes.

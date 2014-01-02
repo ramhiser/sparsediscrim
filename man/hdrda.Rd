@@ -122,6 +122,11 @@
   nonnegative and sum to one. The order of the prior
   probabilties is assumed to match the levels of
   \code{factor(y)}.
+
+  When \eqn{p < N}, the HDRDA covariance-matrix estimator
+  is singular when \eqn{(lambda, gamma) = (0, 0)}. In this
+  case, we set \eqn{gamma} to 0.01 to shrink the estimators
+  slightly to ensure positive-definiteness.
 }
 \references{
   Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
