@@ -1,3 +1,18 @@
+sparsediscrim 0.2
+-----------------
+
+NEW FEATURES
+
+* TODO
+
+CLASSIFIERS
+
+* `smdlda()` is an implementation of the Shrinkage-mean-based Diagonal Linear
+  Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
+
+* `smdqda()` is an implementation of the Shrinkage-mean-based Diagonal Quadratic
+  Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
+
 sparsediscrim 0.1
 -----------------
 
