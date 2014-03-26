@@ -9,10 +9,10 @@
   sdlda(x, ...)
 
   \method{sdlda}{default} (x, y, prior = NULL,
-    num_alphas = 101, est_mean = c("mle", "tong"), ...)
+    num_alphas = 101)
 
   \method{sdlda}{formula} (formula, data, prior = NULL,
-    num_alphas = 101, est_mean = c("mle", "tong"), ...)
+    num_alphas = 101)
 
   \method{print}{sdlda} (x, ...)
 
@@ -32,11 +32,6 @@
 
   \item{num_alphas}{the number of values used to find the
   optimal amount of shrinkage}
-
-  \item{est_mean}{the estimator for the class means. By
-  default, we use the maximum likelihood estimator (MLE).
-  To improve the estimation, we provide the option to use a
-  shrunken mean estimator proposed by Tong et al. (2012).}
 
   \item{formula}{A formula of the form \code{groups ~ x1 +
   x2 + ...} That is, the response is the grouping factor
