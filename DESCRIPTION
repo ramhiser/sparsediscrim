@@ -32,3 +32,4 @@ Collate:
     'helper-cv.r'
     'helper.r'
     'smdlda.r'
+    'smdqda.r'
