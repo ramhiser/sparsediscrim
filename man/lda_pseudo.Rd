@@ -50,7 +50,7 @@
 }
 \value{
   \code{lda_pseudo} object that contains the trained
-  LDA_PSEUDO classifier
+  lda_pseudo classifier
 
   list predicted class memberships of each row in newdata
 }

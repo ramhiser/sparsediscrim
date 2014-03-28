@@ -10,6 +10,9 @@ CLASSIFIERS
 * `lda_pseudo()` is an implementation of Linear Discriminant Analysis (LDA) with
   the Moore-Penrose Pseudo-Inverse
 
+* `mdeb()` is an implementation of the Minimum Distance Empirical Bayesian
+  Estimator (MDEB) classifier from Srivistava and Kubokawa (2007)
+
 * `smdlda()` is an implementation of the Shrinkage-mean-based Diagonal Linear
   Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
 

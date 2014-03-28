@@ -36,7 +36,8 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{lda_pseudo} object that contains the trained LDA_PSEUDO classifier
+#' @return \code{lda_pseudo} object that contains the trained lda_pseudo
+#' classifier
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
