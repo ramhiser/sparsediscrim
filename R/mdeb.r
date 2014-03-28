@@ -44,6 +44,9 @@
 #' mdeb_out2 <- mdeb(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(mdeb_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
+#' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
+#' Discrimination Methods for High Dimensional Data," Journal of the Japanese
+#' Statistical Association, 37, 1, 123-134.
 mdeb <- function(x, ...) {
   UseMethod("mdeb")
 }
@@ -130,6 +133,9 @@ print.mdeb <- function(x, ...) {
 #' @S3method predict mdeb
 #' @export
 #'
+#' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
+#' Discrimination Methods for High Dimensional Data," Journal of the Japanese
+#' Statistical Association, 37, 1, 123-134.
 #' @param object trained mdeb object
 #' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
 #' @param ... additional arguments
