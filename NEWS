@@ -7,6 +7,9 @@ NEW FEATURES
 
 CLASSIFIERS
 
+* `lda_pseudo()` is an implementation of Linear Discriminant Analysis (LDA) with
+  the Moore-Penrose Pseudo-Inverse
+
 * `smdlda()` is an implementation of the Shrinkage-mean-based Diagonal Linear
   Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
 
