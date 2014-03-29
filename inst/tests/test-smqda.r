@@ -1,7 +1,7 @@
 library(testthat)
 library(sparsediscrim)
 
-context("SmDQDA")
+context("The SmDQDA Classifier from Tong et al. (2012)")
 
 test_that("The SmDQDA classifier works properly on the iris data set", {
   require('MASS')
