@@ -13,6 +13,9 @@ CLASSIFIERS
 * `mdeb()` is an implementation of the Minimum Distance Empirical Bayesian
   Estimator (MDEB) classifier from Srivistava and Kubokawa (2007)
 
+* `mdmeb()` is an implementation of the Minimum Distance Rule using Modified
+  Empirical Bayes (MDMEB) classifier from Srivistava and Kubokawa (2007)
+
 * `mdmp()` is an implementation of the Minimum Distance Rule using Moore-Penrose
   Inverse (MDMP) classifier from Srivistava and Kubokawa (2007)
 
