@@ -1,21 +1,22 @@
-\name{lda_pseudo}
-\alias{lda_pseudo}
-\alias{lda_pseudo.default}
-\alias{lda_pseudo.formula}
-\alias{predict.lda_pseudo}
-\alias{print.lda_pseudo}
-\title{Linear Discriminant Analysis (LDA) with the Moore-Penrose Pseudo-Inverse}
+\name{lda_schafer}
+\alias{lda_schafer}
+\alias{lda_schafer.default}
+\alias{lda_schafer.formula}
+\alias{predict.lda_schafer}
+\alias{print.lda_schafer}
+\title{Linear Discriminant Analysis using the Schafer-Strimmer Covariance Matrix
+Estimator}
 \usage{
-  lda_pseudo(x, ...)
+  lda_schafer(x, ...)
 
-  \method{lda_pseudo}{default} (x, y, prior = NULL)
+  \method{lda_schafer}{default} (x, y, prior = NULL, ...)
 
-  \method{lda_pseudo}{formula} (formula, data,
+  \method{lda_schafer}{formula} (formula, data,
     prior = NULL)
 
-  \method{print}{lda_pseudo} (x, ...)
+  \method{print}{lda_schafer} (x, ...)
 
-  \method{predict}{lda_pseudo} (object, newdata, ...)
+  \method{predict}{lda_schafer} (object, newdata)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -29,6 +30,9 @@
   class. If NULL (default), then equal probabilities are
   used. See details.}
 
+  \item{...}{additional arguments passed to
+  \code{\link[corpcor]{invcov.shrink}}}
+
   \item{formula}{A formula of the form \code{groups ~ x1 +
   x2 + ...} That is, the response is the grouping factor
   and the right hand side specifies the (non-factor)
@@ -41,7 +45,7 @@
 
   \item{...}{unused}
 
-  \item{object}{trained lda_pseudo object}
+  \item{object}{trained lda_schafer object}
 
   \item{newdata}{matrix of observations to predict. Each
   row corresponds to a new observation.}
@@ -49,8 +53,8 @@
   \item{...}{additional arguments}
 }
 \value{
-  \code{lda_pseudo} object that contains the trained
-  lda_pseudo classifier
+  \code{lda_schafer} object that contains the trained
+  classifier
 
   list predicted class memberships of each row in newdata
 }
@@ -60,14 +64,13 @@
   distributions of each class are assumed to be
   multivariate normal and share a common covariance matrix.
   When the pooled sample covariance matrix is singular, the
-  linear discriminant function is incalculable. A common
-  method to overcome this issue is to replace the inverse
-  of the pooled sample covariance matrix with the
-  Moore-Penrose pseudo-inverse, which is unique and always
-  exists. Note that when the pooled sample covariance
-  matrix is nonsingular, it is equal to the pseudo-inverse.
+  linear discriminant function is incalculable. This
+  function replaces the inverse of pooled sample covariance
+  matrix with an estimator proposed by Schafer and Strimmer
+  (2005). The estimator is calculated via
+  \code{\link[corpcor]{invcov.shrink}}.
 
-  Summarizes the trained lda_pseudo classifier in a nice
+  Summarizes the trained lda_schafer classifier in a nice
   manner.
 
   The Linear Discriminant Analysis (LDA) classifier
@@ -75,12 +78,9 @@
   class are assumed to be multivariate normal and share a
   common covariance matrix. When the pooled sample
   covariance matrix is singular, the linear discriminant
-  function is incalculable. A common method to overcome
-  this issue is to replace the inverse of the pooled sample
-  covariance matrix with the Moore-Penrose pseudo-inverse,
-  which is unique and always exists. Note that when the
-  pooled sample covariance matrix is nonsingular, it is
-  equal to the pseudo-inverse.
+  function is incalculable. Here, the inverse of the pooled
+  sample covariance matrix is replaced with an estimator
+  from Schafer and Strimmer (2005).
 }
 \details{
   The matrix of training observations are given in
@@ -109,12 +109,23 @@
 \examples{
 n <- nrow(iris)
 train <- sample(seq_len(n), n / 2)
-lda_pseudo_out <- lda_pseudo(Species ~ ., data = iris[train, ])
-predicted <- predict(lda_pseudo_out, iris[-train, -5])$class
+lda_schafer_out <- lda_schafer(Species ~ ., data = iris[train, ])
+predicted <- predict(lda_schafer_out, iris[-train, -5])$class
 
-lda_pseudo_out2 <- lda_pseudo(x = iris[train, -5], y = iris[train, 5])
-predicted2 <- predict(lda_pseudo_out2, iris[-train, -5])$class
+lda_schafer_out2 <- lda_schafer(x = iris[train, -5], y = iris[train, 5])
+predicted2 <- predict(lda_schafer_out2, iris[-train, -5])$class
 all.equal(predicted, predicted2)
+}
+\references{
+  Schafer, J., and Strimmer, K. (2005). "A shrinkage
+  approach to large-scale covariance estimation and
+  implications for functional genomics," Statist. Appl.
+  Genet. Mol. Biol. 4, 32.
+
+  Schafer, J., and Strimmer, K. (2005). "A shrinkage
+  approach to large-scale covariance estimation and
+  implications for functional genomics," Statist. Appl.
+  Genet. Mol. Biol. 4, 32.
 }
 \keyword{internal}
 

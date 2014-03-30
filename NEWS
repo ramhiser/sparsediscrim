@@ -10,6 +10,9 @@ CLASSIFIERS
 * `lda_pseudo()` is an implementation of Linear Discriminant Analysis (LDA) with
   the Moore-Penrose Pseudo-Inverse
 
+* `lda_schafer()` is an implementation of Linear Discriminant Analysis (LDA)
+  using the covariance matrix estimator from Schafer and Strimmer (2005)
+
 * `mdeb()` is an implementation of the Minimum Distance Empirical Bayesian
   Estimator (MDEB) classifier from Srivistava and Kubokawa (2007)
 
