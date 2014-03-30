@@ -13,6 +13,9 @@ CLASSIFIERS
 * `lda_schafer()` is an implementation of Linear Discriminant Analysis (LDA)
   using the covariance matrix estimator from Schafer and Strimmer (2005)
 
+* `lda_thomaz()` is an implementation of Linear Discriminant Analysis (LDA)
+  using the covariance matrix estimator from Thomaz, Kitani, and Gillies (2006)
+
 * `mdeb()` is an implementation of the Minimum Distance Empirical Bayesian
   Estimator (MDEB) classifier from Srivistava and Kubokawa (2007)
 

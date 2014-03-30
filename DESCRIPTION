@@ -37,6 +37,6 @@ Collate:
     'mdeb.r'
     'mdmeb.r'
     'mdmp.r'
-    'nlda.r'
     'rda.r'
     'lda-schafer.r'
+    'lda-thomaz.r'

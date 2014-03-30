@@ -1,0 +1,134 @@
+\name{lda_thomaz}
+\alias{lda_thomaz}
+\alias{lda_thomaz.default}
+\alias{lda_thomaz.formula}
+\alias{predict.lda_thomaz}
+\alias{print.lda_thomaz}
+\title{Linear Discriminant Analysis using the Thomaz-Kitani-Gillies Covariance
+Matrix Estimator}
+\usage{
+  lda_thomaz(x, ...)
+
+  \method{lda_thomaz}{default} (x, y, prior = NULL)
+
+  \method{lda_thomaz}{formula} (formula, data,
+    prior = NULL)
+
+  \method{print}{lda_thomaz} (x, ...)
+
+  \method{predict}{lda_thomaz} (object, newdata)
+}
+\arguments{
+  \item{x}{matrix containing the training data. The rows
+  are the sample observations, and the columns are the
+  features.}
+
+  \item{y}{vector of class labels for each training
+  observation}
+
+  \item{prior}{vector with prior probabilities for each
+  class. If NULL (default), then equal probabilities are
+  used. See details.}
+
+  \item{formula}{A formula of the form \code{groups ~ x1 +
+  x2 + ...} That is, the response is the grouping factor
+  and the right hand side specifies the (non-factor)
+  discriminators.}
+
+  \item{data}{data frame from which variables specified in
+  \code{formula} are preferentially to be taken.}
+
+  \item{x}{object to print}
+
+  \item{...}{unused}
+
+  \item{object}{trained lda_thomaz object}
+
+  \item{newdata}{matrix of observations to predict. Each
+  row corresponds to a new observation.}
+
+  \item{...}{additional arguments}
+}
+\value{
+  \code{lda_thomaz} object that contains the trained
+  classifier
+
+  list predicted class memberships of each row in newdata
+}
+\description{
+  Given a set of training data, this function builds the
+  Linear Discriminant Analysis (LDA) classifier, where the
+  distributions of each class are assumed to be
+  multivariate normal and share a common covariance matrix.
+  When the pooled sample covariance matrix is singular, the
+  linear discriminant function is incalculable. This
+  function replaces the pooled sample covariance matrix
+  with a regularized estimator from Thomaz et al. (2006),
+  where the smallest eigenvalues are replaced with the
+  average eigenvalue. Specifically, small eigenvalues here
+  means that the eigenvalues are less than the average
+  eigenvalue.
+
+  Summarizes the trained lda_thomaz classifier in a nice
+  manner.
+
+  Given a set of training data, this function builds the
+  Linear Discriminant Analysis (LDA) classifier, where the
+  distributions of each class are assumed to be
+  multivariate normal and share a common covariance matrix.
+  When the pooled sample covariance matrix is singular, the
+  linear discriminant function is incalculable. This
+  function replaces the pooled sample covariance matrix
+  with a regularized estimator from Thomaz et al. (2006),
+  where the smallest eigenvalues are replaced with the
+  average eigenvalue. Specifically, small eigenvalues here
+  means that the eigenvalues are less than the average
+  eigenvalue.
+}
+\details{
+  The matrix of training observations are given in
+  \code{x}. The rows of \code{x} contain the sample
+  observations, and the columns contain the features for
+  each training observation.
+
+  The vector of class labels given in \code{y} are coerced
+  to a \code{factor}. The length of \code{y} should match
+  the number of rows in \code{x}.
+
+  An error is thrown if a given class has less than 2
+  observations because the variance for each feature within
+  a class cannot be estimated with less than 2
+  observations.
+
+  The vector, \code{prior}, contains the \emph{a priori}
+  class membership for each class. If \code{prior} is NULL
+  (default), the class membership probabilities are
+  estimated as the sample proportion of observations
+  belonging to each class. Otherwise, \code{prior} should
+  be a vector with the same length as the number of classes
+  in \code{y}. The \code{prior} probabilties should be
+  nonnegative and sum to one.
+}
+\examples{
+n <- nrow(iris)
+train <- sample(seq_len(n), n / 2)
+lda_thomaz_out <- lda_thomaz(Species ~ ., data = iris[train, ])
+predicted <- predict(lda_thomaz_out, iris[-train, -5])$class
+
+lda_thomaz_out2 <- lda_thomaz(x = iris[train, -5], y = iris[train, 5])
+predicted2 <- predict(lda_thomaz_out2, iris[-train, -5])$class
+all.equal(predicted, predicted2)
+}
+\references{
+  Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006).
+  "A maximum uncertainty LDA-based approach for limited
+  sample size problems — with application to face
+  recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+
+  Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006).
+  "A maximum uncertainty LDA-based approach for limited
+  sample size problems — with application to face
+  recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+}
+\keyword{internal}
+
