@@ -28,7 +28,7 @@ CLASSIFIERS
   Inverse (MDMP) classifier from Srivistava and Kubokawa (2007)
 
 * `smdlda()` is an implementation of the Shrinkage-mean-based Diagonal Linear
-  Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
+  Discriminant Analysis (SmDLDA) from Tong, Chen, and Zhao (2012)
 
 * `smdqda()` is an implementation of the Shrinkage-mean-based Diagonal Quadratic
   Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
