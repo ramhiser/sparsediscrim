@@ -3,6 +3,7 @@
 \alias{hdrda.default}
 \alias{hdrda.formula}
 \alias{predict.hdrda}
+\alias{print.hdrda}
 \title{High-Dimensional Regularized Discriminant Analysis (HDRDA)}
 \usage{
   hdrda(x, ...)
@@ -12,6 +13,8 @@
     tol = 1e-06, ...)
 
   \method{hdrda}{formula} (formula, data, ...)
+
+  \method{print}{hdrda} (x, ...)
 
   \method{predict}{hdrda} (object, newdata,
     projected = FALSE, ...)
@@ -54,6 +57,10 @@
   \item{...}{arguments passed from the \code{formula} to
   the \code{default} method}
 
+  \item{x}{object to print}
+
+  \item{...}{unused}
+
   \item{object}{object of type \code{hdrda} that contains
   the trained HDRDA classifier}
 
@@ -81,6 +88,8 @@
   data, the HDRDA classifier incorporates dimension
   reduction and covariance-matrix shrinkage to enable a
   computationally efficient classifier.
+
+  Summarizes the trained hdrda classifier in a nice manner.
 
   For a given \code{hdrda} object, we predict the class of
   each observation (row) of the the matrix given in
@@ -137,4 +146,5 @@
   84, 405, 165-175. \url{http://www.jstor.org/pss/2289860}
   (Requires full-text access).
 }
+\keyword{internal}
 

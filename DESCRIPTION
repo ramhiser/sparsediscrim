@@ -6,9 +6,7 @@ Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of sparse and regularized discriminant analysis
     methods intended for small-sample, high-dimensional data sets. The package
-    includes the High-Dimensional Regularized Discriminant Analysis classifier.
-    and several diagonal discriminant analysis methods, which are special cases
-    of the well-known Naive Bayes classifier.
+    features the High-Dimensional Regularized Discriminant Analysis classifier.
 Imports:
     corpcor,
     bdsmatrix,

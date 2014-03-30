@@ -191,6 +191,34 @@ hdrda.formula <- function(formula, data, ...) {
   est
 }
 
+#' Outputs the summary for a HDRDA classifier object.
+#'
+#' Summarizes the trained hdrda classifier in a nice manner.
+#'
+#' @keywords internal
+#' @param x object to print
+#' @param ... unused
+#' @rdname hdrda
+#' @method print hdrda
+#' @S3method print hdrda
+#' @export
+print.hdrda <- function(x, ...) {
+  cat("Call:\n")
+  print(x$call)
+  cat("Sample Size:\n")
+  print(x$N)
+  cat("Number of Features:\n")
+  print(x$p)
+  cat("Classes:\n")
+  print(x$groups)
+  cat("Prior Probabilties:\n")
+  print(sapply(x$est, function(z) z$prior))
+  cat("Reduced dimension, q:\n")
+  print(x$q)
+  cat("Shrinkage type:\n")
+  print(x$shrinkage_type)
+}
+
 #' Predicts the class membership of a matrix of unlabeled observations with a
 #' trained HDRDA classifier.
 #'
