@@ -1,7 +1,7 @@
 #' High-Dimensional Regularized Discriminant Analysis (HDRDA)
 #'
 #' Given a set of training data, this function builds the HDRDA classifier from
-#' Ramey, Stein, and Young (2013). Specially designed for small-sample,
+#' Ramey, Stein, and Young (2014). Specially designed for small-sample,
 #' high-dimensional data, the HDRDA classifier incorporates dimension reduction
 #' and covariance-matrix shrinkage to enable a computationally efficient
 #' classifier.
@@ -18,7 +18,7 @@
 #' \deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda) + \gamma I_p,}
 #' where \eqn{I_p} is the \eqn{p \times p} identity matrix. The matrix
 #' \eqn{\tilde{\Sigma}_k} is substituted into the HDRDA classifier. See Ramey et
-#' al. (2013) for more details. 
+#' al. (2014) for more details. 
 #'
 #' The matrix of training observations are given in \code{x}. The rows of
 #' \code{x} contain the sample observations, and the columns contain the features
@@ -39,7 +39,7 @@
 #' shrink the estimators slightly to ensure positive-definiteness.
 #'
 #' @export
-#' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+#' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
 #' "High-Dimensional Regularized Discriminant Analysis."
 #' @references Friedman, J. H. (1989), "Regularized Discriminant Analysis,"
 #' Journal of American Statistical Association, 84, 405, 165-175.
@@ -52,7 +52,7 @@
 #' @param gamma a numeric values used for the shrinkage parameter.
 #' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
 #' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
-#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
 #' details.
 #' @param prior vector with prior probabilities for each class. If \code{NULL}
 #' (default), then the sample proportion of observations belonging to each class
@@ -303,7 +303,7 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 #' @param num_gamma The number of values of \code{gamma} to consider
 #' @param shrinkage_type the type of covariance-matrix shrinkage to apply. By
 #' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
-#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2013) for
+#' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
 #' details.
 #' @param ... Additional arguments passed to \code{\link{hdrda}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as

@@ -26,7 +26,7 @@
   shrinkage to apply. By default, a ridge-like shrinkage is
   applied. If \code{convex} is given, then shrinkage
   similar to Friedman (1989) is applied. See Ramey et al.
-  (2013) for details.}
+  (2014) for details.}
 
   \item{...}{Additional arguments passed to
   \code{\link{hdrda}}.}

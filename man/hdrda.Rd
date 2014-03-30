@@ -37,7 +37,7 @@
   shrinkage to apply. By default, a ridge-like shrinkage is
   applied. If \code{convex} is given, then shrinkage
   similar to Friedman (1989) is applied. See Ramey et al.
-  (2013) for details.}
+  (2014) for details.}
 
   \item{prior}{vector with prior probabilities for each
   class. If \code{NULL} (default), then the sample
@@ -83,7 +83,7 @@
 }
 \description{
   Given a set of training data, this function builds the
-  HDRDA classifier from Ramey, Stein, and Young (2013).
+  HDRDA classifier from Ramey, Stein, and Young (2014).
   Specially designed for small-sample, high-dimensional
   data, the HDRDA classifier incorporates dimension
   reduction and covariance-matrix shrinkage to enable a
@@ -111,7 +111,7 @@
   + \gamma I_p,} where \eqn{I_p} is the \eqn{p \times p}
   identity matrix. The matrix \eqn{\tilde{\Sigma}_k} is
   substituted into the HDRDA classifier. See Ramey et al.
-  (2013) for more details.
+  (2014) for more details.
 
   The matrix of training observations are given in
   \code{x}. The rows of \code{x} contain the sample
@@ -138,7 +138,7 @@
   slightly to ensure positive-definiteness.
 }
 \references{
-  Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+  Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
   "High-Dimensional Regularized Discriminant Analysis."
 
   Friedman, J. H. (1989), "Regularized Discriminant

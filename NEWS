@@ -1,9 +1,11 @@
 sparsediscrim 0.2
 -----------------
 
-NEW FEATURES
+UPDATES
 
-* TODO
+* The High-Dimensional Regularized Discriminant Analysis (HDRDA) classifier from
+  Ramey, Stein, and Young (2014) implemented in `hdrda()` has been revamped to
+  improve its computational performance.
 
 CLASSIFIERS
 
@@ -31,6 +33,10 @@ CLASSIFIERS
 * `smdqda()` is an implementation of the Shrinkage-mean-based Diagonal Quadratic
   Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
 
+MISCELLANEOUS
+
+* Added a summary function for `hdrda` classifiers
+
 sparsediscrim 0.1
 -----------------
 
@@ -43,7 +49,7 @@ NEW FEATURES
 CLASSIFIERS
 
 * `hdrda()` is an implementation of the High-Dimensional Regularized
-  Discriminant Analysis classifier from Ramey, Stein, and Young (2013).
+  Discriminant Analysis classifier from Ramey, Stein, and Young (2014).
 
 * `dlda()` is an implementation of the Diagonal Linear Discriminant Analysis
   classifier from Dudoit, Fridlyand, and Speed (2002).
