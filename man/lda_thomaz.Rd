@@ -118,12 +118,12 @@ all.equal(predicted, predicted2)
 \references{
 Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
 maximum uncertainty LDA-based approach for limited sample
-size problems — with application to face recognition," J.
+size problems with application to face recognition," J.
 Braz. Comp. Soc., 12, 2, 7-18.
 
 Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
 maximum uncertainty LDA-based approach for limited sample
-size problems — with application to face recognition," J.
+size problems with application to face recognition," J.
 Braz. Comp. Soc., 12, 2, 7-18.
 }
 \keyword{internal}

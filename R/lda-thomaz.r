@@ -47,8 +47,8 @@
 #' predicted2 <- predict(lda_thomaz_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
 #' @references Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
-#' maximum uncertainty LDA-based approach for limited sample size problems —
-#' with application to face recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+#' maximum uncertainty LDA-based approach for limited sample size problems with
+#' application to face recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
 lda_thomaz <- function(x, ...) {
   UseMethod("lda_thomaz")
 }
@@ -153,8 +153,8 @@ print.lda_thomaz <- function(x, ...) {
 #' @export
 #'
 #' @references Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
-#' maximum uncertainty LDA-based approach for limited sample size problems —
-#' with application to face recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+#' maximum uncertainty LDA-based approach for limited sample size problems with
+#' application to face recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
 #' @param object trained lda_thomaz object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
