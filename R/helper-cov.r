@@ -232,6 +232,6 @@ cov_shrink_diag <- function(x, gamma = 1) {
   if (gamma < 0 || gamma > 1) {
     stop("The value of 'gamma' must be between 0 and 1, inclusively.")
   }
-  cov_x <- sparsediscrim:::cov_mle(x)
+  cov_x <- cov_mle(x)
   gamma * cov_x + (1 - gamma) * diag(diag(cov_x))
 }

@@ -85,7 +85,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
     if (est_mean == "mle") {
       stats$xbar <- colMeans(x[i,])
     } else if (est_mean == "tong") {
-      stats$xbar <- sparsediscrim:::tong_mean_shrinkage(x[i, ])
+      stats$xbar <- tong_mean_shrinkage(x[i, ])
     }
     stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
     stats
