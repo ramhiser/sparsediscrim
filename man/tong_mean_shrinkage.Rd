@@ -2,7 +2,7 @@
 \alias{tong_mean_shrinkage}
 \title{Tong et al. (2012)'s Lindley-type Shrunken Mean Estimator}
 \usage{
-  tong_mean_shrinkage(x, r_opt = NULL)
+tong_mean_shrinkage(x, r_opt = NULL)
 }
 \arguments{
   \item{x}{a matrix with \code{n} rows and \code{p}
@@ -16,18 +16,17 @@
   approximations.}
 }
 \value{
-  vector of length \code{p} with the shrunken mean
-  estimator
+vector of length \code{p} with the shrunken mean estimator
 }
 \description{
-  An implementation of the Lindley-type shrunken mean
-  estimator utilized in shrinkage-mean-based diagonal
-  linear discriminant analysis (SmDLDA).
+An implementation of the Lindley-type shrunken mean
+estimator utilized in shrinkage-mean-based diagonal linear
+discriminant analysis (SmDLDA).
 }
 \references{
-  Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
-  Estimation and Its Application to Diagonal Discriminant
-  Analysis," Bioinformatics, 28, 4, 531-537.
-  \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
+Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
+Estimation and Its Application to Diagonal Discriminant
+Analysis," Bioinformatics, 28, 4, 531-537.
+\url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 }
 

@@ -7,16 +7,15 @@
 \title{Linear Discriminant Analysis using the Thomaz-Kitani-Gillies Covariance
 Matrix Estimator}
 \usage{
-  lda_thomaz(x, ...)
+lda_thomaz(x, ...)
 
-  \method{lda_thomaz}{default} (x, y, prior = NULL)
+\method{lda_thomaz}{default}(x, y, prior = NULL)
 
-  \method{lda_thomaz}{formula} (formula, data,
-    prior = NULL)
+\method{lda_thomaz}{formula}(formula, data, prior = NULL)
 
-  \method{print}{lda_thomaz} (x, ...)
+\method{print}{lda_thomaz}(x, ...)
 
-  \method{predict}{lda_thomaz} (object, newdata)
+\method{predict}{lda_thomaz}(object, newdata)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -50,64 +49,61 @@ Matrix Estimator}
   \item{...}{additional arguments}
 }
 \value{
-  \code{lda_thomaz} object that contains the trained
-  classifier
+\code{lda_thomaz} object that contains the trained
+classifier
 
-  list predicted class memberships of each row in newdata
+list predicted class memberships of each row in newdata
 }
 \description{
-  Given a set of training data, this function builds the
-  Linear Discriminant Analysis (LDA) classifier, where the
-  distributions of each class are assumed to be
-  multivariate normal and share a common covariance matrix.
-  When the pooled sample covariance matrix is singular, the
-  linear discriminant function is incalculable. This
-  function replaces the pooled sample covariance matrix
-  with a regularized estimator from Thomaz et al. (2006),
-  where the smallest eigenvalues are replaced with the
-  average eigenvalue. Specifically, small eigenvalues here
-  means that the eigenvalues are less than the average
-  eigenvalue.
+Given a set of training data, this function builds the
+Linear Discriminant Analysis (LDA) classifier, where the
+distributions of each class are assumed to be multivariate
+normal and share a common covariance matrix. When the
+pooled sample covariance matrix is singular, the linear
+discriminant function is incalculable. This function
+replaces the pooled sample covariance matrix with a
+regularized estimator from Thomaz et al. (2006), where the
+smallest eigenvalues are replaced with the average
+eigenvalue. Specifically, small eigenvalues here means that
+the eigenvalues are less than the average eigenvalue.
 
-  Summarizes the trained lda_thomaz classifier in a nice
-  manner.
+Summarizes the trained lda_thomaz classifier in a nice
+manner.
 
-  Given a set of training data, this function builds the
-  Linear Discriminant Analysis (LDA) classifier, where the
-  distributions of each class are assumed to be
-  multivariate normal and share a common covariance matrix.
-  When the pooled sample covariance matrix is singular, the
-  linear discriminant function is incalculable. This
-  function replaces the pooled sample covariance matrix
-  with a regularized estimator from Thomaz et al. (2006),
-  where the smallest eigenvalues are replaced with the
-  average eigenvalue. Specifically, small eigenvalues here
-  means that the eigenvalues are less than the average
-  eigenvalue.
+Given a set of training data, this function builds the
+Linear Discriminant Analysis (LDA) classifier, where the
+distributions of each class are assumed to be multivariate
+normal and share a common covariance matrix. When the
+pooled sample covariance matrix is singular, the linear
+discriminant function is incalculable. This function
+replaces the pooled sample covariance matrix with a
+regularized estimator from Thomaz et al. (2006), where the
+smallest eigenvalues are replaced with the average
+eigenvalue. Specifically, small eigenvalues here means that
+the eigenvalues are less than the average eigenvalue.
 }
 \details{
-  The matrix of training observations are given in
-  \code{x}. The rows of \code{x} contain the sample
-  observations, and the columns contain the features for
-  each training observation.
+The matrix of training observations are given in \code{x}.
+The rows of \code{x} contain the sample observations, and
+the columns contain the features for each training
+observation.
 
-  The vector of class labels given in \code{y} are coerced
-  to a \code{factor}. The length of \code{y} should match
-  the number of rows in \code{x}.
+The vector of class labels given in \code{y} are coerced to
+a \code{factor}. The length of \code{y} should match the
+number of rows in \code{x}.
 
-  An error is thrown if a given class has less than 2
-  observations because the variance for each feature within
-  a class cannot be estimated with less than 2
-  observations.
+An error is thrown if a given class has less than 2
+observations because the variance for each feature within a
+class cannot be estimated with less than 2 observations.
 
-  The vector, \code{prior}, contains the \emph{a priori}
-  class membership for each class. If \code{prior} is NULL
-  (default), the class membership probabilities are
-  estimated as the sample proportion of observations
-  belonging to each class. Otherwise, \code{prior} should
-  be a vector with the same length as the number of classes
-  in \code{y}. The \code{prior} probabilties should be
-  nonnegative and sum to one.
+The vector, \code{prior}, contains the \emph{a priori}
+class membership for each class. If \code{prior} is NULL
+(default), the class membership probabilities are estimated
+as the sample proportion of observations belonging to each
+class. Otherwise, \code{prior} should be a vector with the
+same length as the number of classes in \code{y}. The
+\code{prior} probabilties should be nonnegative and sum to
+one.
 }
 \examples{
 n <- nrow(iris)
@@ -120,15 +116,15 @@ predicted2 <- predict(lda_thomaz_out2, iris[-train, -5])$class
 all.equal(predicted, predicted2)
 }
 \references{
-  Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006).
-  "A maximum uncertainty LDA-based approach for limited
-  sample size problems — with application to face
-  recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
+maximum uncertainty LDA-based approach for limited sample
+size problems — with application to face recognition," J.
+Braz. Comp. Soc., 12, 2, 7-18.
 
-  Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006).
-  "A maximum uncertainty LDA-based approach for limited
-  sample size problems — with application to face
-  recognition," J. Braz. Comp. Soc., 12, 2, 7-18.
+Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A
+maximum uncertainty LDA-based approach for limited sample
+size problems — with application to face recognition," J.
+Braz. Comp. Soc., 12, 2, 7-18.
 }
 \keyword{internal}
 

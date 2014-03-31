@@ -6,16 +6,15 @@
 \alias{print.lda_pseudo}
 \title{Linear Discriminant Analysis (LDA) with the Moore-Penrose Pseudo-Inverse}
 \usage{
-  lda_pseudo(x, ...)
+lda_pseudo(x, ...)
 
-  \method{lda_pseudo}{default} (x, y, prior = NULL)
+\method{lda_pseudo}{default}(x, y, prior = NULL)
 
-  \method{lda_pseudo}{formula} (formula, data,
-    prior = NULL)
+\method{lda_pseudo}{formula}(formula, data, prior = NULL)
 
-  \method{print}{lda_pseudo} (x, ...)
+\method{print}{lda_pseudo}(x, ...)
 
-  \method{predict}{lda_pseudo} (object, newdata, ...)
+\method{predict}{lda_pseudo}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -49,62 +48,60 @@
   \item{...}{additional arguments}
 }
 \value{
-  \code{lda_pseudo} object that contains the trained
-  lda_pseudo classifier
+\code{lda_pseudo} object that contains the trained
+lda_pseudo classifier
 
-  list predicted class memberships of each row in newdata
+list predicted class memberships of each row in newdata
 }
 \description{
-  Given a set of training data, this function builds the
-  Linear Discriminant Analysis (LDA) classifier, where the
-  distributions of each class are assumed to be
-  multivariate normal and share a common covariance matrix.
-  When the pooled sample covariance matrix is singular, the
-  linear discriminant function is incalculable. A common
-  method to overcome this issue is to replace the inverse
-  of the pooled sample covariance matrix with the
-  Moore-Penrose pseudo-inverse, which is unique and always
-  exists. Note that when the pooled sample covariance
-  matrix is nonsingular, it is equal to the pseudo-inverse.
+Given a set of training data, this function builds the
+Linear Discriminant Analysis (LDA) classifier, where the
+distributions of each class are assumed to be multivariate
+normal and share a common covariance matrix. When the
+pooled sample covariance matrix is singular, the linear
+discriminant function is incalculable. A common method to
+overcome this issue is to replace the inverse of the pooled
+sample covariance matrix with the Moore-Penrose
+pseudo-inverse, which is unique and always exists. Note
+that when the pooled sample covariance matrix is
+nonsingular, it is equal to the pseudo-inverse.
 
-  Summarizes the trained lda_pseudo classifier in a nice
-  manner.
+Summarizes the trained lda_pseudo classifier in a nice
+manner.
 
-  The Linear Discriminant Analysis (LDA) classifier
-  involves the assumption that the distributions of each
-  class are assumed to be multivariate normal and share a
-  common covariance matrix. When the pooled sample
-  covariance matrix is singular, the linear discriminant
-  function is incalculable. A common method to overcome
-  this issue is to replace the inverse of the pooled sample
-  covariance matrix with the Moore-Penrose pseudo-inverse,
-  which is unique and always exists. Note that when the
-  pooled sample covariance matrix is nonsingular, it is
-  equal to the pseudo-inverse.
+The Linear Discriminant Analysis (LDA) classifier involves
+the assumption that the distributions of each class are
+assumed to be multivariate normal and share a common
+covariance matrix. When the pooled sample covariance matrix
+is singular, the linear discriminant function is
+incalculable. A common method to overcome this issue is to
+replace the inverse of the pooled sample covariance matrix
+with the Moore-Penrose pseudo-inverse, which is unique and
+always exists. Note that when the pooled sample covariance
+matrix is nonsingular, it is equal to the pseudo-inverse.
 }
 \details{
-  The matrix of training observations are given in
-  \code{x}. The rows of \code{x} contain the sample
-  observations, and the columns contain the features for
-  each training observation.
+The matrix of training observations are given in \code{x}.
+The rows of \code{x} contain the sample observations, and
+the columns contain the features for each training
+observation.
 
-  The vector of class labels given in \code{y} are coerced
-  to a \code{factor}. The length of \code{y} should match
-  the number of rows in \code{x}.
+The vector of class labels given in \code{y} are coerced to
+a \code{factor}. The length of \code{y} should match the
+number of rows in \code{x}.
 
-  An error is thrown if a given class has less than 2
-  observations because the variance for each feature within
-  a class cannot be estimated with less than 2
-  observations.
+An error is thrown if a given class has less than 2
+observations because the variance for each feature within a
+class cannot be estimated with less than 2 observations.
 
-  The vector, \code{prior}, contains the \emph{a priori}
-  class membership for each class. If \code{prior} is NULL
-  (default), the class membership probabilities are
-  estimated as the sample proportion of observations
-  belonging to each class. Otherwise, \code{prior} should
-  be a vector with the same length as the number of classes
-  in \code{y}. The \code{prior} probabilties should be
-  nonnegative and sum to one.
+The vector, \code{prior}, contains the \emph{a priori}
+class membership for each class. If \code{prior} is NULL
+(default), the class membership probabilities are estimated
+as the sample proportion of observations belonging to each
+class. Otherwise, \code{prior} should be a vector with the
+same length as the number of classes in \code{y}. The
+\code{prior} probabilties should be nonnegative and sum to
+one.
 }
 \examples{
 n <- nrow(iris)

@@ -3,7 +3,7 @@
 \title{Generates data from \code{K} multivariate normal data populations, where each
 population (class) has an intraclass covariance matrix.}
 \usage{
-  generate_intraclass(n, p, rho, mu, sigma2 = rep(1, K))
+generate_intraclass(n, p, rho, mu, sigma2 = rep(1, K))
 }
 \arguments{
   \item{n}{vector of the sample sizes of each class. The
@@ -24,43 +24,40 @@ population (class) has an intraclass covariance matrix.}
   class.}
 }
 \value{
-  named list with elements: \itemize{ \item \code{x}:
-  matrix of observations with \code{n} rows and \code{p}
-  columns \item \code{y}: vector of class labels that
-  indicates class membership for each observation (row) in
-  \code{x}. }
+named list with elements: \itemize{ \item \code{x}: matrix
+of observations with \code{n} rows and \code{p} columns
+\item \code{y}: vector of class labels that indicates class
+membership for each observation (row) in \code{x}. }
 }
 \description{
-  This function generates \code{K} multivariate normal data
-  sets, where each class is generated with a constant mean
-  vector and an intraclass covariance matrix. The data are
-  returned as a single matrix \code{x} along with a vector
-  of class labels \code{y} that indicates class membership.
+This function generates \code{K} multivariate normal data
+sets, where each class is generated with a constant mean
+vector and an intraclass covariance matrix. The data are
+returned as a single matrix \code{x} along with a vector of
+class labels \code{y} that indicates class membership.
 }
 \details{
-  For simplicity, we assume that a class mean vector is
-  constant for each feature. That is, we assume that the
-  mean vector of the \eqn{k}th class is \eqn{c_k * j_p},
-  where \eqn{j_p} is a \eqn{p \times 1} vector of ones and
-  \eqn{c_k} is a real scalar.
+For simplicity, we assume that a class mean vector is
+constant for each feature. That is, we assume that the mean
+vector of the \eqn{k}th class is \eqn{c_k * j_p}, where
+\eqn{j_p} is a \eqn{p \times 1} vector of ones and
+\eqn{c_k} is a real scalar.
 
-  The intraclass covariance matrix for the \eqn{k}th class
-  is defined as: \deqn{\sigma_k^2 * (\rho_k * J_p + (1 -
-  \rho_k) * I_p),} where \eqn{J_p} is the \eqn{p \times p}
-  matrix of ones and \eqn{I_p} is the \eqn{p \times p}
-  identity matrix.
+The intraclass covariance matrix for the \eqn{k}th class is
+defined as: \deqn{\sigma_k^2 * (\rho_k * J_p + (1 - \rho_k)
+* I_p),} where \eqn{J_p} is the \eqn{p \times p} matrix of
+ones and \eqn{I_p} is the \eqn{p \times p} identity matrix.
 
-  By default, with \eqn{sigma_k^2 = 1}, the diagonal
-  elements of the intraclass covariance matrix are all 1,
-  while the off-diagonal elements of the matrix are all
-  \code{rho}.
+By default, with \eqn{sigma_k^2 = 1}, the diagonal elements
+of the intraclass covariance matrix are all 1, while the
+off-diagonal elements of the matrix are all \code{rho}.
 
-  The values of \code{rho} must be between \eqn{(1 -
-  p)^(-1)} and 1, exclusively, to ensure that the
-  covariance matrix is positive definite.
+The values of \code{rho} must be between \eqn{(1 - p)^(-1)}
+and 1, exclusively, to ensure that the covariance matrix is
+positive definite.
 
-  The number of classes \code{K} is determined with lazy
-  evaluation as the length of \code{n}.
+The number of classes \code{K} is determined with lazy
+evaluation as the length of \code{n}.
 }
 \examples{
 # Generates data from K = 3 classes.

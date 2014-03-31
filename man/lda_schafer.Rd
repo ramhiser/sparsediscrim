@@ -7,16 +7,15 @@
 \title{Linear Discriminant Analysis using the Schafer-Strimmer Covariance Matrix
 Estimator}
 \usage{
-  lda_schafer(x, ...)
+lda_schafer(x, ...)
 
-  \method{lda_schafer}{default} (x, y, prior = NULL, ...)
+\method{lda_schafer}{default}(x, y, prior = NULL, ...)
 
-  \method{lda_schafer}{formula} (formula, data,
-    prior = NULL)
+\method{lda_schafer}{formula}(formula, data, prior = NULL)
 
-  \method{print}{lda_schafer} (x, ...)
+\method{print}{lda_schafer}(x, ...)
 
-  \method{predict}{lda_schafer} (object, newdata)
+\method{predict}{lda_schafer}(object, newdata)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -53,58 +52,57 @@ Estimator}
   \item{...}{additional arguments}
 }
 \value{
-  \code{lda_schafer} object that contains the trained
-  classifier
+\code{lda_schafer} object that contains the trained
+classifier
 
-  list predicted class memberships of each row in newdata
+list predicted class memberships of each row in newdata
 }
 \description{
-  Given a set of training data, this function builds the
-  Linear Discriminant Analysis (LDA) classifier, where the
-  distributions of each class are assumed to be
-  multivariate normal and share a common covariance matrix.
-  When the pooled sample covariance matrix is singular, the
-  linear discriminant function is incalculable. This
-  function replaces the inverse of pooled sample covariance
-  matrix with an estimator proposed by Schafer and Strimmer
-  (2005). The estimator is calculated via
-  \code{\link[corpcor]{invcov.shrink}}.
+Given a set of training data, this function builds the
+Linear Discriminant Analysis (LDA) classifier, where the
+distributions of each class are assumed to be multivariate
+normal and share a common covariance matrix. When the
+pooled sample covariance matrix is singular, the linear
+discriminant function is incalculable. This function
+replaces the inverse of pooled sample covariance matrix
+with an estimator proposed by Schafer and Strimmer (2005).
+The estimator is calculated via
+\code{\link[corpcor]{invcov.shrink}}.
 
-  Summarizes the trained lda_schafer classifier in a nice
-  manner.
+Summarizes the trained lda_schafer classifier in a nice
+manner.
 
-  The Linear Discriminant Analysis (LDA) classifier
-  involves the assumption that the distributions of each
-  class are assumed to be multivariate normal and share a
-  common covariance matrix. When the pooled sample
-  covariance matrix is singular, the linear discriminant
-  function is incalculable. Here, the inverse of the pooled
-  sample covariance matrix is replaced with an estimator
-  from Schafer and Strimmer (2005).
+The Linear Discriminant Analysis (LDA) classifier involves
+the assumption that the distributions of each class are
+assumed to be multivariate normal and share a common
+covariance matrix. When the pooled sample covariance matrix
+is singular, the linear discriminant function is
+incalculable. Here, the inverse of the pooled sample
+covariance matrix is replaced with an estimator from
+Schafer and Strimmer (2005).
 }
 \details{
-  The matrix of training observations are given in
-  \code{x}. The rows of \code{x} contain the sample
-  observations, and the columns contain the features for
-  each training observation.
+The matrix of training observations are given in \code{x}.
+The rows of \code{x} contain the sample observations, and
+the columns contain the features for each training
+observation.
 
-  The vector of class labels given in \code{y} are coerced
-  to a \code{factor}. The length of \code{y} should match
-  the number of rows in \code{x}.
+The vector of class labels given in \code{y} are coerced to
+a \code{factor}. The length of \code{y} should match the
+number of rows in \code{x}.
 
-  An error is thrown if a given class has less than 2
-  observations because the variance for each feature within
-  a class cannot be estimated with less than 2
-  observations.
+An error is thrown if a given class has less than 2
+observations because the variance for each feature within a
+class cannot be estimated with less than 2 observations.
 
-  The vector, \code{prior}, contains the \emph{a priori}
-  class membership for each class. If \code{prior} is NULL
-  (default), the class membership probabilities are
-  estimated as the sample proportion of observations
-  belonging to each class. Otherwise, \code{prior} should
-  be a vector with the same length as the number of classes
-  in \code{y}. The \code{prior} probabilties should be
-  nonnegative and sum to one.
+The vector, \code{prior}, contains the \emph{a priori}
+class membership for each class. If \code{prior} is NULL
+(default), the class membership probabilities are estimated
+as the sample proportion of observations belonging to each
+class. Otherwise, \code{prior} should be a vector with the
+same length as the number of classes in \code{y}. The
+\code{prior} probabilties should be nonnegative and sum to
+one.
 }
 \examples{
 n <- nrow(iris)
@@ -117,15 +115,15 @@ predicted2 <- predict(lda_schafer_out2, iris[-train, -5])$class
 all.equal(predicted, predicted2)
 }
 \references{
-  Schafer, J., and Strimmer, K. (2005). "A shrinkage
-  approach to large-scale covariance estimation and
-  implications for functional genomics," Statist. Appl.
-  Genet. Mol. Biol. 4, 32.
+Schafer, J., and Strimmer, K. (2005). "A shrinkage approach
+to large-scale covariance estimation and implications for
+functional genomics," Statist. Appl. Genet. Mol. Biol. 4,
+32.
 
-  Schafer, J., and Strimmer, K. (2005). "A shrinkage
-  approach to large-scale covariance estimation and
-  implications for functional genomics," Statist. Appl.
-  Genet. Mol. Biol. 4, 32.
+Schafer, J., and Strimmer, K. (2005). "A shrinkage approach
+to large-scale covariance estimation and implications for
+functional genomics," Statist. Appl. Genet. Mol. Biol. 4,
+32.
 }
 \keyword{internal}
 

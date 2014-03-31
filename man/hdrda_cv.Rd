@@ -2,9 +2,8 @@
 \alias{hdrda_cv}
 \title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
-  hdrda_cv(x, y, num_folds = 10, num_lambda = 21,
-    num_gamma = 7, shrinkage_type = c("ridge", "convex"),
-    ...)
+hdrda_cv(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
+  shrinkage_type = c("ridge", "convex"), ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -32,16 +31,16 @@
   \code{\link{hdrda}}.}
 }
 \value{
-  list containing the HDRDA model that minimizes
-  cross-validation as well as a \code{data.frame} that
-  summarizes the cross-validation results.
+list containing the HDRDA model that minimizes
+cross-validation as well as a \code{data.frame} that
+summarizes the cross-validation results.
 }
 \description{
-  For a given data set, we apply cross-validation (cv) to
-  select the optimal HDRDA tuning parameters.
+For a given data set, we apply cross-validation (cv) to
+select the optimal HDRDA tuning parameters.
 }
 \details{
-  The number of cross-validation folds is given in
-  \code{num_folds}.
+The number of cross-validation folds is given in
+\code{num_folds}.
 }
 

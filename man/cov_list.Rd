@@ -3,7 +3,7 @@
 \title{Computes the covariance-matrix maximum likelihood estimators for each class
 and returns a list.}
 \usage{
-  cov_list(x, y)
+cov_list(x, y)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and
@@ -13,12 +13,12 @@ and returns a list.}
   \code{x}}
 }
 \value{
-  list of the sample covariance matrices of size \eqn{p
-  \times p} for each class given in \code{y}.
+list of the sample covariance matrices of size \eqn{p
+\times p} for each class given in \code{y}.
 }
 \description{
-  For a sample matrix, \code{x}, we compute the MLE for the
-  covariance matrix for each class given in the vector,
-  \code{y}.
+For a sample matrix, \code{x}, we compute the MLE for the
+covariance matrix for each class given in the vector,
+\code{y}.
 }
 

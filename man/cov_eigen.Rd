@@ -3,7 +3,7 @@
 \title{Computes the eigenvalue decomposition of the maximum likelihood estimators
 (MLE) of the covariance matrices for the given data matrix}
 \usage{
-  cov_eigen(x, y, pool = FALSE, fast = FALSE, tol = 1e-06)
+cov_eigen(x, y, pool = FALSE, fast = FALSE, tol = 1e-06)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and
@@ -22,25 +22,24 @@
   values of \code{x} are considered zero.}
 }
 \value{
-  a list containing the eigendecomposition for each class.
-  If \code{pool = TRUE}, then a single list is returned.
+a list containing the eigendecomposition for each class. If
+\code{pool = TRUE}, then a single list is returned.
 }
 \description{
-  For the classes given in the vector \code{y}, we compute
-  the eigenvalue (spectral) decomposition of the class
-  sample covariance matrices (MLEs) using the data matrix
-  \code{x}.
+For the classes given in the vector \code{y}, we compute
+the eigenvalue (spectral) decomposition of the class sample
+covariance matrices (MLEs) using the data matrix \code{x}.
 }
 \details{
-  If the \code{fast} argument is selected, we utilize the
-  so-called Fast Singular Value Decomposition (SVD) to
-  quickly compute the eigenvalue decomposition. To compute
-  the Fast SVD, we use the \code{\link{fast.svd}} function,
-  which employs a well-known trick for tall data (large
-  \code{n}, small \code{p}) and wide data (large \code{p},
-  small \code{n}) to compute the SVD corresponding to the
-  nonzero singular values. For more information about the
-  Fast SVD, see \code{\link[corpcor]{fast.svd}}.
+If the \code{fast} argument is selected, we utilize the
+so-called Fast Singular Value Decomposition (SVD) to
+quickly compute the eigenvalue decomposition. To compute
+the Fast SVD, we use the \code{\link{fast.svd}} function,
+which employs a well-known trick for tall data (large
+\code{n}, small \code{p}) and wide data (large \code{p},
+small \code{n}) to compute the SVD corresponding to the
+nonzero singular values. For more information about the
+Fast SVD, see \code{\link[corpcor]{fast.svd}}.
 }
 \examples{
 cov_eigen(x = iris[, -5], y = iris[, 5])

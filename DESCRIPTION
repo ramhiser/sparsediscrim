@@ -14,26 +14,3 @@ Imports:
 License: MIT + file LICENSE
 URL: https://github.com/ramey/sparsediscrim,
     http://ramhiser.com
-Collate:
-    'dlda.r'
-    'dqda.r'
-    'sdlda.r'
-    'sdqda.r'
-    'stein-shrinkage.r'
-    'estimates.r'
-    'helper-intercept.r'
-    'data-intraclass.r'
-    'data-block-autocorrelation.r'
-    'tong-shrinkage.r'
-    'hdrda.r'
-    'helper-cov.r'
-    'helper-cv.r'
-    'helper.r'
-    'smdlda.r'
-    'smdqda.r'
-    'lda-pseudo.r'
-    'mdeb.r'
-    'mdmeb.r'
-    'mdmp.r'
-    'lda-schafer.r'
-    'lda-thomaz.r'

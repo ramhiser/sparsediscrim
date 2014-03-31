@@ -2,7 +2,7 @@
 \alias{rda_cov}
 \title{Calculates the RDA covariance-matrix estimators for each class}
 \usage{
-  rda_cov(x, y, lambda = 1)
+rda_cov(x, y, lambda = 1)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -16,17 +16,17 @@
   0 and 1, inclusively.}
 }
 \value{
-  list containing the RDA covariance-matrix estimators for
-  each class given in \code{y}
+list containing the RDA covariance-matrix estimators for
+each class given in \code{y}
 }
 \description{
-  For the classes given in the vector \code{y}, this
-  function calculates the class covariance-matrix
-  estimators employed in the HDRDA classifier, implemented
-  in \code{\link{hdrda}}.
+For the classes given in the vector \code{y}, this function
+calculates the class covariance-matrix estimators employed
+in the HDRDA classifier, implemented in
+\code{\link{hdrda}}.
 }
 \references{
-  Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
-  "High-Dimensional Regularized Discriminant Analysis."
+Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
+"High-Dimensional Regularized Discriminant Analysis."
 }
 

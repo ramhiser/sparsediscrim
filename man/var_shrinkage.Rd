@@ -3,8 +3,7 @@
 \title{Shrinkage-based estimator of variances for each feature from Pang et al.
 (2009).}
 \usage{
-  var_shrinkage(N, K, var_feature, num_alphas = 101,
-    t = -1)
+var_shrinkage(N, K, var_feature, num_alphas = 101, t = -1)
 }
 \arguments{
   \item{N}{the sample size.}
@@ -23,17 +22,17 @@
   details.}
 }
 \value{
-  a vector of the shrunken variances for each feature.
+a vector of the shrunken variances for each feature.
 }
 \description{
-  This function computes the shrinkage-based estimator of
-  variance of each feature (variable) from Pang et al.
-  (2009) for the SDLDA classifier.
+This function computes the shrinkage-based estimator of
+variance of each feature (variable) from Pang et al. (2009)
+for the SDLDA classifier.
 }
 \references{
-  Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
-  Diagonal Discriminant Analysis and Its Applications in
-  High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
-  \url{http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract}
+Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
+Diagonal Discriminant Analysis and Its Applications in
+High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
+\url{http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract}
 }
 

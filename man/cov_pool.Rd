@@ -3,7 +3,7 @@
 \title{Computes the pooled maximum likelihood estimator (MLE) for the common
 covariance matrix}
 \usage{
-  cov_pool(x, y)
+cov_pool(x, y)
 }
 \arguments{
   \item{x}{data matrix with \code{n} observations and
@@ -13,13 +13,13 @@ covariance matrix}
   \code{x}}
 }
 \value{
-  pooled sample covariance matrix of size \eqn{p \times p}
+pooled sample covariance matrix of size \eqn{p \times p}
 }
 \description{
-  For the matrix \code{x}, we compute the MLE for the
-  population covariance matrix under the assumption that
-  the data are sampled from \eqn{K} multivariate normal
-  populations having equal covariance matrices.
+For the matrix \code{x}, we compute the MLE for the
+population covariance matrix under the assumption that the
+data are sampled from \eqn{K} multivariate normal
+populations having equal covariance matrices.
 }
 \examples{
 cov_pool(iris[, -5], iris$Species)

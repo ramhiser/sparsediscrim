@@ -6,16 +6,15 @@
 \alias{print.mdmeb}
 \title{The Minimum Distance Rule using Modified Empirical Bayes (MDMEB) classifier}
 \usage{
-  mdmeb(x, ...)
+mdmeb(x, ...)
 
-  \method{mdmeb}{default} (x, y, prior = NULL,
-    eigen_pct = 0.95)
+\method{mdmeb}{default}(x, y, prior = NULL, eigen_pct = 0.95)
 
-  \method{mdmeb}{formula} (formula, data, prior = NULL)
+\method{mdmeb}{formula}(formula, data, prior = NULL)
 
-  \method{print}{mdmeb} (x, ...)
+\method{print}{mdmeb}(x, ...)
 
-  \method{predict}{mdmeb} (object, newdata)
+\method{predict}{mdmeb}(object, newdata)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -51,61 +50,59 @@
   \item{...}{additional arguments}
 }
 \value{
-  \code{mdmeb} object that contains the trained MDMEB
-  classifier
+\code{mdmeb} object that contains the trained MDMEB
+classifier
 
-  list predicted class memberships of each row in newdata
+list predicted class memberships of each row in newdata
 }
 \description{
-  Given a set of training data, this function builds the
-  MDMEB classifier from Srivistava and Kubokawa (2007). The
-  MDMEB classifier is an adaptation of the linear
-  discriminant analysis (LDA) classifier that is designed
-  for small-sample, high-dimensional data. Srivastava and
-  Kubokawa (2007) have proposed a modification of the
-  standard maximum likelihood estimator of the pooled
-  covariance matrix, where only the largest 95% of the
-  eigenvalues and their corresponding eigenvectors are
-  kept. The resulting covariance matrix is then shrunken
-  towards a scaled identity matrix. The value of 95% is the
-  default and can be changed via the \code{eigen_pct}
-  argument.
+Given a set of training data, this function builds the
+MDMEB classifier from Srivistava and Kubokawa (2007). The
+MDMEB classifier is an adaptation of the linear
+discriminant analysis (LDA) classifier that is designed for
+small-sample, high-dimensional data. Srivastava and
+Kubokawa (2007) have proposed a modification of the
+standard maximum likelihood estimator of the pooled
+covariance matrix, where only the largest 95% of the
+eigenvalues and their corresponding eigenvectors are kept.
+The resulting covariance matrix is then shrunken towards a
+scaled identity matrix. The value of 95% is the default and
+can be changed via the \code{eigen_pct} argument.
 
-  Summarizes the trained mdmeb classifier in a nice manner.
+Summarizes the trained mdmeb classifier in a nice manner.
 
-  The MDMEB classifier is an adaptation of the linear
-  discriminant analysis (LDA) classifier that is designed
-  for small-sample, high-dimensional data. Srivastava and
-  Kubokawa (2007) have proposed a modification of the
-  standard maximum likelihood estimator of the pooled
-  covariance matrix, where only the largest 95% of the
-  eigenvalues and their corresponding eigenvectors are
-  kept. The resulting covariance matrix is then shrunken
-  towards a scaled identity matrix.
+The MDMEB classifier is an adaptation of the linear
+discriminant analysis (LDA) classifier that is designed for
+small-sample, high-dimensional data. Srivastava and
+Kubokawa (2007) have proposed a modification of the
+standard maximum likelihood estimator of the pooled
+covariance matrix, where only the largest 95% of the
+eigenvalues and their corresponding eigenvectors are kept.
+The resulting covariance matrix is then shrunken towards a
+scaled identity matrix.
 }
 \details{
-  The matrix of training observations are given in
-  \code{x}. The rows of \code{x} contain the sample
-  observations, and the columns contain the features for
-  each training observation.
+The matrix of training observations are given in \code{x}.
+The rows of \code{x} contain the sample observations, and
+the columns contain the features for each training
+observation.
 
-  The vector of class labels given in \code{y} are coerced
-  to a \code{factor}. The length of \code{y} should match
-  the number of rows in \code{x}.
+The vector of class labels given in \code{y} are coerced to
+a \code{factor}. The length of \code{y} should match the
+number of rows in \code{x}.
 
-  An error is thrown if a given class has less than 2
-  observations because the variance for each feature within
-  a class cannot be estimated with less than 2
-  observations.
+An error is thrown if a given class has less than 2
+observations because the variance for each feature within a
+class cannot be estimated with less than 2 observations.
 
-  The vector, \code{prior}, contains the \emph{a priori}
-  class membership for each class. If \code{prior} is NULL
-  (default), the class membership probabilities are
-  estimated as the sample proportion of observations
-  belonging to each class. Otherwise, \code{prior} should
-  be a vector with the same length as the number of classes
-  in \code{y}. The \code{prior} probabilties should be
-  nonnegative and sum to one.
+The vector, \code{prior}, contains the \emph{a priori}
+class membership for each class. If \code{prior} is NULL
+(default), the class membership probabilities are estimated
+as the sample proportion of observations belonging to each
+class. Otherwise, \code{prior} should be a vector with the
+same length as the number of classes in \code{y}. The
+\code{prior} probabilties should be nonnegative and sum to
+one.
 }
 \examples{
 n <- nrow(iris)
@@ -118,15 +115,13 @@ predicted2 <- predict(mdmeb_out2, iris[-train, -5])$class
 all.equal(predicted, predicted2)
 }
 \references{
-  Srivastava, M. and Kubokawa, T. (2007). "Comparison of
-  Discrimination Methods for High Dimensional Data,"
-  Journal of the Japanese Statistical Association, 37, 1,
-  123-134.
+Srivastava, M. and Kubokawa, T. (2007). "Comparison of
+Discrimination Methods for High Dimensional Data," Journal
+of the Japanese Statistical Association, 37, 1, 123-134.
 
-  Srivastava, M. and Kubokawa, T. (2007). "Comparison of
-  Discrimination Methods for High Dimensional Data,"
-  Journal of the Japanese Statistical Association, 37, 1,
-  123-134.
+Srivastava, M. and Kubokawa, T. (2007). "Comparison of
+Discrimination Methods for High Dimensional Data," Journal
+of the Japanese Statistical Association, 37, 1, 123-134.
 }
 \keyword{internal}
 

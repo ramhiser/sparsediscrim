@@ -3,8 +3,7 @@
 \title{Generates a \eqn{p \times p} block-diagonal covariance matrix with
 autocorrelated blocks.}
 \usage{
-  cov_block_autocorrelation(num_blocks, block_size, rho,
-    sigma2 = 1)
+cov_block_autocorrelation(num_blocks, block_size, rho, sigma2 = 1)
 }
 \arguments{
   \item{num_blocks}{the number of blocks in the covariance
@@ -19,32 +18,31 @@ autocorrelated blocks.}
   \item{sigma2}{the variance of each feature}
 }
 \value{
-  autocorrelated covariance matrix
+autocorrelated covariance matrix
 }
 \description{
-  This function generates a \eqn{p \times p} covariance
-  matrix with autocorrelated blocks. The autocorrelation
-  parameter is \code{rho}. There are \code{num_blocks}
-  blocks each with size, \code{block_size}. The variance,
-  \code{sigma2}, is constant for each feature and defaulted
-  to 1.
+This function generates a \eqn{p \times p} covariance
+matrix with autocorrelated blocks. The autocorrelation
+parameter is \code{rho}. There are \code{num_blocks} blocks
+each with size, \code{block_size}. The variance,
+\code{sigma2}, is constant for each feature and defaulted
+to 1.
 }
 \details{
-  The autocorrelated covariance matrix is defined as:
-  \deqn{\Sigma = \Sigma^{(\rho)} \oplus \Sigma^{(-\rho)}
-  \oplus \ldots \oplus \Sigma^{(\rho)},} where \eqn{\oplus}
-  denotes the direct sum and the \eqn{(i,j)}th entry of
-  \eqn{\Sigma^{(\rho)}} is \deqn{\Sigma_{ij}^{(\rho)} = \{
-  \rho^{|i - j|} \}.}
+The autocorrelated covariance matrix is defined as:
+\deqn{\Sigma = \Sigma^{(\rho)} \oplus \Sigma^{(-\rho)}
+\oplus \ldots \oplus \Sigma^{(\rho)},} where \eqn{\oplus}
+denotes the direct sum and the \eqn{(i,j)}th entry of
+\eqn{\Sigma^{(\rho)}} is \deqn{\Sigma_{ij}^{(\rho)} = \{
+\rho^{|i - j|} \}.}
 
-  The matrix \eqn{\Sigma^{(\rho)}} is the autocorrelated
-  block discussed above.
+The matrix \eqn{\Sigma^{(\rho)}} is the autocorrelated
+block discussed above.
 
-  The value of \code{rho} must be such that \eqn{|\rho| <
-  1} to ensure that the covariance matrix is positive
-  definite.
+The value of \code{rho} must be such that \eqn{|\rho| < 1}
+to ensure that the covariance matrix is positive definite.
 
-  The size of the resulting matrix is \eqn{p \times p},
-  where \code{p = num_blocks * block_size}.
+The size of the resulting matrix is \eqn{p \times p}, where
+\code{p = num_blocks * block_size}.
 }
 

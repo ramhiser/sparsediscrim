@@ -6,18 +6,16 @@
 \alias{print.hdrda}
 \title{High-Dimensional Regularized Discriminant Analysis (HDRDA)}
 \usage{
-  hdrda(x, ...)
+hdrda(x, ...)
 
-  \method{hdrda}{default} (x, y, lambda = 1, gamma = 0,
-    shrinkage_type = c("ridge", "convex"), prior = NULL,
-    tol = 1e-06, ...)
+\method{hdrda}{default}(x, y, lambda = 1, gamma = 0,
+  shrinkage_type = c("ridge", "convex"), prior = NULL, tol = 1e-06, ...)
 
-  \method{hdrda}{formula} (formula, data, ...)
+\method{hdrda}{formula}(formula, data, ...)
 
-  \method{print}{hdrda} (x, ...)
+\method{print}{hdrda}(x, ...)
 
-  \method{predict}{hdrda} (object, newdata,
-    projected = FALSE, ...)
+\method{predict}{hdrda}(object, newdata, projected = FALSE, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows
@@ -75,76 +73,73 @@
   been performed.}
 }
 \value{
-  \code{hdrda} object that contains the trained HDRDA
-  classifier
+\code{hdrda} object that contains the trained HDRDA
+classifier
 
-  list with predicted class and discriminant scores for
-  each of the K classes
+list with predicted class and discriminant scores for each
+of the K classes
 }
 \description{
-  Given a set of training data, this function builds the
-  HDRDA classifier from Ramey, Stein, and Young (2014).
-  Specially designed for small-sample, high-dimensional
-  data, the HDRDA classifier incorporates dimension
-  reduction and covariance-matrix shrinkage to enable a
-  computationally efficient classifier.
+Given a set of training data, this function builds the
+HDRDA classifier from Ramey, Stein, and Young (2014).
+Specially designed for small-sample, high-dimensional data,
+the HDRDA classifier incorporates dimension reduction and
+covariance-matrix shrinkage to enable a computationally
+efficient classifier.
 
-  Summarizes the trained hdrda classifier in a nice manner.
+Summarizes the trained hdrda classifier in a nice manner.
 
-  For a given \code{hdrda} object, we predict the class of
-  each observation (row) of the the matrix given in
-  \code{newdata}.
+For a given \code{hdrda} object, we predict the class of
+each observation (row) of the the matrix given in
+\code{newdata}.
 }
 \details{
-  The HDRDA classifier utilizes a covariance-matrix
-  estimator that is a convex combination of the
-  covariance-matrix estimators used in the Linear
-  Discriminant Analysis (LDA) and Quadratic Discriminant
-  Analysis (QDA) classifiers. For each of the \code{K}
-  classes given in \code{y}, \eqn{(k = 1, \ldots, K)}, we
-  first define this convex combination as
-  \deqn{\hat{\Sigma}_k(\lambda) = (1 - \lambda)
-  \hat{\Sigma}_k + \lambda \hat{\Sigma},} where \eqn{lambda
-  \in [0, 1]} is the \emph{pooling} parameter. We then
-  calculate the covariance-matrix estimator
-  \deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda)
-  + \gamma I_p,} where \eqn{I_p} is the \eqn{p \times p}
-  identity matrix. The matrix \eqn{\tilde{\Sigma}_k} is
-  substituted into the HDRDA classifier. See Ramey et al.
-  (2014) for more details.
+The HDRDA classifier utilizes a covariance-matrix estimator
+that is a convex combination of the covariance-matrix
+estimators used in the Linear Discriminant Analysis (LDA)
+and Quadratic Discriminant Analysis (QDA) classifiers. For
+each of the \code{K} classes given in \code{y}, \eqn{(k =
+1, \ldots, K)}, we first define this convex combination as
+\deqn{\hat{\Sigma}_k(\lambda) = (1 - \lambda)
+\hat{\Sigma}_k + \lambda \hat{\Sigma},} where \eqn{lambda
+\in [0, 1]} is the \emph{pooling} parameter. We then
+calculate the covariance-matrix estimator
+\deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda) +
+\gamma I_p,} where \eqn{I_p} is the \eqn{p \times p}
+identity matrix. The matrix \eqn{\tilde{\Sigma}_k} is
+substituted into the HDRDA classifier. See Ramey et al.
+(2014) for more details.
 
-  The matrix of training observations are given in
-  \code{x}. The rows of \code{x} contain the sample
-  observations, and the columns contain the features for
-  each training observation. The vector of class labels
-  given in \code{y} are coerced to a \code{factor}. The
-  length of \code{y} should match the number of rows in
-  \code{x}.
+The matrix of training observations are given in \code{x}.
+The rows of \code{x} contain the sample observations, and
+the columns contain the features for each training
+observation. The vector of class labels given in \code{y}
+are coerced to a \code{factor}. The length of \code{y}
+should match the number of rows in \code{x}.
 
-  The vector \code{prior} contains the \emph{a priori}
-  class membership for each class. If \code{prior} is
-  \code{NULL} (default), the class membership probabilities
-  are estimated as the sample proportion of observations
-  belonging to each class. Otherwise, \code{prior} should
-  be a vector with the same length as the number of classes
-  in \code{y}. The \code{prior} probabilties should be
-  nonnegative and sum to one. The order of the prior
-  probabilties is assumed to match the levels of
-  \code{factor(y)}.
+The vector \code{prior} contains the \emph{a priori} class
+membership for each class. If \code{prior} is \code{NULL}
+(default), the class membership probabilities are estimated
+as the sample proportion of observations belonging to each
+class. Otherwise, \code{prior} should be a vector with the
+same length as the number of classes in \code{y}. The
+\code{prior} probabilties should be nonnegative and sum to
+one. The order of the prior probabilties is assumed to
+match the levels of \code{factor(y)}.
 
-  When \eqn{p < N}, the HDRDA covariance-matrix estimator
-  is singular when \eqn{(lambda, gamma) = (0, 0)}. In this
-  case, we set \eqn{gamma} to 0.01 to shrink the estimators
-  slightly to ensure positive-definiteness.
+When \eqn{p < N}, the HDRDA covariance-matrix estimator is
+singular when \eqn{(lambda, gamma) = (0, 0)}. In this case,
+we set \eqn{gamma} to 0.01 to shrink the estimators
+slightly to ensure positive-definiteness.
 }
 \references{
-  Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
-  "High-Dimensional Regularized Discriminant Analysis."
+Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
+"High-Dimensional Regularized Discriminant Analysis."
 
-  Friedman, J. H. (1989), "Regularized Discriminant
-  Analysis," Journal of American Statistical Association,
-  84, 405, 165-175. \url{http://www.jstor.org/pss/2289860}
-  (Requires full-text access).
+Friedman, J. H. (1989), "Regularized Discriminant
+Analysis," Journal of American Statistical Association, 84,
+405, 165-175. \url{http://www.jstor.org/pss/2289860}
+(Requires full-text access).
 }
 \keyword{internal}
 
