@@ -8,9 +8,9 @@
 \usage{
 dqda(x, ...)
 
-\method{dqda}{default}(x, y, prior = NULL)
+\method{dqda}{default}(x, y, prior = NULL, ...)
 
-\method{dqda}{formula}(formula, data, prior = NULL)
+\method{dqda}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{dqda}(x, ...)
 

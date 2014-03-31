@@ -8,13 +8,13 @@
 \usage{
 mdmp(x, ...)
 
-\method{mdmp}{default}(x, y, prior = NULL, eigen_pct = 0.95)
+\method{mdmp}{default}(x, y, prior = NULL, eigen_pct = 0.95, ...)
 
-\method{mdmp}{formula}(formula, data, prior = NULL)
+\method{mdmp}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{mdmp}(x, ...)
 
-\method{predict}{mdmp}(object, newdata)
+\method{predict}{mdmp}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows

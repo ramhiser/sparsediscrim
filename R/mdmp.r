@@ -55,7 +55,7 @@ mdmp <- function(x, ...) {
 #' @rdname mdmp
 #' @method mdmp default
 #' @S3method mdmp default
-mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95) {
+mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -92,7 +92,7 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95) {
 #' @rdname mdmp
 #' @method mdmp formula
 #' @S3method mdmp formula
-mdmp.formula <- function(formula, data, prior = NULL) {
+mdmp.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -156,7 +156,7 @@ print.mdmp <- function(x, ...) {
 #' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdmp <- function(object, newdata) {
+predict.mdmp <- function(object, newdata, ...) {
 	if (!inherits(object, "mdmp"))  {
 		stop("object not of class 'mdmp'")
 	}

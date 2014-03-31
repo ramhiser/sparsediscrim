@@ -54,7 +54,7 @@ mdeb <- function(x, ...) {
 #' @rdname mdeb
 #' @method mdeb default
 #' @S3method mdeb default
-mdeb.default <- function(x, y, prior = NULL) {
+mdeb.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -75,7 +75,7 @@ mdeb.default <- function(x, y, prior = NULL) {
 #' @rdname mdeb
 #' @method mdeb formula
 #' @S3method mdeb formula
-mdeb.formula <- function(formula, data, prior = NULL) {
+mdeb.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -140,7 +140,7 @@ print.mdeb <- function(x, ...) {
 #' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdeb <- function(object, newdata) {
+predict.mdeb <- function(object, newdata, ...) {
 	if (!inherits(object, "mdeb"))  {
 		stop("object not of class 'mdeb'")
 	}

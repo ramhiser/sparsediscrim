@@ -62,7 +62,7 @@ dqda <- function(x, ...) {
 #' @rdname dqda
 #' @method dqda default
 #' @S3method dqda default
-dqda.default <- function(x, y, prior = NULL) {
+dqda.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -83,7 +83,7 @@ dqda.default <- function(x, y, prior = NULL) {
 #' @rdname dqda
 #' @method dqda formula
 #' @S3method dqda formula
-dqda.formula <- function(formula, data, prior = NULL) {
+dqda.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.

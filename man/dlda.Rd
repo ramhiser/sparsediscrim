@@ -8,9 +8,9 @@
 \usage{
 dlda(x, ...)
 
-\method{dlda}{default}(x, y, prior = NULL)
+\method{dlda}{default}(x, y, prior = NULL, ...)
 
-\method{dlda}{formula}(formula, data, prior = NULL)
+\method{dlda}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{dlda}(x, ...)
 

@@ -8,9 +8,9 @@
 \usage{
 lda_pseudo(x, ...)
 
-\method{lda_pseudo}{default}(x, y, prior = NULL, tol = 1e-08)
+\method{lda_pseudo}{default}(x, y, prior = NULL, tol = 1e-08, ...)
 
-\method{lda_pseudo}{formula}(formula, data, prior = NULL, tol = 1e-08)
+\method{lda_pseudo}{formula}(formula, data, prior = NULL, tol = 1e-08, ...)
 
 \method{print}{lda_pseudo}(x, ...)
 

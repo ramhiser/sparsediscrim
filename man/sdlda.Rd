@@ -8,9 +8,9 @@
 \usage{
 sdlda(x, ...)
 
-\method{sdlda}{default}(x, y, prior = NULL, num_alphas = 101)
+\method{sdlda}{default}(x, y, prior = NULL, num_alphas = 101, ...)
 
-\method{sdlda}{formula}(formula, data, prior = NULL, num_alphas = 101)
+\method{sdlda}{formula}(formula, data, prior = NULL, num_alphas = 101, ...)
 
 \method{print}{sdlda}(x, ...)
 

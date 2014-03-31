@@ -8,9 +8,9 @@
 \usage{
 sdqda(x, ...)
 
-\method{sdqda}{default}(x, y, prior = NULL, num_alphas = 101)
+\method{sdqda}{default}(x, y, prior = NULL, num_alphas = 101, ...)
 
-\method{sdqda}{formula}(formula, data, prior = NULL, num_alphas = 101)
+\method{sdqda}{formula}(formula, data, prior = NULL, num_alphas = 101, ...)
 
 \method{print}{sdqda}(x, ...)
 

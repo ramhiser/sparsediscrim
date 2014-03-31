@@ -8,13 +8,13 @@
 \usage{
 mdeb(x, ...)
 
-\method{mdeb}{default}(x, y, prior = NULL)
+\method{mdeb}{default}(x, y, prior = NULL, ...)
 
-\method{mdeb}{formula}(formula, data, prior = NULL)
+\method{mdeb}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{mdeb}(x, ...)
 
-\method{predict}{mdeb}(object, newdata)
+\method{predict}{mdeb}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows

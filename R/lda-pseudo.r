@@ -55,7 +55,7 @@ lda_pseudo <- function(x, ...) {
 #' @rdname lda_pseudo
 #' @method lda_pseudo default
 #' @S3method lda_pseudo default
-lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8) {
+lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -89,7 +89,7 @@ lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8) {
 #' @rdname lda_pseudo
 #' @method lda_pseudo formula
 #' @S3method lda_pseudo formula
-lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8) {
+lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.

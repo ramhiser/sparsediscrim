@@ -9,9 +9,9 @@ Tong, Chen, and Zhao (2012)}
 \usage{
 smdlda(x, ...)
 
-\method{smdlda}{default}(x, y, prior = NULL)
+\method{smdlda}{default}(x, y, prior = NULL, ...)
 
-\method{smdlda}{formula}(formula, data, prior = NULL)
+\method{smdlda}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{smdlda}(x, ...)
 

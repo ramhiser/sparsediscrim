@@ -11,11 +11,11 @@ lda_schafer(x, ...)
 
 \method{lda_schafer}{default}(x, y, prior = NULL, ...)
 
-\method{lda_schafer}{formula}(formula, data, prior = NULL)
+\method{lda_schafer}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{lda_schafer}(x, ...)
 
-\method{predict}{lda_schafer}(object, newdata)
+\method{predict}{lda_schafer}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows

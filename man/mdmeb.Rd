@@ -8,13 +8,13 @@
 \usage{
 mdmeb(x, ...)
 
-\method{mdmeb}{default}(x, y, prior = NULL, eigen_pct = 0.95)
+\method{mdmeb}{default}(x, y, prior = NULL, eigen_pct = 0.95, ...)
 
-\method{mdmeb}{formula}(formula, data, prior = NULL)
+\method{mdmeb}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{mdmeb}(x, ...)
 
-\method{predict}{mdmeb}(object, newdata)
+\method{predict}{mdmeb}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows

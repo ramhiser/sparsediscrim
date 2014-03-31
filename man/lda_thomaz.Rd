@@ -9,13 +9,13 @@ Matrix Estimator}
 \usage{
 lda_thomaz(x, ...)
 
-\method{lda_thomaz}{default}(x, y, prior = NULL)
+\method{lda_thomaz}{default}(x, y, prior = NULL, ...)
 
-\method{lda_thomaz}{formula}(formula, data, prior = NULL)
+\method{lda_thomaz}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{lda_thomaz}(x, ...)
 
-\method{predict}{lda_thomaz}(object, newdata)
+\method{predict}{lda_thomaz}(object, newdata, ...)
 }
 \arguments{
   \item{x}{matrix containing the training data. The rows

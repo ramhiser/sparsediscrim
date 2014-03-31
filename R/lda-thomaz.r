@@ -56,7 +56,7 @@ lda_thomaz <- function(x, ...) {
 #' @rdname lda_thomaz
 #' @method lda_thomaz default
 #' @S3method lda_thomaz default
-lda_thomaz.default <- function(x, y, prior = NULL) {
+lda_thomaz.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -91,7 +91,7 @@ lda_thomaz.default <- function(x, y, prior = NULL) {
 #' @rdname lda_thomaz
 #' @method lda_thomaz formula
 #' @S3method lda_thomaz formula
-lda_thomaz.formula <- function(formula, data, prior = NULL) {
+lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -160,7 +160,7 @@ print.lda_thomaz <- function(x, ...) {
 #' new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.lda_thomaz <- function(object, newdata) {
+predict.lda_thomaz <- function(object, newdata, ...) {
 	if (!inherits(object, "lda_thomaz"))  {
 		stop("object not of class 'lda_thomaz'")
 	}

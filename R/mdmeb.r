@@ -56,7 +56,7 @@ mdmeb <- function(x, ...) {
 #' @rdname mdmeb
 #' @method mdmeb default
 #' @S3method mdmeb default
-mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95) {
+mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -96,7 +96,7 @@ mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95) {
 #' @rdname mdmeb
 #' @method mdmeb formula
 #' @S3method mdmeb formula
-mdmeb.formula <- function(formula, data, prior = NULL) {
+mdmeb.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -162,7 +162,7 @@ print.mdmeb <- function(x, ...) {
 #' new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdmeb <- function(object, newdata) {
+predict.mdmeb <- function(object, newdata, ...) {
 	if (!inherits(object, "mdmeb"))  {
 		stop("object not of class 'mdmeb'")
 	}

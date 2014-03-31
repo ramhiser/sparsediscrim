@@ -86,7 +86,7 @@ lda_schafer.default <- function(x, y, prior = NULL, ...) {
 #' @rdname lda_schafer
 #' @method lda_schafer formula
 #' @S3method lda_schafer formula
-lda_schafer.formula <- function(formula, data, prior = NULL) {
+lda_schafer.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -152,7 +152,7 @@ print.lda_schafer <- function(x, ...) {
 #' new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.lda_schafer <- function(object, newdata) {
+predict.lda_schafer <- function(object, newdata, ...) {
 	if (!inherits(object, "lda_schafer"))  {
 		stop("object not of class 'lda_schafer'")
 	}

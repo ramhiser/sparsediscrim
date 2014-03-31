@@ -9,9 +9,9 @@ Tong, Chen, and Zhao (2012)}
 \usage{
 smdqda(x, ...)
 
-\method{smdqda}{default}(x, y, prior = NULL)
+\method{smdqda}{default}(x, y, prior = NULL, ...)
 
-\method{smdqda}{formula}(formula, data, prior = NULL)
+\method{smdqda}{formula}(formula, data, prior = NULL, ...)
 
 \method{print}{smdqda}(x, ...)
 
