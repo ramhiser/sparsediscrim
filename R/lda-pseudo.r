@@ -35,6 +35,8 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
+#' @param tol tolerance value below which eigenvalues are considered numerically
+#' equal to 0
 #' @return \code{lda_pseudo} object that contains the trained lda_pseudo
 #' classifier
 #' @examples
@@ -53,11 +55,24 @@ lda_pseudo <- function(x, ...) {
 #' @rdname lda_pseudo
 #' @method lda_pseudo default
 #' @S3method lda_pseudo default
-lda_pseudo.default <- function(x, y, prior = NULL) {
+lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- regdiscrim_estimates(x = x, y = y, prior = prior, cov = TRUE)
+
+  # Calculates the Moore-Penrose pseudo inverse based on the pooled sample
+  # covariance matrix
+  cov_eigen <- eigen(obj$cov_pool, symmetric = TRUE)
+  evals <- cov_eigen$values
+  evals_inv <- rep.int(0, times = length(evals))
+  evals_inv[evals > tol] <- 1 / evals[evals > tol]
+
+  # Removes original pooled covariance matrix to reduce memory usage 
+  obj$cov_pool <- NULL
+
+  obj$cov_inv <- with(cov_eigen,
+                      tcrossprod(vectors %*% diag(evals_inv), vectors))
 
   # Creates an object of type 'lda_pseudo' and adds the 'match.call' to the object
   obj$call <- match.call()
@@ -74,7 +89,7 @@ lda_pseudo.default <- function(x, y, prior = NULL) {
 #' @rdname lda_pseudo
 #' @method lda_pseudo formula
 #' @S3method lda_pseudo formula
-lda_pseudo.formula <- function(formula, data, prior = NULL) {
+lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -131,6 +146,7 @@ print.lda_pseudo <- function(x, ...) {
 #' @rdname lda_pseudo
 #' @method predict lda_pseudo
 #' @S3method predict lda_pseudo
+#'
 #' @export
 #'
 #' @param object trained lda_pseudo object
@@ -146,14 +162,10 @@ predict.lda_pseudo <- function(object, newdata, ...) {
     newdata <- matrix(newdata, nrow = 1)
   }
 
-  # Calculates the Moore-Penrose pseudo inverse based on the pooled sample
-  # covariance matrix
-  cov_pseudoinv <- ginv(object$cov_pool)
-
   # Calculates the discriminant scores for each test observation
 	scores <- apply(newdata, 1, function(obs) {
 		sapply(object$est, function(class_est) {
-			with(class_est, quadform(cov_pseudoinv, obs - xbar) + log(prior))
+			with(class_est, quadform(object$cov_inv, obs - xbar) + log(prior))
 		})
 	})
 	

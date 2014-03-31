@@ -8,9 +8,9 @@
 \usage{
 lda_pseudo(x, ...)
 
-\method{lda_pseudo}{default}(x, y, prior = NULL)
+\method{lda_pseudo}{default}(x, y, prior = NULL, tol = 1e-08)
 
-\method{lda_pseudo}{formula}(formula, data, prior = NULL)
+\method{lda_pseudo}{formula}(formula, data, prior = NULL, tol = 1e-08)
 
 \method{print}{lda_pseudo}(x, ...)
 
@@ -27,6 +27,9 @@ lda_pseudo(x, ...)
   \item{prior}{vector with prior probabilities for each
   class. If NULL (default), then equal probabilities are
   used. See details.}
+
+  \item{tol}{tolerance value below which eigenvalues are
+  considered numerically equal to 0}
 
   \item{formula}{A formula of the form \code{groups ~ x1 +
   x2 + ...} That is, the response is the grouping factor
