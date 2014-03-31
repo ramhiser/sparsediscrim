@@ -66,6 +66,7 @@ lda_thomaz.default <- function(x, y, prior = NULL) {
   # Then regularizes the estimator based on Thomaz et al.'s (2006) method
   cov_eigen <- eigen(obj$cov_pool, symmetric = TRUE)
   evals <- cov_eigen$values
+  mean_eval <- mean(evals)
   evals[evals < mean_eval] <- mean_eval
 
   # Removes original pooled covariance matrix to reduce memory usage 
