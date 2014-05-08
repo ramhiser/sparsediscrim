@@ -68,8 +68,7 @@ sdqda <- function(x, ...) {
 }
 
 #' @rdname sdqda
-#' @method sdqda default
-#' @S3method sdqda default
+#' @export
 sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -101,8 +100,7 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname sdqda
-#' @method sdqda formula
-#' @S3method sdqda formula
+#' @export
 sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -130,8 +128,6 @@ sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname sdqda
-#' @method print sdqda
-#' @S3method print sdqda
 #' @export
 print.sdqda <- function(x, ...) {
   cat("Call:\n")
@@ -154,8 +150,6 @@ print.sdqda <- function(x, ...) {
 #' et al.  (2009).
 #' 
 #' @rdname sdqda
-#' @method predict sdqda
-#' @S3method predict sdqda
 #' @export
 #'
 #' @param object trained SDQDA object

@@ -64,8 +64,7 @@ smdqda <- function(x, ...) {
 }
 
 #' @rdname smdqda
-#' @method smdqda default
-#' @S3method smdqda default
+#' @export
 smdqda.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -86,8 +85,7 @@ smdqda.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname smdqda
-#' @method smdqda formula
-#' @S3method smdqda formula
+#' @export
 smdqda.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -114,8 +112,6 @@ smdqda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname smdqda
-#' @method print smdqda
-#' @S3method print smdqda
 #' @export
 print.smdqda <- function(x, ...) {
   cat("Call:\n")
@@ -136,8 +132,6 @@ print.smdqda <- function(x, ...) {
 #' of the pooled sample covariance matrix are set to zero.
 #' 
 #' @rdname smdqda
-#' @method predict smdqda
-#' @S3method predict smdqda
 #' @export
 #'
 #' @param object trained SmDQDA object

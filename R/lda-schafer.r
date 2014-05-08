@@ -55,8 +55,7 @@ lda_schafer <- function(x, ...) {
 }
 
 #' @rdname lda_schafer
-#' @method lda_schafer default
-#' @S3method lda_schafer default
+#' @export
 lda_schafer.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -84,8 +83,7 @@ lda_schafer.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname lda_schafer
-#' @method lda_schafer formula
-#' @S3method lda_schafer formula
+#' @export
 lda_schafer.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -112,8 +110,6 @@ lda_schafer.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname lda_schafer
-#' @method print lda_schafer
-#' @S3method print lda_schafer
 #' @export
 print.lda_schafer <- function(x, ...) {
   cat("Call:\n")
@@ -140,8 +136,6 @@ print.lda_schafer <- function(x, ...) {
 #' estimator from Schafer and Strimmer (2005).
 #' 
 #' @rdname lda_schafer
-#' @method predict lda_schafer
-#' @S3method predict lda_schafer
 #' @export
 #'
 #' @references Schafer, J., and Strimmer, K. (2005). "A shrinkage approach to

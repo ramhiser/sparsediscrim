@@ -67,8 +67,7 @@ sdlda <- function(x, ...) {
 }
 
 #' @rdname sdlda
-#' @method sdlda default
-#' @S3method sdlda default
+#' @export
 sdlda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -97,8 +96,7 @@ sdlda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname sdlda
-#' @method sdlda formula
-#' @S3method sdlda formula
+#' @export
 sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -126,8 +124,6 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname sdlda
-#' @method print sdlda
-#' @S3method print sdlda
 #' @export
 print.sdlda <- function(x, ...) {
   cat("Call:\n")
@@ -150,8 +146,6 @@ print.sdlda <- function(x, ...) {
 #' et al.  (2009).
 #' 
 #' @rdname sdlda
-#' @method predict sdlda
-#' @S3method predict sdlda
 #' @export
 #'
 #' @param object trained SDLDA object

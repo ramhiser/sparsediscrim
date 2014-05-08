@@ -52,8 +52,7 @@ mdeb <- function(x, ...) {
 }
 
 #' @rdname mdeb
-#' @method mdeb default
-#' @S3method mdeb default
+#' @export
 mdeb.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -73,8 +72,7 @@ mdeb.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname mdeb
-#' @method mdeb formula
-#' @S3method mdeb formula
+#' @export
 mdeb.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -101,8 +99,6 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname mdeb
-#' @method print mdeb
-#' @S3method print mdeb
 #' @export
 print.mdeb <- function(x, ...) {
   cat("Call:\n")
@@ -129,8 +125,6 @@ print.mdeb <- function(x, ...) {
 #' the shrinkage constant has a closed form and is quick to calculate
 #' 
 #' @rdname mdeb
-#' @method predict mdeb
-#' @S3method predict mdeb
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of

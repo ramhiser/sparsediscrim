@@ -54,8 +54,7 @@ mdmeb <- function(x, ...) {
 }
 
 #' @rdname mdmeb
-#' @method mdmeb default
-#' @S3method mdmeb default
+#' @export
 mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -94,8 +93,7 @@ mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname mdmeb
-#' @method mdmeb formula
-#' @S3method mdmeb formula
+#' @export
 mdmeb.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -122,8 +120,6 @@ mdmeb.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname mdmeb
-#' @method print mdmeb
-#' @S3method print mdmeb
 #' @export
 print.mdmeb <- function(x, ...) {
   cat("Call:\n")
@@ -150,8 +146,6 @@ print.mdmeb <- function(x, ...) {
 #' identity matrix.
 #' 
 #' @rdname mdmeb
-#' @method predict mdmeb
-#' @S3method predict mdmeb
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of

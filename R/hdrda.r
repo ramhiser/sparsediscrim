@@ -64,8 +64,7 @@ hdrda <- function(x, ...) {
 }
 
 #' @rdname hdrda
-#' @method hdrda default
-#' @S3method hdrda default
+#' @export
 hdrda.default <- function(x, y, lambda = 1, gamma = 0,
                           shrinkage_type = c("ridge", "convex"), prior = NULL,
                           tol = 1e-6, ...) {
@@ -171,8 +170,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 #' @param ... arguments passed from the \code{formula} to the \code{default}
 #' method
 #' @rdname hdrda
-#' @method hdrda formula
-#' @S3method hdrda formula
+#' @export
 hdrda.formula <- function(formula, data, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -199,8 +197,6 @@ hdrda.formula <- function(formula, data, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname hdrda
-#' @method print hdrda
-#' @S3method print hdrda
 #' @export
 print.hdrda <- function(x, ...) {
   cat("Call:\n")
@@ -226,8 +222,6 @@ print.hdrda <- function(x, ...) {
 #' (row) of the the matrix given in \code{newdata}.
 #'
 #' @rdname hdrda
-#' @method predict hdrda
-#' @S3method predict hdrda
 #' @export
 #' @param object object of type \code{hdrda} that contains the trained HDRDA
 #' classifier

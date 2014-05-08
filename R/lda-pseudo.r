@@ -53,8 +53,7 @@ lda_pseudo <- function(x, ...) {
 }
 
 #' @rdname lda_pseudo
-#' @method lda_pseudo default
-#' @S3method lda_pseudo default
+#' @export
 lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -87,8 +86,7 @@ lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname lda_pseudo
-#' @method lda_pseudo formula
-#' @S3method lda_pseudo formula
+#' @export
 lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -115,8 +113,6 @@ lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname lda_pseudo
-#' @method print lda_pseudo
-#' @S3method print lda_pseudo
 #' @export
 print.lda_pseudo <- function(x, ...) {
   cat("Call:\n")
@@ -144,9 +140,6 @@ print.lda_pseudo <- function(x, ...) {
 #' is nonsingular, it is equal to the pseudo-inverse.
 #' 
 #' @rdname lda_pseudo
-#' @method predict lda_pseudo
-#' @S3method predict lda_pseudo
-#'
 #' @export
 #'
 #' @param object trained lda_pseudo object

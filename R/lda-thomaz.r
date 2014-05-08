@@ -54,8 +54,7 @@ lda_thomaz <- function(x, ...) {
 }
 
 #' @rdname lda_thomaz
-#' @method lda_thomaz default
-#' @S3method lda_thomaz default
+#' @export
 lda_thomaz.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -89,8 +88,7 @@ lda_thomaz.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname lda_thomaz
-#' @method lda_thomaz formula
-#' @S3method lda_thomaz formula
+#' @export
 lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -117,8 +115,6 @@ lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname lda_thomaz
-#' @method print lda_thomaz
-#' @S3method print lda_thomaz
 #' @export
 print.lda_thomaz <- function(x, ...) {
   cat("Call:\n")
@@ -148,8 +144,6 @@ print.lda_thomaz <- function(x, ...) {
 #' eigenvalue.
 #' 
 #' @rdname lda_thomaz
-#' @method predict lda_thomaz
-#' @S3method predict lda_thomaz
 #' @export
 #'
 #' @references Thomaz, C. E., Kitani, E. C., and Gillies, D. F. (2006). "A

@@ -68,8 +68,7 @@ smdlda <- function(x, ...) {
 }
 
 #' @rdname smdlda
-#' @method smdlda default
-#' @S3method smdlda default
+#' @export
 smdlda.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -90,8 +89,7 @@ smdlda.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname smdlda
-#' @method smdlda formula
-#' @S3method smdlda formula
+#' @export
 smdlda.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -118,8 +116,6 @@ smdlda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname smdlda
-#' @method print smdlda
-#' @S3method print smdlda
 #' @export
 print.smdlda <- function(x, ...) {
   cat("Call:\n")
@@ -140,8 +136,6 @@ print.smdlda <- function(x, ...) {
 #' elements of the pooled sample covariance matrix are set to zero.
 #' 
 #' @rdname smdlda
-#' @method predict smdlda
-#' @S3method predict smdlda
 #' @export
 #'
 #' @param object trained SmDLDA object

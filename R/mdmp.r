@@ -53,8 +53,7 @@ mdmp <- function(x, ...) {
 }
 
 #' @rdname mdmp
-#' @method mdmp default
-#' @S3method mdmp default
+#' @export
 mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -90,8 +89,7 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname mdmp
-#' @method mdmp formula
-#' @S3method mdmp formula
+#' @export
 mdmp.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
@@ -118,8 +116,6 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @rdname mdmp
-#' @method print mdmp
-#' @S3method print mdmp
 #' @export
 print.mdmp <- function(x, ...) {
   cat("Call:\n")
@@ -145,8 +141,6 @@ print.mdmp <- function(x, ...) {
 #' their corresponding eigenvectors are kept.
 #' 
 #' @rdname mdmp
-#' @method predict mdmp
-#' @S3method predict mdmp
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
