@@ -1,3 +1,10 @@
+sparsediscrim 0.2.1
+-------------------
+
+FIXES
+
+* Fixed issue with classifiers' documentation not appearing in help index. #26
+
 sparsediscrim 0.2
 -----------------
 
