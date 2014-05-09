@@ -143,5 +143,4 @@ Pang, H., Tong, T., & Zhao, H. (2009). "Shrinkage-based
 Diagonal Discriminant Analysis and Its Applications in
 High-Dimensional Data," Biometrics, 65, 4, 1021-1029.
 }
-\keyword{internal}
 

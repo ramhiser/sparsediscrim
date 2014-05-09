@@ -112,7 +112,6 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' Summarizes the trained mdmp classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname mdmp

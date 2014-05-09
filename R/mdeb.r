@@ -95,7 +95,6 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' Summarizes the trained mdeb classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname mdeb

@@ -120,7 +120,6 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
 #'
 #' Summarizes the trained SDLDA classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname sdlda

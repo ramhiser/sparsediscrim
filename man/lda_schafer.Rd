@@ -125,5 +125,4 @@ to large-scale covariance estimation and implications for
 functional genomics," Statist. Appl. Genet. Mol. Biol. 4,
 32.
 }
-\keyword{internal}
 

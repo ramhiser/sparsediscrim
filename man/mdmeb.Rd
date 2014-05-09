@@ -123,5 +123,4 @@ Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 Discrimination Methods for High Dimensional Data," Journal
 of the Japanese Statistical Association, 37, 1, 123-134.
 }
-\keyword{internal}
 

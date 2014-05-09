@@ -116,5 +116,4 @@ lda_pseudo_out2 <- lda_pseudo(x = iris[train, -5], y = iris[train, 5])
 predicted2 <- predict(lda_pseudo_out2, iris[-train, -5])$class
 all.equal(predicted, predicted2)
 }
-\keyword{internal}
 

@@ -112,7 +112,6 @@ smdlda.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' Summarizes the trained SmDLDA classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname smdlda

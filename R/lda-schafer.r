@@ -106,7 +106,6 @@ lda_schafer.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' Summarizes the trained lda_schafer classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname lda_schafer

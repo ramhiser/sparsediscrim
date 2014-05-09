@@ -141,5 +141,4 @@ Analysis," Journal of American Statistical Association, 84,
 405, 165-175. \url{http://www.jstor.org/pss/2289860}
 (Requires full-text access).
 }
-\keyword{internal}
 

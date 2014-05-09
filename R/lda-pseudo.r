@@ -109,7 +109,6 @@ lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
 #'
 #' Summarizes the trained lda_pseudo classifier in a nice manner.
 #'
-#' @keywords internal
 #' @param x object to print
 #' @param ... unused
 #' @rdname lda_pseudo

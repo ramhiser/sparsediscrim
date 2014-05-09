@@ -132,5 +132,4 @@ Classification of Tumors Using Gene Expression Data,"
 Journal of the American Statistical Association, 97, 457,
 77-87.
 }
-\keyword{internal}
 
