@@ -4,6 +4,23 @@ The R package `sparsediscrim` provides a collection of sparse and regularized di
 analysis classifiers that are especially useful for when applied to
 small-sample, high-dimensional data sets.
 
+## Installation
+
+You can install the stable version on [CRAN](http://cran.r-project.org/package=sparsediscrim):
+
+```r
+install.packages('sparsediscrim', dependencies = TRUE)
+```
+
+If you prefer to download the latest version, instead type:
+
+```r
+library(devtools)
+install_github('ramhiser/sparsediscrim')
+```
+
+## Classifiers
+
 The `sparsediscrim` package features the following classifier (the R function
 is included within parentheses):
 
@@ -24,18 +41,3 @@ intended for small-sample, high-dimensional data sets. These include:
 * Shrinkage-based Diagonal Quadratic Discriminant Analysis from Pang et al. (2009) (`sdqda`)
 * Shrinkage-mean-based Diagonal Linear Discriminant Analysis from Tong et al. (2012) (`smdlda`)
 * Shrinkage-mean-based Diagonal Quadratic Discriminant Analysis from Tong et al. (2012) (`smdqda`)
-
-## Installation
-
-You can install the stable version on [CRAN](http://cran.r-project.org/package=sparsediscrim):
-
-```r
-install.packages('sparsediscrim', dependencies = TRUE)
-```
-
-If you prefer to download the latest version, instead type:
-
-```r
-library(devtools)
-install_github('sparsediscrim', 'ramhiser')
-```
