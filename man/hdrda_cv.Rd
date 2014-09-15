@@ -4,7 +4,7 @@
 \title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
 hdrda_cv(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
-  shrinkage_type = c("ridge", "convex"), ...)
+  shrinkage_type = c("ridge", "convex"), verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
@@ -22,6 +22,9 @@ observations, and the columns are the features.}
 default, a ridge-like shrinkage is applied. If \code{convex} is given, then
 shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
 details.}
+
+\item{verbose}{If set to \code{TRUE}, summary information will be outputted
+as the optimal model is being determined.}
 
 \item{...}{Additional arguments passed to \code{\link{hdrda}}.}
 }

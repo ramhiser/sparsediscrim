@@ -300,11 +300,13 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 #' default, a ridge-like shrinkage is applied. If \code{convex} is given, then
 #' shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
 #' details.
+#' @param verbose If set to \code{TRUE}, summary information will be outputted
+#' as the optimal model is being determined.
 #' @param ... Additional arguments passed to \code{\link{hdrda}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as
 #' well as a \code{data.frame} that summarizes the cross-validation results.
 hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
-                     shrinkage_type = c("ridge", "convex"), ...) {
+                     shrinkage_type=c("ridge", "convex"), verbose=FALSE, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   shrinkage_type <- match.arg(shrinkage_type)
@@ -327,7 +329,11 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
   tuning_grid <- expand.grid(lambda = seq_lambda, gamma = seq_gamma)
   tuning_grid <- tuning_grid[do.call(order, tuning_grid), ]
 
-  cv_errors <- sapply(cv_folds, function(fold) {
+  cv_errors <- sapply(seq_along(cv_folds), function(fold_i) {
+    if (verbose) {
+      cat("CV Fold: ", fold_i, " of ", num_folds, "\n")
+    }
+    fold <- cv_folds[[fold_i]]
     train_x <- x[fold$training, ]
     train_y <- y[fold$training]
     test_x <- x[fold$test, ]
