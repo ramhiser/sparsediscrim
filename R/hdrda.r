@@ -74,12 +74,6 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   gamma <- as.numeric(gamma)
   shrinkage_type <- match.arg(shrinkage_type)
 
-  # If p < n, throw warning because it is untested and possibly does not work
-  if (ncol(x) < nrow(x)) {
-    warning("The sample size exceeds the number of features. This is an untested
-             scenario and may not work currently.")
-  }
-
   if (lambda < 0 || lambda > 1) {
     stop("The value for 'lambda' must be between 0 and 1, inclusively.")
   }
@@ -91,7 +85,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   # When p < N, the HDRDA covariance-matrix estimator is singular when (lambda,
   # gamma) = (0, 0). In this case, we set gamma to a small value to shrink the
   # estimators slightly.
-  if (lambda == 0 && gamma == 0) {
+  if (ncol(x) < nrow(x) && (lambda == 0 && gamma == 0)) {
     gamma <- 0.01
   }
 
@@ -212,6 +206,14 @@ print.hdrda <- function(x, ...) {
   print(x$q)
   cat("Shrinkage type:\n")
   print(x$shrinkage_type)
+  if (!is.null(x$lambda)) {
+    cat("Lambda:\n")
+    print(x$lambda)
+  }
+  if (!is.null(x$gamma)) {
+    cat("Gamma:\n")
+    print(x$gamma)
+  }
 }
 
 #' Predicts the class membership of a matrix of unlabeled observations with a
@@ -360,7 +362,18 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
   optimal <- which.min(cv_errors)
   lambda <- tuning_grid$lambda[optimal]
   gamma <- tuning_grid$gamma[optimal]
-  list(lambda = lambda, gamma = gamma, cv_summary = cv_summary)
+
+  # Trains a classifier based on optimal model
+  hdrda_out <- hdrda(x=x, y=y, lambda=lambda, gamma=gamma,
+                     shrinkage_type=shrinkage_type)
+
+  # Adds optimal parameters and cv_summary to classifier object
+  hdrda_out$lambda <- lambda
+  hdrda_out$gamma <- gamma
+  hdrda_out$cv_summary <- cv_summary
+  class(hdrda_out) <- c("hdrda_cv", "hdrda")
+
+  hdrda_out
 }
 
 #' Helper function to update tuning parameters for the HDRDA classifier
