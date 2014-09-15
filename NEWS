@@ -1,9 +1,21 @@
 sparsediscrim 0.2.1
 -------------------
 
+UPDATES
+
+* The cross-validation helper function `cv_hdrda()` for the HDRDA classifier now
+  returns a trained classifier rather than the optimal model.
+
+* `cv_hdrda()` also has an optional `verbose` argument to dump summary
+  information while the cross-validation is running.
+
 FIXES
 
 * Fixed issue with classifiers' documentation not appearing in help index. #26
+
+MISCELLANEOUS
+
+* Updated **man** docs with roxygen2 4.0
 
 sparsediscrim 0.2
 -----------------
