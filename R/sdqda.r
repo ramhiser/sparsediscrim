@@ -79,19 +79,19 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
   # covariance matrix. We add these to the corresponding obj$est$var_shrink
   for(k in seq_len(obj$num_groups)) {
     obj$est[[k]]$var_shrink <- var_shrinkage(
-			N = obj$est[[k]]$n,
-			K = 1,
-			var_feature = obj$est[[k]]$var,
-			num_alphas = num_alphas,
-			t = -1
-		)
+      N = obj$est[[k]]$n,
+      K = 1,
+      var_feature = obj$est[[k]]$var,
+      num_alphas = num_alphas,
+      t = -1
+    )
   }
 
   # Creates an object of type 'sdqda' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "sdqda"
-	
-	obj
+
+  obj
 }
 
 #' @param formula A formula of the form \code{groups ~ x1 + x2 + ...} That is,
@@ -163,28 +163,27 @@ print.sdqda <- function(x, ...) {
 #' Biometrics, 65, 4, 1021-1029.
 #' @return list predicted class memberships of each row in newdata
 predict.sdqda <- function(object, newdata, ...) {
-	if (!inherits(object, "sdqda"))  {
-		stop("object not of class 'sdqda'")
-	}
-	if (is.vector(newdata)) {
+  if (!inherits(object, "sdqda"))  {
+    stop("object not of class 'sdqda'")
+  }
+  if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
 
-	scores <- apply(newdata, 1, function(obs) {
-		sapply(object$est, function(class_est) {
-			with(class_est, sum((obs - xbar)^2 / var_shrink + log(var_shrink))
+  scores <- apply(newdata, 1, function(obs) {
+    sapply(object$est, function(class_est) {
+      with(class_est, sum((obs - xbar)^2 / var_shrink + log(var_shrink))
            + log(prior))
-		})
-	})
-	
-	if (is.vector(scores)) {
-		min_scores <- which.min(scores)
-	} else {
-		min_scores <- apply(scores, 2, which.min)
-	}
+    })
+  })
 
-	class <- factor(object$groups[min_scores], levels = object$groups)
-	
-	list(class = class, scores = scores)
+  if (is.vector(scores)) {
+    min_scores <- which.min(scores)
+  } else {
+    min_scores <- apply(scores, 2, which.min)
+  }
+
+  class <- factor(object$groups[min_scores], levels = object$groups)
+
+  list(class = class, scores = scores)
 }
-

@@ -131,7 +131,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 
     # Transforms the sample mean to the lower dimension
     xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
-    
+
     # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
     # We compute the matrix once and use it where necessary to avoid unnecessary
     # computations.
@@ -152,7 +152,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   # Creates an object of type 'hdrda' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "hdrda"
-	
+
   obj
 }
 
@@ -172,7 +172,7 @@ hdrda.formula <- function(formula, data, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -262,7 +262,7 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 
       quad_forms <- diag(quadform(class_est$W_inv, U1_x))
     }
-    
+
     quad_forms + log_det - 2 * log(class_est$prior)
   })
 
@@ -310,7 +310,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
   x <- as.matrix(x)
   y <- as.factor(y)
   shrinkage_type <- match.arg(shrinkage_type)
-  
+
   cv_folds <- cv_partition(y = y, num_folds = num_folds)
 
   # The grid of tuning parameters
@@ -404,7 +404,7 @@ update_hdrda <- function(obj, lambda = 1, gamma = 0) {
   if (lambda == 0 && gamma == 0) {
     gamma <- 0.01
   }
-    
+
   # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1 for
   # all k. As a result, Gamma and Gamma_inv are constant across all k. We
   # compute both before looping through all K classes.

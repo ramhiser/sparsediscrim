@@ -62,8 +62,8 @@ mdeb.default <- function(x, y, prior = NULL, ...) {
   # Creates an object of type 'mdeb' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "mdeb"
-	
-	obj
+
+  obj
 }
 
 #' @param formula A formula of the form \code{groups ~ x1 + x2 + ...} That is,
@@ -134,10 +134,10 @@ print.mdeb <- function(x, ...) {
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
 predict.mdeb <- function(object, newdata, ...) {
-	if (!inherits(object, "mdeb"))  {
-		stop("object not of class 'mdeb'")
-	}
-	if (is.vector(newdata)) {
+  if (!inherits(object, "mdeb"))  {
+    stop("object not of class 'mdeb'")
+  }
+  if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
 
@@ -147,20 +147,20 @@ predict.mdeb <- function(object, newdata, ...) {
   cov_inv <- with(object, solve(cov_pool + shrink * diag(p)))
 
   # Calculates the discriminant scores for each test observation
-	scores <- apply(newdata, 1, function(obs) {
-		sapply(object$est, function(class_est) {
-			with(class_est, quadform(cov_inv, obs - xbar) + log(prior))
-		})
-	})
-	
-	if (is.vector(scores)) {
-		min_scores <- which.min(scores)
-	} else {
-		min_scores <- apply(scores, 2, which.min)
-	}
+  scores <- apply(newdata, 1, function(obs) {
+    sapply(object$est, function(class_est) {
+      with(class_est, quadform(cov_inv, obs - xbar) + log(prior))
+    })
+  })
 
-	class <- factor(object$groups[min_scores], levels = object$groups)
-	
-	list(class = class, scores = scores)
+  if (is.vector(scores)) {
+    min_scores <- which.min(scores)
+  } else {
+    min_scores <- apply(scores, 2, which.min)
+  }
+
+  class <- factor(object$groups[min_scores], levels = object$groups)
+
+  list(class = class, scores = scores)
 }
 

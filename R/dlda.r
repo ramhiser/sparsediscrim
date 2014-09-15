@@ -69,8 +69,8 @@ dlda.default <- function(x, y, prior = NULL, ...) {
   # Creates an object of type 'dlda' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "dlda"
-	
-	obj
+
+  obj
 }
 
 #' @param formula A formula of the form \code{groups ~ x1 + x2 + ...} That is,
@@ -135,26 +135,26 @@ print.dlda <- function(x, ...) {
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
 predict.dlda <- function(object, newdata, ...) {
-	if (!inherits(object, "dlda"))  {
-		stop("object not of class 'dlda'")
-	}
-	if (is.vector(newdata)) {
+  if (!inherits(object, "dlda"))  {
+    stop("object not of class 'dlda'")
+  }
+  if (is.vector(newdata)) {
     newdata <- matrix(newdata, nrow = 1)
   }
 
-	scores <- apply(newdata, 1, function(obs) {
-		sapply(object$est, function(class_est) {
-			with(class_est, sum((obs - xbar)^2 / object$var_pool) + log(prior))
-		})
-	})
-	
-	if (is.vector(scores)) {
-		min_scores <- which.min(scores)
-	} else {
-		min_scores <- apply(scores, 2, which.min)
-	}
+  scores <- apply(newdata, 1, function(obs) {
+    sapply(object$est, function(class_est) {
+      with(class_est, sum((obs - xbar)^2 / object$var_pool) + log(prior))
+    })
+  })
 
-	class <- factor(object$groups[min_scores], levels = object$groups)
-	
-	list(class = class, scores = scores)
+  if (is.vector(scores)) {
+    min_scores <- which.min(scores)
+  } else {
+    min_scores <- apply(scores, 2, which.min)
+  }
+
+  class <- factor(object$groups[min_scores], levels = object$groups)
+
+  list(class = class, scores = scores)
 }

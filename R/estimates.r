@@ -46,11 +46,11 @@
 diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
                            est_mean = c("mle", "tong")) {
   obj <- list()
-	obj$labels <- y
-	obj$N <- length(y)
-	obj$p <- ncol(x)
-	obj$groups <- levels(y)
-	obj$num_groups <- nlevels(y)
+  obj$labels <- y
+  obj$N <- length(y)
+  obj$p <- ncol(x)
+  obj$groups <- levels(y)
+  obj$num_groups <- nlevels(y)
 
   est_mean <- match.arg(est_mean)
 
@@ -144,11 +144,11 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
 #' information
 regdiscrim_estimates <- function(x, y, cov = TRUE, prior = NULL) {
   obj <- list()
-	obj$labels <- y
-	obj$N <- length(y)
-	obj$p <- ncol(x)
-	obj$groups <- levels(y)
-	obj$num_groups <- nlevels(y)
+  obj$labels <- y
+  obj$N <- length(y)
+  obj$p <- ncol(x)
+  obj$groups <- levels(y)
+  obj$num_groups <- nlevels(y)
 
   # Error Checking
   if (!is.null(prior)) {
