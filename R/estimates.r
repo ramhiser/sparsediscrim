@@ -112,7 +112,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
 #' of features, etc.
 #'
 #' This function computes the common estimates and ancillary information used in
-#' all of the regularized discriminant classifiers in the \code{regdiscrim}
+#' all of the regularized discriminant classifiers in the \code{sparsediscrim}
 #' package.
 #'
 #' The matrix of training observations are given in \code{x}. The rows of \code{x}

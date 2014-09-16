@@ -3,7 +3,7 @@
 \alias{hdrda_cv}
 \title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
-hdrda_cv(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
+hdrda_cv(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
   shrinkage_type = c("ridge", "convex"), verbose = FALSE, ...)
 }
 \arguments{

@@ -306,7 +306,7 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 #' @param ... Additional arguments passed to \code{\link{hdrda}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as
 #' well as a \code{data.frame} that summarizes the cross-validation results.
-hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
+hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
                      shrinkage_type=c("ridge", "convex"), verbose=FALSE, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
@@ -321,7 +321,16 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
   seq_lambda <- seq(0, 1, length = num_lambda)
 
   if (shrinkage_type == "ridge") {
-    seq_gamma <- 10^seq.int(-1, num_gamma - 2)
+    N <- nrow(x)
+    p <- ncol(x)
+
+    # If the sample-size exceeds the dimension, include no shrinkage as an
+    # option.
+    if (N > p) {
+      seq_gamma <- c(0, 10^seq.int(-2, num_gamma - 4))
+    } else {
+      seq_gamma <- 10^seq.int(-2, num_gamma - 3)
+    }
   } else  {
     # shrinkage_type == "convex"
     seq_gamma <- seq(0, 1, length = num_gamma)
