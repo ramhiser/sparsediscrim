@@ -290,6 +290,7 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 #' The number of cross-validation folds is given in \code{num_folds}.
 #'
 #' @export
+#' @importFrom dplyr arrange
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
@@ -327,7 +328,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 7,
   }
 
   tuning_grid <- expand.grid(lambda = seq_lambda, gamma = seq_gamma)
-  tuning_grid <- tuning_grid[do.call(order, tuning_grid), ]
+  tuning_grid <- dplyr::arrange(tuning_grid, lambda, gamma)
 
   cv_errors <- sapply(seq_along(cv_folds), function(fold_i) {
     if (verbose) {
