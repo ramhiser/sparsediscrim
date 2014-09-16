@@ -13,9 +13,15 @@ FIXES
 
 * Fixed issue with classifiers' documentation not appearing in help index. #26
 
+* Better handling of HDRDA when its tuning parameters are both 0.
+
+* Corrected calculation of W_k and Q_k in HDRDA classifier.
+
 MISCELLANEOUS
 
-* Updated **man** docs with roxygen2 4.0
+* Added unit tests for HDRDA.
+
+* Updated **man** docs with roxygen2 4.0.
 
 sparsediscrim 0.2
 -----------------

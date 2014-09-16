@@ -34,10 +34,6 @@
 #' probabilties should be nonnegative and sum to one. The order of the prior
 #' probabilties is assumed to match the levels of \code{factor(y)}.
 #'
-#' When \eqn{p < N}, the HDRDA covariance-matrix estimator is singular when
-#' \eqn{(lambda, gamma) = (0, 0)}. In this case, we set \eqn{gamma} to 0.01 to
-#' shrink the estimators slightly to ensure positive-definiteness.
-#'
 #' @export
 #' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
 #' "High-Dimensional Regularized Discriminant Analysis."
@@ -82,13 +78,6 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     stop("The value for 'gamma' must be nonnegative.")
   }
 
-  # When p < N, the HDRDA covariance-matrix estimator is singular when (lambda,
-  # gamma) = (0, 0). In this case, we set gamma to a small value to shrink the
-  # estimators slightly.
-  if (ncol(x) < nrow(x) && (lambda == 0 && gamma == 0)) {
-    gamma <- 0.01
-  }
-
   obj <- regdiscrim_estimates(x = x, y = y, cov = FALSE, prior = prior, ...)
   x_centered <- center_data(x = x, y = y)
   K <- obj$num_groups
@@ -101,6 +90,8 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   obj$U1 <- cov_pool_eigen$vectors
   obj$q <- length(obj$D_q)
   obj$shrinkage_type <- shrinkage_type
+  obj$lambda <- lambda
+  obj$gamma <- gamma
 
   if (shrinkage_type == "ridge") {
     alpha <- 1
@@ -118,10 +109,6 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   #   2. Q_k
   #   3. W_k^{-1}
   for (k in seq_len(K)) {
-    # Although 'Gamma_k' is a diagonal matrix, we store only its diagonal
-    # elements.
-    Gamma <- alpha * lambda * obj$D_q + gamma
-    Gamma_inv <- diag(Gamma^(-1))
     X_k <- x_centered[y == levels(y)[k], ]
     n_k <- nrow(X_k)
 
@@ -132,13 +119,29 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     # Transforms the sample mean to the lower dimension
     xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
 
-    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
-    # We compute the matrix once and use it where necessary to avoid unnecessary
-    # computations.
-    XU_Gamma_inv <- XU_k %*% Gamma_inv
-    Q <- diag(n_k) + alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, XU_k)
-    W_inv <- alpha * (1 - lambda) * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
-    W_inv <- Gamma_inv - W_inv
+    # In the special case that (lambda, gamma) = (0, 0), the improvements to
+    # HDRDA's speed via the Sherman-Woodbury formula are not applicable because
+    # Gamma = 0. In this case, we calculate W_inv directly.
+    if (lambda == 0 && gamma == 0) {
+      W_k <- cov_mle(XU_k)
+      W_inv <- solve(W_k)
+
+      Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
+      Q <- diag(n_k)
+    } else {
+      # Although 'Gamma_k' is a diagonal matrix, we store only its diagonal
+      # elements.
+      Gamma <- alpha * lambda * obj$D_q + gamma
+      Gamma_inv <- diag(Gamma^(-1))
+
+      # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+      # We compute the matrix once and use it where necessary to avoid
+      # unnecessary computations.
+      XU_Gamma_inv <- XU_k %*% Gamma_inv
+      Q <- diag(n_k) + alpha * (1 - lambda) / n_k * tcrossprod(XU_Gamma_inv, XU_k)
+      W_inv <- alpha * (1 - lambda) / n_k * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+      W_inv <- Gamma_inv - W_inv
+    }
 
     obj$est[[k]]$n_k <- n_k
     obj$est[[k]]$alpha <- alpha
@@ -206,14 +209,10 @@ print.hdrda <- function(x, ...) {
   print(x$q)
   cat("Shrinkage type:\n")
   print(x$shrinkage_type)
-  if (!is.null(x$lambda)) {
-    cat("Lambda:\n")
-    print(x$lambda)
-  }
-  if (!is.null(x$gamma)) {
-    cat("Gamma:\n")
-    print(x$gamma)
-  }
+  cat("Lambda:\n")
+  print(x$lambda)
+  cat("Gamma:\n")
+  print(x$gamma)
 }
 
 #' Predicts the class membership of a matrix of unlabeled observations with a
@@ -241,7 +240,12 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 
   scores <- sapply(object$est, function(class_est) {
     # The call to 'as.vector' removes the attributes returned by 'determinant'
-    log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
+    if (object$lambda == 0 && object$gamma == 0) {
+      # Want: log(det(W_k)) = -log(det(W_k_inv))
+      log_det <- -as.vector(determinant(class_est$W_inv, logarithm = TRUE)$modulus)
+    } else {
+      log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
+    }
 
     if (projected) {
       # The newdata have already been projected. Yay for speed!
@@ -321,16 +325,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
   seq_lambda <- seq(0, 1, length = num_lambda)
 
   if (shrinkage_type == "ridge") {
-    N <- nrow(x)
-    p <- ncol(x)
-
-    # If the sample-size exceeds the dimension, include no shrinkage as an
-    # option.
-    if (N > p) {
-      seq_gamma <- c(0, 10^seq.int(-2, num_gamma - 4))
-    } else {
-      seq_gamma <- 10^seq.int(-2, num_gamma - 3)
-    }
+    seq_gamma <- c(0, 10^seq.int(-2, num_gamma - 4))
   } else  {
     # shrinkage_type == "convex"
     seq_gamma <- seq(0, 1, length = num_gamma)
@@ -399,43 +394,48 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
 #' expedite cross-validation to examine a large grid of values for \code{lambda}
 #' and \code{gamma}.
 #'
-#' When \eqn{p < N}, the HDRDA covariance-matrix estimator is singular when
-#' \eqn{(lambda, gamma) = (0, 0)}. In this case, we set \eqn{gamma} to 0.01 to
-#' shrink the estimators slightly to ensure positive-definiteness.
-#' 
 #' @param obj a \code{hdrda} object
 #' @param lambda a numeric value between 0 and 1, inclusively
 #' @param gamma a numeric value (nonnegative)
 #' @return a \code{hdrda} object with updated estimates
 update_hdrda <- function(obj, lambda = 1, gamma = 0) {
-  # When p < N, the HDRDA covariance-matrix estimator is singular when (lambda,
-  # gamma) = (0, 0). In this case, we set gamma to a small value to shrink the
-  # estimators slightly.
+  # In the special case that (lambda, gamma) = (0, 0), the improvements to
+  # HDRDA's speed via the Sherman-Woodbury formula are not applicable because
+  # Gamma = 0. In this case, we calculate W_inv directly.
   if (lambda == 0 && gamma == 0) {
-    gamma <- 0.01
+      Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
+  } else {
+    # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1
+    # for all k. As a result, Gamma and Gamma_inv are constant across all k. We
+    # compute both before looping through all K classes.
+    Gamma <- obj$est[[1]]$alpha * lambda * obj$D_q + gamma
+    Gamma_inv <- diag(Gamma^(-1))
   }
 
-  # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1 for
-  # all k. As a result, Gamma and Gamma_inv are constant across all k. We
-  # compute both before looping through all K classes.
-  Gamma <- obj$est[[1]]$alpha * lambda * obj$D_q + gamma
-  Gamma_inv <- diag(Gamma^(-1))
-
   for (k in seq_len(obj$num_groups)) {
-    # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
-    # We compute the matrix once and use it where necessary to avoid unnecessary
-    # computations.
-    XU_Gamma_inv <- obj$est[[k]]$XU %*% Gamma_inv
-    Q <- diag(obj$est[[k]]$n_k) +
-      obj$est[[k]]$alpha * (1 - lambda) * tcrossprod(XU_Gamma_inv, obj$est[[k]]$XU)
+    n_k <- obj$est[[k]]$n_k
+    if (lambda == 0 && gamma == 0) {
+      W_k <- cov_mle(obj$est[[k]]$XU)
+      W_inv <- solve(W_k)
+      Q <- diag(n_k)
+    }
+    else {
+      # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
+      # We compute the matrix once and use it where necessary to avoid
+      # unnecessary computations.
+      XU_Gamma_inv <- obj$est[[k]]$XU %*% Gamma_inv
+      Q <- diag(n_k) +
+        obj$est[[k]]$alpha * (1 - lambda) / n_k * tcrossprod(XU_Gamma_inv, obj$est[[k]]$XU)
 
-    W_inv <- obj$est[[k]]$alpha * (1 - lambda) *
-        crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
-    W_inv <- Gamma_inv - W_inv
-
+      W_inv <- obj$est[[k]]$alpha * (1 - lambda) / n_k *
+          crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+      W_inv <- Gamma_inv - W_inv
+    }
     obj$est[[k]]$Gamma <- Gamma
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
   }
+  obj$lambda <- lambda
+  obj$gamma <- gamma
   obj
 }
