@@ -239,12 +239,11 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   newdata <- as.matrix(newdata)
 
   scores <- sapply(object$est, function(class_est) {
-    # The call to 'as.vector' removes the attributes returned by 'determinant'
     if (object$lambda == 0 && object$gamma == 0) {
       # Want: log(det(W_k)) = -log(det(W_k_inv))
-      log_det <- -as.vector(determinant(class_est$W_inv, logarithm = TRUE)$modulus)
+      log_det <- -log_determinant(class_est$W_inv)
     } else {
-      log_det <- as.vector(determinant(class_est$Q, logarithm = TRUE)$modulus)
+      log_det <- log_determinant(class_est$Q)
     }
 
     if (projected) {

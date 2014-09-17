@@ -78,3 +78,13 @@ center_data <- function(x, y) {
 solve_chol <- function(x) {
   chol2inv(chol(x))
 }
+
+#' Computes the log determinant of a matrix.
+#'
+#' @export
+#' @param x matrix
+#' @return log determinant of \code{x}
+log_determinant <- function(x) {
+  # The call to 'as.vector' removes the attributes returned by 'determinant'
+  as.vector(determinant(x, logarithm=TRUE)$modulus)
+}
