@@ -23,6 +23,9 @@ MISCELLANEOUS
 
 * Updated **man** docs with roxygen2 4.0.
 
+* Added `log_determinant()` helper function to calculate the log-determinant of
+  a matrix.
+
 sparsediscrim 0.2
 -----------------
 
