@@ -121,10 +121,16 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 
     # In the special case that (lambda, gamma) = (0, 0), the improvements to
     # HDRDA's speed via the Sherman-Woodbury formula are not applicable because
-    # Gamma = 0. In this case, we calculate W_inv directly.
+    # Gamma = 0. In this case, we calculate W_inv directly. If the matrix is
+    # singular, a slight amount of shrinkage is applied.
     if (lambda == 0 && gamma == 0) {
       W_k <- cov_mle(XU_k)
-      W_inv <- solve(W_k)
+      W_inv <- try(solve_chol(W_k), silent=TRUE)
+
+      if (inherits(W_inv, "try-error")) {
+        W_k <- W_k + diag(0.001, nrow=nrow(W_k), ncol=ncol(W_k))
+        W_inv <- solve_chol(W_k)
+      }
 
       Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
       Q <- diag(n_k)
@@ -415,7 +421,7 @@ update_hdrda <- function(obj, lambda = 1, gamma = 0) {
     n_k <- obj$est[[k]]$n_k
     if (lambda == 0 && gamma == 0) {
       W_k <- cov_mle(obj$est[[k]]$XU)
-      W_inv <- solve(W_k)
+      W_inv <- solve_chol(W_k)
       Q <- diag(n_k)
     }
     else {

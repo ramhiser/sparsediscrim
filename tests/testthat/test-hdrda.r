@@ -1,11 +1,11 @@
 library(testthat)
 library(sparsediscrim)
+library(MASS)
+library(mvtnorm)
 
 context("The HDRDA Classifier from Ramey et al. (2014)")
 
 test_that("The HDRDA classifier works properly on the iris data set", {
-  require('MASS')
-
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
@@ -21,8 +21,6 @@ test_that("The HDRDA classifier works properly on the iris data set", {
 })
 
 test_that("HDRDA's calculations are correct for (lambda, gamma) = (1, 0)", {
-  require('MASS')
-
   hdrda_out <- hdrda(Species ~ ., data = iris, lambda=1, gamma=0)
 
   Sigma <- cov_pool(x=iris[, -5], y=iris$Species)
@@ -40,8 +38,6 @@ test_that("HDRDA's calculations are correct for (lambda, gamma) = (1, 0)", {
 })
 
 test_that("HDRDA's calculations are correct for (lambda, gamma) = (0, 0)", {
-  require('MASS')
-
   hdrda_out <- hdrda(Species ~ ., data = iris, lambda=0, gamma=0)
 
   Sigma <- cov_pool(x=iris[, -5], y=iris$Species)
@@ -65,10 +61,7 @@ test_that("HDRDA's calculations are correct for (lambda, gamma) = (0, 0)", {
   expect_equal(W_k$virginica, W_k_expected$virginica)
 })
 
-
 test_that("LDA is a special case of HDRDA on the iris data set", {
-  require('MASS')
-
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
@@ -84,8 +77,6 @@ test_that("LDA is a special case of HDRDA on the iris data set", {
 })
 
 test_that("QDA is a special case of HDRDA on the iris data set", {
-  require('MASS')
-
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
@@ -98,4 +89,390 @@ test_that("QDA is a special case of HDRDA on the iris data set", {
   # Tests that the same labels result from the matrix and formula versions of
   # the HDRDA classifier
   expect_equal(predicted_hdrda, predicted_qda)
+})
+
+test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0, 0)", {
+  set.seed(42)
+  p <- 250
+  n1 <- 10
+  n2 <- 15
+  n3 <- 25
+
+  iris_x <- as.matrix(iris[, -5])
+
+  # The first cov matrix is the identity matrix.
+  # To generate sigma2 and sigma3, we grab eigenvectors from the iris data set.
+  # The eigenvalues are randomly generated.
+  eigen2 <- eigen(tcrossprod(iris_x[rep(1:100, length=p), ]), symmetric=TRUE)
+  eigen3 <- eigen(tcrossprod(iris_x[rep(30:130, length=p), ]), symmetric=TRUE)
+
+  eigen2$values <- sort(rexp(p, rate=0.1), decreasing=TRUE)
+  eigen3$values <- sort(rexp(p, rate=0.05), decreasing=TRUE)
+
+  sigma2 <- with(eigen2, vectors %*% tcrossprod(diag(values), vectors))
+  sigma3 <- with(eigen3, vectors %*% tcrossprod(diag(values), vectors))
+
+  x1 <- rmvnorm(n1, mean=rep(0, p), sigma=diag(p))
+  x2 <- rmvnorm(n2, mean=rep(3, p), sigma=sigma2)
+  x3 <- rmvnorm(n3, mean=rep(-3, p), sigma=sigma3)
+
+  x <- rbind(x1, x2, x3)
+  y <- c(rep(1, n1), rep(2, n2), rep(3, n3))
+
+  # Compute estimates for HDRDA manually.
+  xbar1 <- colMeans(x1)
+  xbar2 <- colMeans(x2)
+  xbar3 <- colMeans(x3)
+
+  x_centered1 <- scale(x1, center=TRUE, scale=FALSE)
+  x_centered2 <- scale(x2, center=TRUE, scale=FALSE)
+  x_centered3 <- scale(x3, center=TRUE, scale=FALSE)
+
+  Sigma_eigen <- cov_eigen(x=x, y=y, pool=TRUE, fast=TRUE, tol=1e-6)
+  D_q <- Sigma_eigen$values
+  U1 <- Sigma_eigen$vectors
+  q <- length(D_q)
+
+  XU_1 <- x_centered1 %*% U1
+  XU_2 <- x_centered2 %*% U1
+  XU_3 <- x_centered3 %*% U1
+
+  xbar1_U1 <- crossprod(U1, xbar1)
+  xbar2_U1 <- crossprod(U1, xbar2)
+  xbar3_U1 <- crossprod(U1, xbar3)
+
+  W_1 <- cov_mle(XU_1)
+  W_2 <- cov_mle(XU_2)
+  W_3 <- cov_mle(XU_3)
+
+  W1_inv <- solve_chol(W_1 + diag(0.001, nrow=nrow(W_1), ncol=ncol(W_1)))
+  W2_inv <- solve_chol(W_2 + diag(0.001, nrow=nrow(W_2), ncol=ncol(W_2)))
+  W3_inv <- solve_chol(W_3 + diag(0.001, nrow=nrow(W_3), ncol=ncol(W_3)))
+
+  hdrda_out <- hdrda(x=x, y=y, lambda=0, gamma=0)
+
+  expect_equal(hdrda_out$q, q)
+  expect_equal(hdrda_out$D_q, D_q)
+  expect_equal(hdrda_out$U1, U1)
+
+  expect_equal(hdrda_out$est[[1]]$n, n1)
+  expect_equal(hdrda_out$est[[1]]$xbar, xbar1)
+  expect_equal(hdrda_out$est[[1]]$prior, n1 / length(y))
+  expect_equal(hdrda_out$est[[1]]$alpha, 1)
+  expect_equal(hdrda_out$est[[1]]$XU, XU_1)
+  expect_equal(hdrda_out$est[[1]]$xbar_U1, xbar1_U1)
+  expect_equal(hdrda_out$est[[1]]$Gamma, matrix(0, q, q))
+  expect_equal(hdrda_out$est[[1]]$Q, diag(n1))
+  expect_equal(hdrda_out$est[[1]]$W_inv, W1_inv)
+
+  expect_equal(hdrda_out$est[[2]]$n, n2)
+  expect_equal(hdrda_out$est[[2]]$xbar, xbar2)
+  expect_equal(hdrda_out$est[[2]]$prior, n2 / length(y))
+  expect_equal(hdrda_out$est[[2]]$alpha, 1)
+  expect_equal(hdrda_out$est[[2]]$XU, XU_2)
+  expect_equal(hdrda_out$est[[2]]$xbar_U1, xbar2_U1)
+  expect_equal(hdrda_out$est[[2]]$Gamma, matrix(0, q, q))
+  expect_equal(hdrda_out$est[[2]]$Q, diag(n2))
+  expect_equal(hdrda_out$est[[2]]$W_inv, W2_inv)
+
+  expect_equal(hdrda_out$est[[3]]$n, n3)
+  expect_equal(hdrda_out$est[[3]]$xbar, xbar3)
+  expect_equal(hdrda_out$est[[3]]$prior, n3 / length(y))
+  expect_equal(hdrda_out$est[[3]]$alpha, 1)
+  expect_equal(hdrda_out$est[[3]]$XU, XU_3)
+  expect_equal(hdrda_out$est[[3]]$xbar_U1, xbar3_U1)
+  expect_equal(hdrda_out$est[[3]]$Gamma, matrix(0, q, q))
+  expect_equal(hdrda_out$est[[3]]$Q, diag(n3))
+  expect_equal(hdrda_out$est[[3]]$W_inv, W3_inv)
+})
+
+test_that("HDRDA's statistics match manual values when (lambda, gamma) = (1, 0)", {
+  set.seed(42)
+  p <- 250
+  n1 <- 10
+  n2 <- 15
+  n3 <- 25
+
+  iris_x <- as.matrix(iris[, -5])
+
+  # The first cov matrix is the identity matrix.
+  # To generate sigma2 and sigma3, we grab eigenvectors from the iris data set.
+  # The eigenvalues are randomly generated.
+  eigen2 <- eigen(tcrossprod(iris_x[rep(1:100, length=p), ]), symmetric=TRUE)
+  eigen3 <- eigen(tcrossprod(iris_x[rep(30:130, length=p), ]), symmetric=TRUE)
+
+  eigen2$values <- sort(rexp(p, rate=0.1), decreasing=TRUE)
+  eigen3$values <- sort(rexp(p, rate=0.05), decreasing=TRUE)
+
+  sigma2 <- with(eigen2, vectors %*% tcrossprod(diag(values), vectors))
+  sigma3 <- with(eigen3, vectors %*% tcrossprod(diag(values), vectors))
+
+  x1 <- rmvnorm(n1, mean=rep(0, p), sigma=diag(p))
+  x2 <- rmvnorm(n2, mean=rep(3, p), sigma=sigma2)
+  x3 <- rmvnorm(n3, mean=rep(-3, p), sigma=sigma3)
+
+  x <- rbind(x1, x2, x3)
+  y <- c(rep(1, n1), rep(2, n2), rep(3, n3))
+
+  # Compute estimates for HDRDA manually.
+  xbar1 <- colMeans(x1)
+  xbar2 <- colMeans(x2)
+  xbar3 <- colMeans(x3)
+
+  x_centered1 <- scale(x1, center=TRUE, scale=FALSE)
+  x_centered2 <- scale(x2, center=TRUE, scale=FALSE)
+  x_centered3 <- scale(x3, center=TRUE, scale=FALSE)
+
+  Sigma_eigen <- cov_eigen(x=x, y=y, pool=TRUE, fast=TRUE, tol=1e-6)
+  D_q <- Sigma_eigen$values
+  U1 <- Sigma_eigen$vectors
+  q <- length(D_q)
+
+  XU_1 <- x_centered1 %*% U1
+  XU_2 <- x_centered2 %*% U1
+  XU_3 <- x_centered3 %*% U1
+
+  xbar1_U1 <- crossprod(U1, xbar1)
+  xbar2_U1 <- crossprod(U1, xbar2)
+  xbar3_U1 <- crossprod(U1, xbar3)
+
+  hdrda_out <- hdrda(x=x, y=y, lambda=1, gamma=0)
+
+  expect_equal(hdrda_out$q, q)
+  expect_equal(hdrda_out$D_q, D_q)
+  expect_equal(hdrda_out$U1, U1)
+
+  expect_equal(hdrda_out$est[[1]]$n, n1)
+  expect_equal(hdrda_out$est[[1]]$xbar, xbar1)
+  expect_equal(hdrda_out$est[[1]]$prior, n1 / length(y))
+  expect_equal(hdrda_out$est[[1]]$alpha, 1)
+  expect_equal(hdrda_out$est[[1]]$XU, XU_1)
+  expect_equal(hdrda_out$est[[1]]$xbar_U1, xbar1_U1)
+  expect_equal(hdrda_out$est[[1]]$Gamma, D_q)
+  expect_equal(hdrda_out$est[[1]]$Q, diag(n1))
+  expect_equal(hdrda_out$est[[1]]$W_inv, diag(D_q^(-1)))
+
+  expect_equal(hdrda_out$est[[2]]$n, n2)
+  expect_equal(hdrda_out$est[[2]]$xbar, xbar2)
+  expect_equal(hdrda_out$est[[2]]$prior, n2 / length(y))
+  expect_equal(hdrda_out$est[[2]]$alpha, 1)
+  expect_equal(hdrda_out$est[[2]]$XU, XU_2)
+  expect_equal(hdrda_out$est[[2]]$xbar_U1, xbar2_U1)
+  expect_equal(hdrda_out$est[[2]]$Gamma, D_q)
+  expect_equal(hdrda_out$est[[2]]$Q, diag(n2))
+  expect_equal(hdrda_out$est[[2]]$W_inv, diag(D_q^(-1)))
+
+  expect_equal(hdrda_out$est[[3]]$n, n3)
+  expect_equal(hdrda_out$est[[3]]$xbar, xbar3)
+  expect_equal(hdrda_out$est[[3]]$prior, n3 / length(y))
+  expect_equal(hdrda_out$est[[3]]$alpha, 1)
+  expect_equal(hdrda_out$est[[3]]$XU, XU_3)
+  expect_equal(hdrda_out$est[[3]]$xbar_U1, xbar3_U1)
+  expect_equal(hdrda_out$est[[3]]$Gamma, D_q)
+  expect_equal(hdrda_out$est[[3]]$Q, diag(n3))
+  expect_equal(hdrda_out$est[[3]]$W_inv, diag(D_q^(-1)))
+})
+
+test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0.5)", {
+  set.seed(42)
+  p <- 250
+  n1 <- 10
+  n2 <- 15
+  n3 <- 25
+
+  iris_x <- as.matrix(iris[, -5])
+
+  # The first cov matrix is the identity matrix.
+  # To generate sigma2 and sigma3, we grab eigenvectors from the iris data set.
+  # The eigenvalues are randomly generated.
+  eigen2 <- eigen(tcrossprod(iris_x[rep(1:100, length=p), ]), symmetric=TRUE)
+  eigen3 <- eigen(tcrossprod(iris_x[rep(30:130, length=p), ]), symmetric=TRUE)
+
+  eigen2$values <- sort(rexp(p, rate=0.1), decreasing=TRUE)
+  eigen3$values <- sort(rexp(p, rate=0.05), decreasing=TRUE)
+
+  sigma2 <- with(eigen2, vectors %*% tcrossprod(diag(values), vectors))
+  sigma3 <- with(eigen3, vectors %*% tcrossprod(diag(values), vectors))
+
+  x1 <- rmvnorm(n1, mean=rep(0, p), sigma=diag(p))
+  x2 <- rmvnorm(n2, mean=rep(3, p), sigma=sigma2)
+  x3 <- rmvnorm(n3, mean=rep(-3, p), sigma=sigma3)
+
+  x <- rbind(x1, x2, x3)
+  y <- c(rep(1, n1), rep(2, n2), rep(3, n3))
+
+  # Compute estimates for HDRDA manually.
+  xbar1 <- colMeans(x1)
+  xbar2 <- colMeans(x2)
+  xbar3 <- colMeans(x3)
+
+  x_centered1 <- scale(x1, center=TRUE, scale=FALSE)
+  x_centered2 <- scale(x2, center=TRUE, scale=FALSE)
+  x_centered3 <- scale(x3, center=TRUE, scale=FALSE)
+
+  Sigma_eigen <- cov_eigen(x=x, y=y, pool=TRUE, fast=TRUE, tol=1e-6)
+  D_q <- Sigma_eigen$values
+  U1 <- Sigma_eigen$vectors
+  q <- length(D_q)
+
+  XU_1 <- x_centered1 %*% U1
+  XU_2 <- x_centered2 %*% U1
+  XU_3 <- x_centered3 %*% U1
+
+  xbar1_U1 <- crossprod(U1, xbar1)
+  xbar2_U1 <- crossprod(U1, xbar2)
+  xbar3_U1 <- crossprod(U1, xbar3)
+
+  Gamma <- 0.5 * diag(D_q) + 0.5 * diag(q)
+  Gamma_inv <- diag(diag(Gamma)^(-1))
+
+  W_1 <- 0.5 * cov_mle(XU_1) + Gamma
+  W_2 <- 0.5 * cov_mle(XU_2) + Gamma
+  W_3 <- 0.5 * cov_mle(XU_3) + Gamma
+
+  W1_inv <- solve_chol(W_1)
+  W2_inv <- solve_chol(W_2)
+  W3_inv <- solve_chol(W_3)
+
+  Q1 <- diag(n1) + 0.5 / n1 * XU_1 %*% tcrossprod(Gamma_inv, XU_1)
+  Q2 <- diag(n2) + 0.5 / n2 * XU_2 %*% tcrossprod(Gamma_inv, XU_2)
+  Q3 <- diag(n3) + 0.5 / n3 * XU_3 %*% tcrossprod(Gamma_inv, XU_3)
+
+  hdrda_out <- hdrda(x=x, y=y, lambda=0.5, gamma=0.5)
+
+  expect_equal(hdrda_out$q, q)
+  expect_equal(hdrda_out$D_q, D_q)
+  expect_equal(hdrda_out$U1, U1)
+
+  expect_equal(hdrda_out$est[[1]]$n, n1)
+  expect_equal(hdrda_out$est[[1]]$xbar, xbar1)
+  expect_equal(hdrda_out$est[[1]]$prior, n1 / length(y))
+  expect_equal(hdrda_out$est[[1]]$alpha, 1)
+  expect_equal(hdrda_out$est[[1]]$XU, XU_1)
+  expect_equal(hdrda_out$est[[1]]$xbar_U1, xbar1_U1)
+  expect_equal(hdrda_out$est[[1]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[1]]$Q, Q1)
+  expect_equal(hdrda_out$est[[1]]$W_inv, W1_inv)
+
+  expect_equal(hdrda_out$est[[2]]$n, n2)
+  expect_equal(hdrda_out$est[[2]]$xbar, xbar2)
+  expect_equal(hdrda_out$est[[2]]$prior, n2 / length(y))
+  expect_equal(hdrda_out$est[[2]]$alpha, 1)
+  expect_equal(hdrda_out$est[[2]]$XU, XU_2)
+  expect_equal(hdrda_out$est[[2]]$xbar_U1, xbar2_U1)
+  expect_equal(hdrda_out$est[[2]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[2]]$Q, Q2)
+  expect_equal(hdrda_out$est[[2]]$W_inv, W2_inv)
+
+  expect_equal(hdrda_out$est[[3]]$n, n3)
+  expect_equal(hdrda_out$est[[3]]$xbar, xbar3)
+  expect_equal(hdrda_out$est[[3]]$prior, n3 / length(y))
+  expect_equal(hdrda_out$est[[3]]$alpha, 1)
+  expect_equal(hdrda_out$est[[3]]$XU, XU_3)
+  expect_equal(hdrda_out$est[[3]]$xbar_U1, xbar3_U1)
+  expect_equal(hdrda_out$est[[3]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[3]]$Q, Q3)
+  expect_equal(hdrda_out$est[[3]]$W_inv, W3_inv)
+})
+
+test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0.75) and convex", {
+  set.seed(42)
+  p <- 250
+  n1 <- 10
+  n2 <- 15
+  n3 <- 25
+
+  iris_x <- as.matrix(iris[, -5])
+
+  # The first cov matrix is the identity matrix.
+  # To generate sigma2 and sigma3, we grab eigenvectors from the iris data set.
+  # The eigenvalues are randomly generated.
+  eigen2 <- eigen(tcrossprod(iris_x[rep(1:100, length=p), ]), symmetric=TRUE)
+  eigen3 <- eigen(tcrossprod(iris_x[rep(30:130, length=p), ]), symmetric=TRUE)
+
+  eigen2$values <- sort(rexp(p, rate=0.1), decreasing=TRUE)
+  eigen3$values <- sort(rexp(p, rate=0.05), decreasing=TRUE)
+
+  sigma2 <- with(eigen2, vectors %*% tcrossprod(diag(values), vectors))
+  sigma3 <- with(eigen3, vectors %*% tcrossprod(diag(values), vectors))
+
+  x1 <- rmvnorm(n1, mean=rep(0, p), sigma=diag(p))
+  x2 <- rmvnorm(n2, mean=rep(3, p), sigma=sigma2)
+  x3 <- rmvnorm(n3, mean=rep(-3, p), sigma=sigma3)
+
+  x <- rbind(x1, x2, x3)
+  y <- c(rep(1, n1), rep(2, n2), rep(3, n3))
+
+  # Compute estimates for HDRDA manually.
+  xbar1 <- colMeans(x1)
+  xbar2 <- colMeans(x2)
+  xbar3 <- colMeans(x3)
+
+  x_centered1 <- scale(x1, center=TRUE, scale=FALSE)
+  x_centered2 <- scale(x2, center=TRUE, scale=FALSE)
+  x_centered3 <- scale(x3, center=TRUE, scale=FALSE)
+
+  Sigma_eigen <- cov_eigen(x=x, y=y, pool=TRUE, fast=TRUE, tol=1e-6)
+  D_q <- Sigma_eigen$values
+  U1 <- Sigma_eigen$vectors
+  q <- length(D_q)
+
+  XU_1 <- x_centered1 %*% U1
+  XU_2 <- x_centered2 %*% U1
+  XU_3 <- x_centered3 %*% U1
+
+  xbar1_U1 <- crossprod(U1, xbar1)
+  xbar2_U1 <- crossprod(U1, xbar2)
+  xbar3_U1 <- crossprod(U1, xbar3)
+
+  Gamma <- 0.125 * diag(D_q) + 0.75 * diag(q)
+  Gamma_inv <- diag(diag(Gamma)^(-1))
+
+  W_1 <- 0.125 * cov_mle(XU_1) + Gamma
+  W_2 <- 0.125 * cov_mle(XU_2) + Gamma
+  W_3 <- 0.125 * cov_mle(XU_3) + Gamma
+
+  W1_inv <- solve_chol(W_1)
+  W2_inv <- solve_chol(W_2)
+  W3_inv <- solve_chol(W_3)
+
+  Q1 <- diag(n1) + 0.125 / n1 * XU_1 %*% tcrossprod(Gamma_inv, XU_1)
+  Q2 <- diag(n2) + 0.125 / n2 * XU_2 %*% tcrossprod(Gamma_inv, XU_2)
+  Q3 <- diag(n3) + 0.125 / n3 * XU_3 %*% tcrossprod(Gamma_inv, XU_3)
+
+  hdrda_out <- hdrda(x=x, y=y, lambda=0.5, gamma=0.75, shrinkage_type="convex")
+
+  expect_equal(hdrda_out$q, q)
+  expect_equal(hdrda_out$D_q, D_q)
+  expect_equal(hdrda_out$U1, U1)
+
+  expect_equal(hdrda_out$est[[1]]$n, n1)
+  expect_equal(hdrda_out$est[[1]]$xbar, xbar1)
+  expect_equal(hdrda_out$est[[1]]$prior, n1 / length(y))
+  expect_equal(hdrda_out$est[[1]]$alpha, 0.25)
+  expect_equal(hdrda_out$est[[1]]$XU, XU_1)
+  expect_equal(hdrda_out$est[[1]]$xbar_U1, xbar1_U1)
+  expect_equal(hdrda_out$est[[1]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[1]]$Q, Q1)
+  expect_equal(hdrda_out$est[[1]]$W_inv, W1_inv)
+
+  expect_equal(hdrda_out$est[[2]]$n, n2)
+  expect_equal(hdrda_out$est[[2]]$xbar, xbar2)
+  expect_equal(hdrda_out$est[[2]]$prior, n2 / length(y))
+  expect_equal(hdrda_out$est[[2]]$alpha, 0.25)
+  expect_equal(hdrda_out$est[[2]]$XU, XU_2)
+  expect_equal(hdrda_out$est[[2]]$xbar_U1, xbar2_U1)
+  expect_equal(hdrda_out$est[[2]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[2]]$Q, Q2)
+  expect_equal(hdrda_out$est[[2]]$W_inv, W2_inv)
+
+  expect_equal(hdrda_out$est[[3]]$n, n3)
+  expect_equal(hdrda_out$est[[3]]$xbar, xbar3)
+  expect_equal(hdrda_out$est[[3]]$prior, n3 / length(y))
+  expect_equal(hdrda_out$est[[3]]$alpha, 0.25)
+  expect_equal(hdrda_out$est[[3]]$XU, XU_3)
+  expect_equal(hdrda_out$est[[3]]$xbar_U1, xbar3_U1)
+  expect_equal(hdrda_out$est[[3]]$Gamma, diag(Gamma))
+  expect_equal(hdrda_out$est[[3]]$Q, Q3)
+  expect_equal(hdrda_out$est[[3]]$W_inv, W3_inv)
 })
