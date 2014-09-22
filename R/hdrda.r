@@ -420,9 +420,14 @@ update_hdrda <- function(obj, lambda = 1, gamma = 0) {
   for (k in seq_len(obj$num_groups)) {
     n_k <- obj$est[[k]]$n_k
     if (lambda == 0 && gamma == 0) {
-      W_k <- cov_mle(obj$est[[k]]$XU)
-      W_inv <- solve_chol(W_k)
       Q <- diag(n_k)
+
+      W_k <- cov_mle(obj$est[[k]]$XU)
+      W_inv <- try(solve_chol(W_k), silent=TRUE)
+      if (inherits(W_inv, "try-error")) {
+        W_k <- W_k + diag(0.001, nrow=nrow(W_k), ncol=ncol(W_k))
+        W_inv <- solve_chol(W_k)
+      }
     }
     else {
       # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
