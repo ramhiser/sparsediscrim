@@ -29,17 +29,20 @@
 #' The number of classes \code{K} is determined with lazy evaluation as the
 #' length of \code{n}.
 #'
+#' The number of features \code{p} is computed as \code{block_size *
+#' num_blocks}.
+#'
 #' @importFrom mvtnorm rmvnorm
 #' @export
 #' @param n vector of the sample sizes of each class. The length of \code{n}
 #' determines the number of classes \code{K}.
-#' @param block_size the dimensions of the square block matrix. See details.
+#' @param mu matrix containing the mean vectors for each class. Expected to have
+#' \code{p} rows and \code{K} columns.
 #' @param num_blocks the number of block matrices. See details.
+#' @param block_size the dimensions of the square block matrix. See details.
 #' @param rho vector of the values of the autocorrelation parameter for each
 #' class covariance matrix. Must equal the length of \code{n} (i.e., equal to
 #' \code{K}).
-#' @param mu vector containing the mean for each class. Must equal the length of
-#' \code{n} (i.e., equal to \code{K}).
 #' @param sigma2 vector of the variance coefficients for each class covariance
 #' matrix. Must equal the length of \code{n} (i.e., equal to \code{K}).
 #' @return named list with elements:
@@ -51,34 +54,39 @@
 #' }
 #' @examples
 #' # Generates data from K = 3 classes.
+#' means <- matrix(rep(1:3, each=9), ncol=3)
 #' data <- generate_blockdiag(n = c(15, 15, 15), block_size = 3, num_blocks = 3,
-#' rho = seq(.1, .9, length = 3), mu = c(0, 3, -2))
+#' rho = seq(.1, .9, length = 3), mu = means)
 #' data$x
 #' data$y
 #' 
 #' # Generates data from K = 4 classes. Notice that we use specify a variance.
+#' means <- matrix(rep(1:4, each=9), ncol=4)
 #' data <- generate_blockdiag(n = c(15, 15, 15, 20), block_size = 3, num_blocks = 3,
-#' rho = seq(.1, .9, length = 4), mu = c(0, 3, -2, 6))
+#' rho = seq(.1, .9, length = 4), mu = means)
 #' data$x
 #' data$y
-generate_blockdiag <- function(n, block_size, num_blocks, rho, mu,
+generate_blockdiag <- function(n, mu, num_blocks, block_size, rho,
                                sigma2 = rep(1, K)) {
   n <- as.integer(n)
   block_size <- as.integer(block_size)
   num_blocks <- as.integer(num_blocks)
   p <- block_size * num_blocks
   rho <- as.numeric(rho)
-  mu <- as.numeric(mu)
+  mu <- as.matrix(mu)
 
   K <- length(n)
 
   if (length(rho) != K) {
     stop("The length of 'rho' must equal the length of 'n'.")
-  } else if(length(mu) != K) {
-    stop("The length of 'mu' must equal the length of 'n'.")
+  } else if(nrow(mu) != p) {
+    stop("The matrix 'mu' must have 'p' rows.")
+  } else if(ncol(mu) != K) {
+    stop("The matrix 'mu' must have 'K' columns.")
   }
+
   x <- lapply(seq_len(K), function(k) {
-    rmvnorm(n = n[k], mean = rep(mu[k], p),
+    rmvnorm(n = n[k], mean = mu[, k],
             sigma = cov_block_autocorrelation(num_blocks = num_blocks,
               block_size = block_size, rho = rho[k], sigma2 = sigma2[k]))
   })
@@ -110,6 +118,7 @@ generate_blockdiag <- function(n, block_size, num_blocks, rho, mu,
 #' The size of the resulting matrix is \eqn{p \times p}, where
 #' \code{p = num_blocks * block_size}.
 #'
+#' @export
 #' @importFrom bdsmatrix bdsmatrix
 #' @param num_blocks the number of blocks in the covariance matrix
 #' @param block_size the size of each square block within the covariance matrix
@@ -137,6 +146,7 @@ cov_block_autocorrelation <- function(num_blocks, block_size, rho, sigma2 = 1) {
 #' The value of \code{rho} must be such that \eqn{|\rho| < 1} to ensure that
 #' the covariance matrix is positive definite.
 #'
+#' @export
 #' @param p the size of the covariance matrix
 #' @param rho the autocorrelation parameter. Must be less than 1 in absolute
 #' value.

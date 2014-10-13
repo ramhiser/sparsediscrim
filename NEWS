@@ -21,6 +21,10 @@ MISCELLANEOUS
 
 * Added unit tests for HDRDA.
 
+* Can now specify population means in `generate_blockdiag()`.
+
+* Added unit tests for `generate_blockdiag()`.
+
 * Updated **man** docs with roxygen2 4.0.
 
 * Added `log_determinant()` helper function to calculate the log-determinant of
