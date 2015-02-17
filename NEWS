@@ -1,3 +1,11 @@
+sparsediscrim 0.2.2
+-------------------
+
+UPDATES
+
+* The `predict` function now returns posterior-probability estimates for each
+  classifier.
+
 sparsediscrim 0.2.1
 -------------------
 

@@ -33,6 +33,7 @@
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
 #'
+#' @importFrom mvtnorm dmvnorm
 #' @export
 #'
 #' @param x matrix containing the training data. The rows are the sample
@@ -87,7 +88,7 @@ dlda.formula <- function(formula, data, prior = NULL, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -123,7 +124,7 @@ print.dlda <- function(x, ...) {
 #'
 #' The DLDA classifier is a modification to LDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
-#' 
+#'
 #' @rdname dlda
 #' @export
 #'
@@ -154,7 +155,19 @@ predict.dlda <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  posterior <- sapply(object$est, function(class_est) {
+    with(class_est, prior * dmvnorm(x=newdata,
+                                    mean=xbar,
+                                    sigma=diag(object$var_pool)))
+  })
+  if (is.vector(posterior)) {
+    posterior <- posterior / sum(posterior)
+  } else {
+    posterior <- posterior / rowSums(posterior)
+  }
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
