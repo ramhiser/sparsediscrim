@@ -68,8 +68,9 @@ lda_thomaz.default <- function(x, y, prior = NULL, ...) {
   mean_eval <- mean(evals)
   evals[evals < mean_eval] <- mean_eval
 
-  # Removes original pooled covariance matrix to reduce memory usage 
-  obj$cov_pool <- NULL
+  # Removes original pooled covariance matrix to reduce memory usage
+  obj$cov_pool <- with(cov_eigen,
+                      tcrossprod(vectors %*% diag(evals), vectors))
 
   # Computes the inverse of the resulting covariance matrix estimator
   obj$cov_inv <- with(cov_eigen,
@@ -96,7 +97,7 @@ lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -141,7 +142,7 @@ print.lda_thomaz <- function(x, ...) {
 #' eigenvalues are replaced with the average eigenvalue. Specifically, small
 #' eigenvalues here means that the eigenvalues are less than the average
 #' eigenvalue.
-#' 
+#'
 #' @rdname lda_thomaz
 #' @export
 #'
@@ -174,8 +175,16 @@ predict.lda_thomaz <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, object$cov_pool, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
-
