@@ -88,7 +88,7 @@ dqda.formula <- function(formula, data, prior = NULL, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -124,7 +124,7 @@ print.dqda <- function(x, ...) {
 #'
 #' The DQDA classifier is a modification to QDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
-#' 
+#'
 #' @rdname dqda
 #' @export
 #'
@@ -156,7 +156,16 @@ predict.dqda <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+    # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- lapply(object$est, "[[", "var")
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
