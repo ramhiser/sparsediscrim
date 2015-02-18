@@ -33,7 +33,6 @@
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
 #'
-#' @importFrom mvtnorm dmvnorm
 #' @export
 #'
 #' @param x matrix containing the training data. The rows are the sample
@@ -156,16 +155,13 @@ predict.dlda <- function(object, newdata, ...) {
   }
 
   # Posterior probabilities via Bayes Theorem
-  posterior <- sapply(object$est, function(class_est) {
-    with(class_est, prior * dmvnorm(x=newdata,
-                                    mean=xbar,
-                                    sigma=diag(object$var_pool)))
-  })
-  if (is.vector(posterior)) {
-    posterior <- posterior / sum(posterior)
-  } else {
-    posterior <- posterior / rowSums(posterior)
-  }
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, object$var_pool, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
 
   class <- factor(object$groups[min_scores], levels = object$groups)
 

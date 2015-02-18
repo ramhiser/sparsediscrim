@@ -10,7 +10,7 @@
 #'
 #' Note that we have adapted the code from:
 #' \url{http://tolstoy.newcastle.edu.au/R/help/05/11/14989.html}
-#' 
+#'
 #' @param A matrix of dimension p x p
 #' @param x vector of length p
 #' @return scalar value
@@ -31,7 +31,7 @@ quadform <- function(A, x) {
 #'
 #' Note that we have adapted the code from:
 #' \url{http://tolstoy.newcastle.edu.au/R/help/05/11/14989.html}
-#' 
+#'
 #' @param A matrix that is p x p and nonsingular
 #' @param x vector of length p
 #' @return scalar value
@@ -72,7 +72,7 @@ center_data <- function(x, y) {
 #' and
 #' \url{http://stats.stackexchange.com/questions/14951/efficient-calculation-of-matrix-inverse-in-r}.
 #'
-#' @export 
+#' @export
 #' @param x symmetric, positive-definite matrix
 #' @return the inverse of \code{x}
 solve_chol <- function(x) {
@@ -87,4 +87,35 @@ solve_chol <- function(x) {
 log_determinant <- function(x) {
   # The call to 'as.vector' removes the attributes returned by 'determinant'
   as.vector(determinant(x, logarithm=TRUE)$modulus)
+}
+
+#' Computes posterior probabilities via Bayes Theorem under normality
+#'
+#' @importFrom mvtnorm dmvnorm
+#'
+#' @param x matrix of observations
+#' @param means list of means for each class
+#' @param covs list of covariance matrices for each class
+#' @param priors list of prior probabilities for each class
+#' @return matrix of posterior probabilities for each observation
+posterior_probs <- function(x, means, covs, priors) {
+  if (is.vector(x)) {
+    x <- matrix(x, nrow=1)
+  }
+  x <- as.matrix(x)
+
+  posterior <- mapply(function(xbar_k, cov_k, prior_k) {
+    if (is.vector(cov_k)) {
+      cov_k <- diag(cov_k)
+    }
+    prior_k * dmvnorm(x=x, mean=xbar_k, sigma=cov_k)
+  }, means, covs, priors)
+
+  if (is.vector(posterior)) {
+    posterior <- posterior / sum(posterior)
+  } else {
+    posterior <- posterior / rowSums(posterior)
+  }
+
+  posterior
 }
