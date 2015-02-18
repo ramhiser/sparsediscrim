@@ -156,7 +156,7 @@ predict.dqda <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
-    # Posterior probabilities via Bayes Theorem
+  # Posterior probabilities via Bayes Theorem
   means <- lapply(object$est, "[[", "xbar")
   covs <- lapply(object$est, "[[", "var")
   priors <- lapply(object$est, "[[", "prior")

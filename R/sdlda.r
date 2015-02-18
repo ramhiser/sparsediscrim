@@ -178,7 +178,16 @@ predict.sdlda <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, object$var_shrink, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
