@@ -10,12 +10,14 @@ test_that("The SmDQDA classifier works properly on the iris data set", {
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
   smdqda_out <- smdqda(Species ~ ., data = iris[train, ])
-  predicted <- predict(smdqda_out, iris[-train, -5])$class
+  predicted <- predict(smdqda_out, iris[-train, -5])
 
   smdqda_out2 <- smdqda(x = iris[train, -5], y = iris[train, 5])
-  predicted2 <- predict(smdqda_out2, iris[-train, -5])$class
+  predicted2 <- predict(smdqda_out2, iris[-train, -5])
 
   # Tests that the same labels result from the matrix and formula versions of
   # the SmDQDA classifier
-  expect_equal(predicted, predicted2)
+  expect_equal(predicted$class, predicted2$class)
+
+  expect_is(predicted$posterior, "matrix")
 })
