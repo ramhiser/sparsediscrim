@@ -25,7 +25,7 @@
 #' to each class. Otherwise, \code{prior} should be a vector with the same length
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
-#' 
+#'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation
@@ -132,7 +132,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
 #' to each class. Otherwise, \code{prior} should be a vector with the same length
 #' as the number of classes in \code{y}. The \code{prior} probabilties should be
 #' nonnegative and sum to one.
-#' 
+#'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
 #' @param y vector of class labels for each training observation

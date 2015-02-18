@@ -67,8 +67,9 @@ lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8, ...) {
   evals_inv <- rep.int(0, times = length(evals))
   evals_inv[evals > tol] <- 1 / evals[evals > tol]
 
-  # Removes original pooled covariance matrix to reduce memory usage 
-  obj$cov_pool <- NULL
+  # Removes original pooled covariance matrix to reduce memory usage
+  obj$cov_pool <- with(cov_eigen,
+                       tcrossprod(vectors %*% diag(1 / evals_inv), vectors))
 
   obj$cov_inv <- with(cov_eigen,
                       tcrossprod(vectors %*% diag(evals_inv), vectors))
@@ -94,7 +95,7 @@ lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -137,7 +138,7 @@ print.lda_pseudo <- function(x, ...) {
 #' sample covariance matrix with the Moore-Penrose pseudo-inverse, which is
 #' unique and always exists. Note that when the pooled sample covariance matrix
 #' is nonsingular, it is equal to the pseudo-inverse.
-#' 
+#'
 #' @rdname lda_pseudo
 #' @export
 #'
@@ -167,8 +168,16 @@ predict.lda_pseudo <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, object$cov_pool, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
-
