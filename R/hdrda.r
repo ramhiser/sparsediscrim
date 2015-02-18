@@ -10,7 +10,7 @@
 #' combination of the covariance-matrix estimators used in the Linear
 #' Discriminant Analysis (LDA) and Quadratic Discriminant Analysis (QDA)
 #' classifiers. For each of the \code{K} classes given in \code{y},
-#' \eqn{(k = 1, \ldots, K)}, we first define this convex combination as 
+#' \eqn{(k = 1, \ldots, K)}, we first define this convex combination as
 #' \deqn{\hat{\Sigma}_k(\lambda) = (1 - \lambda) \hat{\Sigma}_k
 #' + \lambda \hat{\Sigma},}
 #' where \eqn{lambda \in [0, 1]} is the \emph{pooling} parameter. We then
@@ -18,7 +18,7 @@
 #' \deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda) + \gamma I_p,}
 #' where \eqn{I_p} is the \eqn{p \times p} identity matrix. The matrix
 #' \eqn{\tilde{\Sigma}_k} is substituted into the HDRDA classifier. See Ramey et
-#' al. (2014) for more details. 
+#' al. (2014) for more details.
 #'
 #' The matrix of training observations are given in \code{x}. The rows of
 #' \code{x} contain the sample observations, and the columns contain the features
