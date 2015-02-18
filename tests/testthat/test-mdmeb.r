@@ -10,12 +10,14 @@ test_that("The MDMEB classifier works properly on the iris data set", {
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
   mdmeb_out <- mdmeb(Species ~ ., data = iris[train, ])
-  predicted <- predict(mdmeb_out, iris[-train, -5])$class
+  predicted <- predict(mdmeb_out, iris[-train, -5])
 
   mdmeb_out2 <- mdmeb(x = iris[train, -5], y = iris[train, 5])
-  predicted2 <- predict(mdmeb_out2, iris[-train, -5])$class
+  predicted2 <- predict(mdmeb_out2, iris[-train, -5])
 
   # Tests that the same labels result from the matrix and formula versions of
   # the MDMEB classifier
-  expect_equal(predicted, predicted2)
+  expect_equal(predicted$class, predicted2$class)
+
+  expect_is(predicted$posterior, "matrix")
 })

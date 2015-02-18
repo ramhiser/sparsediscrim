@@ -80,7 +80,7 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -122,7 +122,7 @@ print.mdeb <- function(x, ...) {
 #' (2007) have proposed an Empirical Bayes estimator where the eigenvalues of
 #' the pooled sample covariance matrix are shrunken towards the identity matrix:
 #' the shrinkage constant has a closed form and is quick to calculate
-#' 
+#'
 #' @rdname mdeb
 #' @export
 #'
@@ -144,12 +144,12 @@ predict.mdeb <- function(object, newdata, ...) {
   # Calculates the MDEB shrinkage constant and then computes the inverse of the
   # MDEB covariance matrix estimator
   shrink <- with(object, sum(diag(cov_pool)) / min(N, p))
-  cov_inv <- with(object, solve(cov_pool + shrink * diag(p)))
+  cov_pool <- with(object, cov_pool + shrink * diag(p))
 
   # Calculates the discriminant scores for each test observation
   scores <- apply(newdata, 1, function(obs) {
     sapply(object$est, function(class_est) {
-      with(class_est, quadform(cov_inv, obs - xbar) + log(prior))
+      with(class_est, quadform_inv(cov_pool, obs - xbar) + log(prior))
     })
   })
 
@@ -159,8 +159,16 @@ predict.mdeb <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, cov_pool, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
-

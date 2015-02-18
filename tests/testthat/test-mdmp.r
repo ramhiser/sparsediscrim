@@ -10,12 +10,14 @@ test_that("The MDMP classifier works properly on the iris data set", {
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
   mdmp_out <- mdmp(Species ~ ., data = iris[train, ])
-  predicted <- predict(mdmp_out, iris[-train, -5])$class
+  predicted <- predict(mdmp_out, iris[-train, -5])
 
   mdmp_out2 <- mdmp(x = iris[train, -5], y = iris[train, 5])
-  predicted2 <- predict(mdmp_out2, iris[-train, -5])$class
+  predicted2 <- predict(mdmp_out2, iris[-train, -5])
 
   # Tests that the same labels result from the matrix and formula versions of
   # the MDMP classifier
-  expect_equal(predicted, predicted2)
+  expect_equal(predicted$class, predicted2$class)
+
+  expect_is(predicted$posterior, "matrix")
 })

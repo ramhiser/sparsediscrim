@@ -62,9 +62,6 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 
   cov_eigen <- eigen(obj$cov_pool, symmetric = TRUE)
 
-  # Removes original pooled covariance matrix to reduce memory usage 
-  obj$cov_pool <- NULL
-
   # trace(cov_kept) / trace(cov_pool) \approx eigen_pct
   # as described in the middle of page 125
   kept_evals <- with(cov_eigen,
@@ -72,6 +69,9 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 
   # Computes the pseudoinverse of the resulting covariance matrix estimator
   evals_inv <- 1 / cov_eigen$values[kept_evals]
+  obj$cov_pool <- with(cov_eigen,
+                       tcrossprod(vectors[, kept_evals] %*% diag(1 / evals_inv),
+                                  vectors[, kept_evals]))
   obj$cov_inv <- with(cov_eigen,
                       tcrossprod(vectors[, kept_evals] %*% diag(evals_inv),
                                  vectors[, kept_evals]))
@@ -97,7 +97,7 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-  
+
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
@@ -138,7 +138,7 @@ print.mdmp <- function(x, ...) {
 #' proposed a modification of the standard maximum likelihood estimator of the
 #' pooled covariance matrix, where only the largest 95% of the eigenvalues and
 #' their corresponding eigenvectors are kept.
-#' 
+#'
 #' @rdname mdmp
 #' @export
 #'
@@ -170,7 +170,16 @@ predict.mdmp <- function(object, newdata, ...) {
     min_scores <- apply(scores, 2, which.min)
   }
 
+  # Posterior probabilities via Bayes Theorem
+  means <- lapply(object$est, "[[", "xbar")
+  covs <- replicate(n=object$num_groups, object$cov_pool, simplify=FALSE)
+  priors <- lapply(object$est, "[[", "prior")
+  posterior <- posterior_probs(x=newdata,
+                               means=means,
+                               covs=covs,
+                               priors=priors)
+
   class <- factor(object$groups[min_scores], levels = object$groups)
 
-  list(class = class, scores = scores)
+  list(class = class, scores = scores, posterior = posterior)
 }
