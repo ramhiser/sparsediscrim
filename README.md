@@ -24,20 +24,26 @@ install_github('ramhiser/sparsediscrim')
 The `sparsediscrim` package features the following classifier (the R function
 is included within parentheses):
 
-* High-Dimensional Regularized Discriminant Analysis (`hdrda`) from Ramey et al. (2014)
+* High-Dimensional Regularized Discriminant Analysis (`hdrda`) from Ramey et al. (2015)
 
 The `sparsediscrim` package also includes a variety of additional classifiers
 intended for small-sample, high-dimensional data sets. These include:
 
-* Diagonal Linear Discriminant Analysis from Dudoit et al. (2002) (`dlda`)
-* Diagonal Quadratic Discriminant Analysis from Dudoit et al. (2002) (`dqda`)
-* Linear Discriminant Analysis (LDA) with the Moore-Penrose Pseudo-Inverse (`lda_pseudo`)
-* Linear Discriminant Analysis (LDA) with the Schafer-Strimmer estimator (`lda_schafer`)
-* Linear Discriminant Analysis (LDA) with the Thomaz-Kitani-Gillies estimator (`lda_thomaz`)
-* Minimum Distance Empirical Bayesian Estimator from Srivistava and Kubokawa (2007) (`mdeb`)
-* Minimum Distance Rule using Modified Empirical Bayes from Srivistava and Kubokawa (2007) (`mdmeb`)
-* Minimum Distance Rule using Moore-Penrose Inverse from Srivistava and Kubokawa (2007) (`mdmp`)
-* Shrinkage-based Diagonal Linear Discriminant Analysis from Pang et al. (2009) (`sdlda`)
-* Shrinkage-based Diagonal Quadratic Discriminant Analysis from Pang et al. (2009) (`sdqda`)
-* Shrinkage-mean-based Diagonal Linear Discriminant Analysis from Tong et al. (2012) (`smdlda`)
-* Shrinkage-mean-based Diagonal Quadratic Discriminant Analysis from Tong et al. (2012) (`smdqda`)
+| Classifier                                                    | Author                         | R Function |
+|---------------------------------------------------------------|--------------------------------|------------|
+| Diagonal Linear Discriminant Analysis                         | Dudoit et al. (2002)           | `dlda`     |
+| Diagonal Quadratic Discriminant Analysis                      | Dudoit et al. (2002)           | `dqda`     |
+| Shrinkage-based Diagonal Linear Discriminant Analysis         | Pang et al. (2009)             | `sdlda`    |
+| Shrinkage-based Diagonal Quadratic Discriminant Analysis      | Pang et al. (2009)             | `sdqda`    |
+| Shrinkage-mean-based Diagonal Linear Discriminant Analysis    | Tong et al. (2012)             | `smdlda`   |
+| Shrinkage-mean-based Diagonal Quadratic Discriminant Analysis | Tong et al. (2012)             | `smdqda`   |
+| Minimum Distance Empirical Bayesian Estimator (MDEB)          | Srivistava and Kubokawa (2007) | `mdeb`     |
+| Minimum Distance Rule using Modified Empirical Bayes (MDMEB)  | Srivistava and Kubokawa (2007) | `mdmeb`    |
+| Minimum Distance Rule using Moore-Penrose Inverse (MDMP)      | Srivistava and Kubokawa (2007) | `mdmp`     |
+
+We also include modifications to Linear Discriminant Analysis (LDA) with
+regularized covariance-matrix estimators:
+
+* Moore-Penrose Pseudo-Inverse (`lda_pseudo`)
+* Schafer-Strimmer estimator (`lda_schafer`)
+* Thomaz-Kitani-Gillies estimator (`lda_thomaz`)
