@@ -89,6 +89,18 @@ log_determinant <- function(x) {
   as.vector(determinant(x, logarithm=TRUE)$modulus)
 }
 
+#' Computes multivariate normal density with a diagonal covariance matrix
+#'
+#' Alternative to \code{mvtnorm::dmvnorm}
+#'
+#' @param x matrix
+#' @param mean vector of means
+#' @param cov vector containing diagonal covariance matrix
+#' @return multivariate normal density
+dmvnorm_diag <- function(x, mean, sigma) {
+  exp(sum(dnorm(x, mean=mean, sd=sqrt(sigma), log=TRUE)))
+}
+
 #' Computes posterior probabilities via Bayes Theorem under normality
 #'
 #' @importFrom mvtnorm dmvnorm
@@ -106,9 +118,13 @@ posterior_probs <- function(x, means, covs, priors) {
 
   posterior <- mapply(function(xbar_k, cov_k, prior_k) {
     if (is.vector(cov_k)) {
-      cov_k <- diag(cov_k)
+      post_k <- apply(x, 1, function(obs) {
+        dmvnorm_diag(x=obs, mean=xbar_k, sigma=cov_k)
+      })
+    } else {
+      post_k <- dmvnorm(x=x, mean=xbar_k, sigma=cov_k)
     }
-    prior_k * dmvnorm(x=x, mean=xbar_k, sigma=cov_k)
+    prior_k * post_k
   }, means, covs, priors)
 
   if (is.vector(posterior)) {
