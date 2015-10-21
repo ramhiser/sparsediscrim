@@ -6,6 +6,10 @@ UPDATES
 * The `predict` function now returns posterior-probability estimates for each
   classifier.
 
+* The object returned by `cv_hdrda()` can be plotted. A heatmap is produced
+  using `ggplot2` to illustrate the cross-validation error rate for each
+  tuning-parameter pair considered.
+
 sparsediscrim 0.2.1
 -------------------
 

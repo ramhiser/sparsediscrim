@@ -372,8 +372,9 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
     fold_errors
   })
   cv_errors <- rowSums(cv_errors)
+  error_rate <- cv_errors / nrow(x)
 
-  cv_summary <- cbind(tuning_grid, cv_errors)
+  cv_summary <- cbind(tuning_grid, cv_errors, error_rate)
 
   optimal <- which.min(cv_errors)
   lambda <- tuning_grid$lambda[optimal]
@@ -390,6 +391,36 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
   class(hdrda_out) <- c("hdrda_cv", "hdrda")
 
   hdrda_out
+}
+
+#' Plots a heatmap of cross-validation error grid for a HDRDA classifier object.
+#'
+#' Uses \code{\link{ggplot2}} to plot a heatmap of the training error grid.
+#'
+#' @param x object to plot
+#' @param ... unused
+#' @rdname hdrda_cv
+#' @export
+#' @importFrom ggplot2 ggplot aes scale_fill_gradient labs scale_x_discrete
+#' @importFrom ggplot2 scale_y_discrete theme labs geom_tile element_blank
+plot.hdrda_cv <- function(x, ...) {
+  cv_summary <- x$cv_summary
+  cv_summary <- within(cv_summary, {
+    lambda <- round(lambda, 3)
+    gamma <- round(gamma, 3)
+  })
+
+  base_size <- 9
+  p <- ggplot(cv_summary, aes(factor(gamma), factor(lambda)))
+  p <- p + geom_tile(aes(fill=error_rate), colour="white")
+  p <- p + scale_fill_gradient(low="white",
+                               high="steelblue",
+                               name="CV Error Rate")
+  p <- p + labs(x=expression(gamma), y=expression(lambda))
+  p <- p + scale_x_discrete(expand=c(0, 0))
+  p <- p + scale_y_discrete(expand=c(0, 0))
+  p <- p + theme(axis.ticks=element_blank())
+  p
 }
 
 #' Helper function to update tuning parameters for the HDRDA classifier
