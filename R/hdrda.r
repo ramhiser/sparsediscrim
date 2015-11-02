@@ -262,14 +262,11 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
       # Center the 'newdata' by the class sample mean
       x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
 
-      # We calculate the quadratic form explicitly for each observation to prevent
-      # storing a large 'p x p' inverse matrix in memory. However, note that our
-      # approach below increases the number of computations that must be performed
-      # for each observation. For the p >> n case, this hardly matters though.
-      # The quadratic forms lie on the diagonal of the resulting matrix
       U1_x <- crossprod(object$U1, t(x_centered))
 
-      quad_forms <- diag(quadform(class_est$W_inv, U1_x))
+      quad_forms <- apply(U1_x, 2, function(z) {
+        quadform(class_est$W_inv, z)
+      })
     }
 
     quad_forms + log_det - 2 * log(class_est$prior)

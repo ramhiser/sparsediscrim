@@ -10,6 +10,9 @@ UPDATES
   using `ggplot2` to illustrate the cross-validation error rate for each
   tuning-parameter pair considered.
 
+* The `predict` function for the HDRDA classifier is now substantially faster
+  when classifying a large number of observations. #33
+
 sparsediscrim 0.2.1
 -------------------
 
