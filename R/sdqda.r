@@ -99,6 +99,7 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
+#' @importFrom stats model.frame model.matrix model.response
 #' @rdname sdqda
 #' @export
 sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {

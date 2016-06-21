@@ -89,6 +89,7 @@ lda_thomaz.default <- function(x, y, prior = NULL, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname lda_thomaz
+#' @importFrom stats model.frame model.matrix model.response
 #' @export
 lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the

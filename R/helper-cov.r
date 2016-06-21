@@ -10,6 +10,7 @@
 #' In this case, we return a vector of length \code{p} instead.
 #'
 #' @export
+#' @importFrom stats var cov
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param diag logical value. If TRUE, assumes the population covariance matrix
 #' is diagonal. By default, we assume that \code{diag} is \code{FALSE}.
@@ -33,6 +34,7 @@ cov_mle <- function(x, diag = FALSE) {
 #' multivariate normal populations having equal covariance matrices.
 #'
 #' @export
+#' @importFrom stats cov
 #' @param x data matrix with \code{n} observations and \code{p} feature vectors
 #' @param y class labels for observations (rows) in \code{x}
 #' @return pooled sample covariance matrix of size \eqn{p \times p}

@@ -6,6 +6,7 @@
 #' numerous classification models, where errors and doom can occur if an
 #' intercept is included in the model.
 #' 
+#' @importFrom stats terms update
 #' @param formula a model formula to remove its intercept term
 #' @param data data frame
 #' @return formula with no intercept term

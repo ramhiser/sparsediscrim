@@ -93,6 +93,7 @@ log_determinant <- function(x) {
 #'
 #' Alternative to \code{mvtnorm::dmvnorm}
 #'
+#' @importFrom stats dnorm
 #' @param x matrix
 #' @param mean vector of means
 #' @param sigma vector containing diagonal covariance matrix

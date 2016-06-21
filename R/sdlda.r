@@ -96,6 +96,7 @@ sdlda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname sdlda
+#' @importFrom stats model.frame model.matrix model.response
 #' @export
 sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
   # The formula interface includes an intercept. If the user includes the

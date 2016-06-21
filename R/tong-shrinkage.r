@@ -4,6 +4,7 @@
 #' shrinkage-mean-based diagonal linear discriminant analysis (SmDLDA).
 #'
 #' @export
+#' @importFrom stats var
 #' @references Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
 #' Estimation and Its Application to Diagonal Discriminant Analysis,"
 #' Bioinformatics, 28, 4, 531-537.

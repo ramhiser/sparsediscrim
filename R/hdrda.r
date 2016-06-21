@@ -173,6 +173,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 #' @param ... arguments passed from the \code{formula} to the \code{default}
 #' method
 #' @rdname hdrda
+#' @importFrom stats model.frame model.matrix model.response
 #' @export
 hdrda.formula <- function(formula, data, ...) {
   # The formula interface includes an intercept. If the user includes the
@@ -366,7 +367,7 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
         # Updates Gamma, Q, and W_inv for each class in hdrda_out
         # If an error is thrown, we return 'NA'.
         hdrda_updated <- update_hdrda(hdrda_out, lambda, gamma)
-        sum(predict(hdrda_updated, test_x, projected = TRUE)$class != test_y)
+        sum(hdrda::predict(hdrda_updated, test_x, projected = TRUE)$class != test_y)
       }, silent = TRUE)
 
       errors

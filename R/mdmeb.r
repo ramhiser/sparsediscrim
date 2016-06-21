@@ -93,6 +93,7 @@ mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @rdname mdmeb
+#' @importFrom stats model.frame model.matrix model.response
 #' @export
 mdmeb.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
