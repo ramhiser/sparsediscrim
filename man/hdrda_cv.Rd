@@ -44,7 +44,8 @@ well as a \code{data.frame} that summarizes the cross-validation results.
 For a given data set, we apply cross-validation (cv) to select the optimal
 HDRDA tuning parameters.
 
-Uses \code{\link{ggplot2}} to plot a heatmap of the training error grid.
+Uses \code{\link[ggplot2]{ggplot}} to plot a heatmap of the training error
+grid.
 }
 \details{
 The number of cross-validation folds is given in \code{num_folds}.

@@ -398,7 +398,8 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
 
 #' Plots a heatmap of cross-validation error grid for a HDRDA classifier object.
 #'
-#' Uses \code{\link{ggplot2}} to plot a heatmap of the training error grid.
+#' Uses \code{\link[ggplot2]{ggplot}} to plot a heatmap of the training error
+#' grid.
 #'
 #' @param x object to plot
 #' @param ... unused
@@ -413,7 +414,10 @@ plot.hdrda_cv <- function(x, ...) {
     gamma <- round(gamma, 3)
   })
 
-  base_size <- 9
+  # Fixes NOTE from R CMD CHECK
+  # "no visible binding for global variable ‘error_rate’"
+  error_rate <- 1
+
   p <- ggplot(cv_summary, aes(factor(gamma), factor(lambda)))
   p <- p + geom_tile(aes(fill=error_rate), colour="white")
   p <- p + scale_fill_gradient(low="white",
