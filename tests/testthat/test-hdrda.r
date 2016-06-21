@@ -476,3 +476,19 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0
   expect_equal(hdrda_out$est[[3]]$Q, Q3)
   expect_equal(hdrda_out$est[[3]]$W_inv, W3_inv)
 })
+
+test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
+  library(caret)
+
+  set.seed(1)
+  dat <- twoClassSim(106)
+  trn <- dat[1:100,]
+  tst <- dat[101:105,]
+
+  mod <- hdrda(x = as.matrix(dat[, -ncol(trn)]), y = trn$Class)
+
+  posterior_probs <- predict(mod, newdata=tst[, -ncol(tst)])$posterior
+
+  ones <- rep(1, nrow(tst))
+  expect_equal(as.vector(rowSums(posterior_probs)), ones)
+})

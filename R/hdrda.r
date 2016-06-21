@@ -275,12 +275,14 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   if (is.vector(scores)) {
     min_scores <- which.min(scores)
     posterior <- exp(-(scores - min(scores)))
+    posterior <- posterior / sum(posterior)
   } else {
     min_scores <- apply(scores, 1, which.min)
     # Grabbed code to calculate 'posterior' from MASS:::predict.qda, which
     # handles numerical overflow unlike the more direct:
     # exp(scores) / (1 + exp(sum(scores)))
     posterior <- exp(-(scores - apply(scores, 1, min)))
+    posterior <- posterior / rowSums(posterior)
   }
 
   class <- with(object, factor(groups[min_scores], levels = groups))
