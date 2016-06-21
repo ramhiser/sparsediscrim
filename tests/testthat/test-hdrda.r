@@ -485,10 +485,25 @@ test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
   trn <- dat[1:100,]
   tst <- dat[101:105,]
 
-  mod <- hdrda(x = as.matrix(dat[, -ncol(trn)]), y = trn$Class)
+  mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
   posterior_probs <- predict(mod, newdata=tst[, -ncol(tst)])$posterior
 
   ones <- rep(1, nrow(tst))
   expect_equal(as.vector(rowSums(posterior_probs)), ones)
+})
+
+test_that("HDRDA correctly predicts one observation. (Issue #34)", {
+  library(caret)
+
+  set.seed(1)
+  dat <- twoClassSim(101)
+  trn <- dat[1:100,]
+  tst <- dat[101,]
+
+  mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
+
+  posterior_probs <- predict(mod, newdata=tst[, -ncol(tst)])$posterior
+
+  expect_equal(sum(posterior_probs), 1)
 })
