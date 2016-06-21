@@ -5,7 +5,6 @@
 \alias{lda_pseudo.default}
 \alias{lda_pseudo.formula}
 \alias{predict.lda_pseudo}
-\alias{print.lda_pseudo}
 \title{Linear Discriminant Analysis (LDA) with the Moore-Penrose Pseudo-Inverse}
 \usage{
 lda_pseudo(x, ...)
@@ -14,15 +13,13 @@ lda_pseudo(x, ...)
 
 \method{lda_pseudo}{formula}(formula, data, prior = NULL, tol = 1e-08, ...)
 
-\method{print}{lda_pseudo}(x, ...)
-
 \method{predict}{lda_pseudo}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -43,10 +40,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{lda_pseudo} object that contains the trained lda_pseudo
@@ -64,8 +57,6 @@ replace the inverse of the pooled sample covariance matrix with the
 Moore-Penrose pseudo-inverse, which is unique and always exists. Note that
 when the pooled sample covariance matrix is nonsingular, it is equal to the
 pseudo-inverse.
-
-Summarizes the trained lda_pseudo classifier in a nice manner.
 
 The Linear Discriminant Analysis (LDA) classifier involves the assumption
 that the distributions of each class are assumed to be multivariate normal

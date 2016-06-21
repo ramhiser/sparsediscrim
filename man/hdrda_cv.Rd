@@ -2,13 +2,10 @@
 % Please edit documentation in R/hdrda.r
 \name{hdrda_cv}
 \alias{hdrda_cv}
-\alias{plot.hdrda_cv}
 \title{Helper function to optimize the HDRDA classifier via cross-validation}
 \usage{
 hdrda_cv(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
   shrinkage_type = c("ridge", "convex"), verbose = FALSE, ...)
-
-\method{plot}{hdrda_cv}(x, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
@@ -31,10 +28,6 @@ details.}
 as the optimal model is being determined.}
 
 \item{...}{Additional arguments passed to \code{\link{hdrda}}.}
-
-\item{x}{object to plot}
-
-\item{...}{unused}
 }
 \value{
 list containing the HDRDA model that minimizes cross-validation as
@@ -43,9 +36,6 @@ well as a \code{data.frame} that summarizes the cross-validation results.
 \description{
 For a given data set, we apply cross-validation (cv) to select the optimal
 HDRDA tuning parameters.
-
-Uses \code{\link[ggplot2]{ggplot}} to plot a heatmap of the training error
-grid.
 }
 \details{
 The number of cross-validation folds is given in \code{num_folds}.

@@ -122,7 +122,6 @@ sdlda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname sdlda
 #' @export
 print.sdlda <- function(x, ...) {
   cat("Call:\n")

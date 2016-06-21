@@ -5,7 +5,6 @@
 \alias{hdrda.default}
 \alias{hdrda.formula}
 \alias{predict.hdrda}
-\alias{print.hdrda}
 \title{High-Dimensional Regularized Discriminant Analysis (HDRDA)}
 \usage{
 hdrda(x, ...)
@@ -14,8 +13,6 @@ hdrda(x, ...)
   shrinkage_type = c("ridge", "convex"), prior = NULL, tol = 1e-06, ...)
 
 \method{hdrda}{formula}(formula, data, ...)
-
-\method{print}{hdrda}(x, ...)
 
 \method{predict}{hdrda}(object, newdata, projected = FALSE, ...)
 }
@@ -60,10 +57,6 @@ row corresponds to a new observation.}
 \item{projected}{logical indicating whether \code{newdata} have already been
 projected to a q-dimensional subspace. This argument can yield large gains in
 speed when the linear transformation has already been performed.}
-
-\item{x}{object to print}
-
-\item{...}{unused}
 }
 \value{
 \code{hdrda} object that contains the trained HDRDA classifier
@@ -77,8 +70,6 @@ Ramey, Stein, and Young (2014). Specially designed for small-sample,
 high-dimensional data, the HDRDA classifier incorporates dimension reduction
 and covariance-matrix shrinkage to enable a computationally efficient
 classifier.
-
-Summarizes the trained hdrda classifier in a nice manner.
 
 For a given \code{hdrda} object, we predict the class of each observation
 (row) of the the matrix given in \code{newdata}.

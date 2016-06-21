@@ -114,7 +114,6 @@ lda_thomaz.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname lda_thomaz
 #' @export
 print.lda_thomaz <- function(x, ...) {
   cat("Call:\n")

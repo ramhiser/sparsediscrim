@@ -110,7 +110,6 @@ smdqda.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname smdqda
 #' @export
 print.smdqda <- function(x, ...) {
   cat("Call:\n")

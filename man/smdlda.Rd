@@ -2,7 +2,6 @@
 % Please edit documentation in R/smdlda.r
 \name{smdlda}
 \alias{predict.smdlda}
-\alias{print.smdlda}
 \alias{smdlda}
 \alias{smdlda.default}
 \alias{smdlda.formula}
@@ -15,15 +14,13 @@ smdlda(x, ...)
 
 \method{smdlda}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{smdlda}(x, ...)
-
 \method{predict}{smdlda}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -41,10 +38,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{smdlda} object that contains the trained SmDLDA classifier
@@ -57,8 +50,6 @@ Diagonal Linear Discriminant Analysis (SmDLDA) classifier from Tong, Chen,
 and Zhao (2012). The SmDLDA classifier incorporates a Lindley-type shrunken
 mean estimator into the DLDA classifier from Dudoit et al. (2002). For more
 about the DLDA classifier, see \code{\link{dlda}}.
-
-Summarizes the trained SmDLDA classifier in a nice manner.
 
 The SmDLDA classifier is a modification to LDA, where the off-diagonal
 elements of the pooled sample covariance matrix are set to zero.

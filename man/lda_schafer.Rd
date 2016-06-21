@@ -5,7 +5,6 @@
 \alias{lda_schafer.default}
 \alias{lda_schafer.formula}
 \alias{predict.lda_schafer}
-\alias{print.lda_schafer}
 \title{Linear Discriminant Analysis using the Schafer-Strimmer Covariance Matrix
 Estimator}
 \usage{
@@ -14,8 +13,6 @@ lda_schafer(x, ...)
 \method{lda_schafer}{default}(x, y, prior = NULL, ...)
 
 \method{lda_schafer}{formula}(formula, data, prior = NULL, ...)
-
-\method{print}{lda_schafer}(x, ...)
 
 \method{predict}{lda_schafer}(object, newdata, ...)
 }
@@ -42,12 +39,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{unused}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{lda_schafer} object that contains the trained classifier
@@ -62,8 +53,6 @@ pooled sample covariance matrix is singular, the linear discriminant function
 is incalculable. This function replaces the inverse of pooled sample
 covariance matrix with an estimator proposed by Schafer and Strimmer
 (2005). The estimator is calculated via \code{\link[corpcor]{invcov.shrink}}.
-
-Summarizes the trained lda_schafer classifier in a nice manner.
 
 The Linear Discriminant Analysis (LDA) classifier involves the assumption
 that the distributions of each class are assumed to be multivariate normal

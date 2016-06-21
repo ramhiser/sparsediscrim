@@ -5,7 +5,6 @@
 \alias{dlda.default}
 \alias{dlda.formula}
 \alias{predict.dlda}
-\alias{print.dlda}
 \title{Diagonal Linear Discriminant Analysis (DLDA)}
 \usage{
 dlda(x, ...)
@@ -14,15 +13,13 @@ dlda(x, ...)
 
 \method{dlda}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{dlda}(x, ...)
-
 \method{predict}{dlda}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -39,10 +36,6 @@ preferentially to be taken.}
 \item{object}{trained DLDA object}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{dlda} object that contains the trained DLDA classifier
@@ -55,8 +48,6 @@ Discriminant Analysis (DLDA) classifier, which is often attributed to Dudoit
 et al. (2002). The DLDA classifier belongs to the family of Naive Bayes
 classifiers, where the distributions of each class are assumed to be
 multivariate normal and to share a common covariance matrix.
-
-Summarizes the trained DLDA classifier in a nice manner.
 
 The DLDA classifier is a modification to LDA, where the off-diagonal elements
 of the pooled sample covariance matrix are set to zero.

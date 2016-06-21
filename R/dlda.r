@@ -104,7 +104,6 @@ dlda.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname dlda
 #' @export
 print.dlda <- function(x, ...) {
   cat("Call:\n")

@@ -5,7 +5,6 @@
 \alias{lda_thomaz.default}
 \alias{lda_thomaz.formula}
 \alias{predict.lda_thomaz}
-\alias{print.lda_thomaz}
 \title{Linear Discriminant Analysis using the Thomaz-Kitani-Gillies Covariance
 Matrix Estimator}
 \usage{
@@ -15,15 +14,13 @@ lda_thomaz(x, ...)
 
 \method{lda_thomaz}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{lda_thomaz}(x, ...)
-
 \method{predict}{lda_thomaz}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -41,10 +38,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{lda_thomaz} object that contains the trained classifier
@@ -61,8 +54,6 @@ with a regularized estimator from Thomaz et al. (2006), where the smallest
 eigenvalues are replaced with the average eigenvalue. Specifically, small
 eigenvalues here means that the eigenvalues are less than the average
 eigenvalue.
-
-Summarizes the trained lda_thomaz classifier in a nice manner.
 
 Given a set of training data, this function builds the Linear Discriminant
 Analysis (LDA) classifier, where the distributions of each class are assumed

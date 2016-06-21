@@ -114,7 +114,6 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname mdmp
 #' @export
 print.mdmp <- function(x, ...) {
   cat("Call:\n")

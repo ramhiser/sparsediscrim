@@ -115,7 +115,6 @@ lda_schafer.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname lda_schafer
 #' @export
 print.lda_schafer <- function(x, ...) {
   cat("Call:\n")
@@ -150,7 +149,6 @@ print.lda_schafer <- function(x, ...) {
 #' @param object trained lda_schafer object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
-#' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
 predict.lda_schafer <- function(object, newdata, ...) {
   if (!inherits(object, "lda_schafer"))  {

@@ -114,7 +114,6 @@ smdlda.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname smdlda
 #' @export
 print.smdlda <- function(x, ...) {
   cat("Call:\n")

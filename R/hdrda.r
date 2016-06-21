@@ -198,7 +198,6 @@ hdrda.formula <- function(formula, data, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname hdrda
 #' @export
 print.hdrda <- function(x, ...) {
   cat("Call:\n")
@@ -403,7 +402,6 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
 #'
 #' @param x object to plot
 #' @param ... unused
-#' @rdname hdrda_cv
 #' @export
 #' @importFrom ggplot2 ggplot aes scale_fill_gradient labs scale_x_discrete
 #' @importFrom ggplot2 scale_y_discrete theme labs geom_tile element_blank

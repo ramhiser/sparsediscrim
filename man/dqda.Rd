@@ -5,7 +5,6 @@
 \alias{dqda.default}
 \alias{dqda.formula}
 \alias{predict.dqda}
-\alias{print.dqda}
 \title{Diagonal Quadratic Discriminant Analysis (DQDA)}
 \usage{
 dqda(x, ...)
@@ -14,15 +13,13 @@ dqda(x, ...)
 
 \method{dqda}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{dqda}(x, ...)
-
 \method{predict}{dqda}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -40,10 +37,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{dqda} object that contains the trained DQDA classifier
@@ -57,8 +50,6 @@ et al. (2002). The DQDA classifier belongs to the family of Naive Bayes
 classifiers, where the distributions of each class are assumed to be
 multivariate normal. Note that the DLDA classifier is a special case of the
 DQDA classifier.
-
-Summarizes the trained DQDA classifier in a nice manner.
 
 The DQDA classifier is a modification to QDA, where the off-diagonal elements
 of the pooled sample covariance matrix are set to zero.

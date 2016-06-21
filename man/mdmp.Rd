@@ -5,7 +5,6 @@
 \alias{mdmp.default}
 \alias{mdmp.formula}
 \alias{predict.mdmp}
-\alias{print.mdmp}
 \title{The Minimum Distance Rule using Moore-Penrose Inverse (MDMP) classifier}
 \usage{
 mdmp(x, ...)
@@ -14,15 +13,13 @@ mdmp(x, ...)
 
 \method{mdmp}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{mdmp}(x, ...)
-
 \method{predict}{mdmp}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -41,10 +38,6 @@ preferentially to be taken.}
 \item{object}{trained mdmp object}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{mdmp} object that contains the trained MDMP classifier
@@ -60,8 +53,6 @@ proposed a modification of the standard maximum likelihood estimator of the
 pooled covariance matrix, where only the largest 95% of the eigenvalues and
 their corresponding eigenvectors are kept. The value of 95% is the default
 and can be changed via the \code{eigen_pct} argument.
-
-Summarizes the trained mdmp classifier in a nice manner.
 
 The MDMP classifier from Srivistava and Kubokawa (2007) is an adaptation of the
 linear discriminant analysis (LDA) classifier that is designed for

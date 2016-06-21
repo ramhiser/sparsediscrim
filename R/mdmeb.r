@@ -118,7 +118,6 @@ mdmeb.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname mdmeb
 #' @export
 print.mdmeb <- function(x, ...) {
   cat("Call:\n")

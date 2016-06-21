@@ -11,7 +11,7 @@ dmvnorm_diag(x, mean, sigma)
 
 \item{mean}{vector of means}
 
-\item{cov}{vector containing diagonal covariance matrix}
+\item{sigma}{vector containing diagonal covariance matrix}
 }
 \value{
 multivariate normal density

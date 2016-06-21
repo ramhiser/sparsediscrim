@@ -112,7 +112,6 @@ lda_pseudo.formula <- function(formula, data, prior = NULL, tol = 1e-8, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname lda_pseudo
 #' @export
 print.lda_pseudo <- function(x, ...) {
   cat("Call:\n")

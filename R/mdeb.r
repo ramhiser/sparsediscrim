@@ -97,7 +97,6 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname mdeb
 #' @export
 print.mdeb <- function(x, ...) {
   cat("Call:\n")

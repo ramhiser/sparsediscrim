@@ -5,7 +5,6 @@
 \alias{mdmeb.default}
 \alias{mdmeb.formula}
 \alias{predict.mdmeb}
-\alias{print.mdmeb}
 \title{The Minimum Distance Rule using Modified Empirical Bayes (MDMEB) classifier}
 \usage{
 mdmeb(x, ...)
@@ -14,15 +13,13 @@ mdmeb(x, ...)
 
 \method{mdmeb}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{mdmeb}(x, ...)
-
 \method{predict}{mdmeb}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -42,10 +39,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{mdmeb} object that contains the trained MDMEB classifier
@@ -62,8 +55,6 @@ pooled covariance matrix, where only the largest 95% of the eigenvalues and
 their corresponding eigenvectors are kept. The resulting covariance matrix is
 then shrunken towards a scaled identity matrix. The value of 95% is the
 default and can be changed via the \code{eigen_pct} argument.
-
-Summarizes the trained mdmeb classifier in a nice manner.
 
 The MDMEB classifier is an adaptation of the linear discriminant analysis
 (LDA) classifier that is designed for small-sample, high-dimensional

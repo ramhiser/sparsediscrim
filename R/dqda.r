@@ -105,7 +105,6 @@ dqda.formula <- function(formula, data, prior = NULL, ...) {
 #'
 #' @param x object to print
 #' @param ... unused
-#' @rdname dqda
 #' @export
 print.dqda <- function(x, ...) {
   cat("Call:\n")

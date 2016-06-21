@@ -2,7 +2,6 @@
 % Please edit documentation in R/smdqda.r
 \name{smdqda}
 \alias{predict.smdqda}
-\alias{print.smdqda}
 \alias{smdqda}
 \alias{smdqda.default}
 \alias{smdqda.formula}
@@ -15,15 +14,13 @@ smdqda(x, ...)
 
 \method{smdqda}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{smdqda}(x, ...)
-
 \method{predict}{smdqda}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -41,10 +38,6 @@ preferentially to be taken.}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a
 new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{smdqda} object that contains the trained SmDQDA classifier
@@ -57,8 +50,6 @@ Diagonal Quadratic Discriminant Analysis (SmDQDA) classifier from Tong, Chen,
 and Zhao (2012). The SmDQDA classifier incorporates a Lindley-type shrunken
 mean estimator into the DQDA classifier from Dudoit et al. (2002). For more
 about the DQDA classifier, see \code{\link{dqda}}.
-
-Summarizes the trained SmDQDA classifier in a nice manner.
 
 The SmDQDA classifier is a modification to QDA, where the off-diagonal elements
 of the pooled sample covariance matrix are set to zero.

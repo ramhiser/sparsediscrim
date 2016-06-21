@@ -95,7 +95,7 @@ log_determinant <- function(x) {
 #'
 #' @param x matrix
 #' @param mean vector of means
-#' @param cov vector containing diagonal covariance matrix
+#' @param sigma vector containing diagonal covariance matrix
 #' @return multivariate normal density
 dmvnorm_diag <- function(x, mean, sigma) {
   exp(sum(dnorm(x, mean=mean, sd=sqrt(sigma), log=TRUE)))

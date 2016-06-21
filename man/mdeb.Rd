@@ -5,7 +5,6 @@
 \alias{mdeb.default}
 \alias{mdeb.formula}
 \alias{predict.mdeb}
-\alias{print.mdeb}
 \title{The Minimum Distance Empirical Bayesian Estimator (MDEB) classifier}
 \usage{
 mdeb(x, ...)
@@ -14,15 +13,13 @@ mdeb(x, ...)
 
 \method{mdeb}{formula}(formula, data, prior = NULL, ...)
 
-\method{print}{mdeb}(x, ...)
-
 \method{predict}{mdeb}(object, newdata, ...)
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
 observations, and the columns are the features.}
 
-\item{...}{unused}
+\item{...}{additional arguments}
 
 \item{y}{vector of class labels for each training observation}
 
@@ -39,10 +36,6 @@ preferentially to be taken.}
 \item{object}{trained mdeb object}
 
 \item{newdata}{matrix of observations to predict. Each row corresponds to a new observation.}
-
-\item{x}{object to print}
-
-\item{...}{additional arguments}
 }
 \value{
 \code{mdeb} object that contains the trained MDEB classifier
@@ -58,8 +51,6 @@ likelihood estimator of the pooled covariance matrix, Srivastava and Kubokawa
 (2007) have proposed an Empirical Bayes estimator where the eigenvalues of
 the pooled sample covariance matrix are shrunken towards the identity matrix:
 the shrinkage constant has a closed form and is quick to calculate.
-
-Summarizes the trained mdeb classifier in a nice manner.
 
 The MDEB classifier from Srivistava and Kubokawa (2007) is an adaptation of the
 linear discriminant analysis (LDA) classifier that is designed for
