@@ -487,10 +487,14 @@ test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
 
   mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
-  posterior_probs <- predict(mod, newdata=tst[, -ncol(tst)])$posterior
+  predict_out <- predict(mod, newdata=tst[, -ncol(tst)])
+  posterior_probs <- predict_out$posterior
+  scores <- predict_out$scores
 
   ones <- rep(1, nrow(tst))
   expect_equal(as.vector(rowSums(posterior_probs)), ones)
+  expect_equal(colnames(posterior_probs), levels(dat$Class))
+  expect_equal(colnames(scores), levels(dat$Class))
 })
 
 test_that("HDRDA correctly predicts one observation. (Issue #34)", {
@@ -503,7 +507,11 @@ test_that("HDRDA correctly predicts one observation. (Issue #34)", {
 
   mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
-  posterior_probs <- predict(mod, newdata=tst[, -ncol(tst)])$posterior
+  predict_out <- predict(mod, newdata=tst[, -ncol(tst)])
+  posterior_probs <- predict_out$posterior
+  scores <- predict_out$scores
 
   expect_equal(sum(posterior_probs), 1)
+  expect_equal(names(posterior_probs), levels(dat$Class))
+  expect_equal(names(scores), levels(dat$Class))
 })

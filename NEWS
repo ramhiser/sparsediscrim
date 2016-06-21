@@ -4,7 +4,10 @@ sparsediscrim 0.2.3
 UPDATES
 
 * Fixed an issue with the HDRDA classifier's `predict` function. The posterior
-  probabilities did not sum to 1 because they were unnormalized.
+  probabilities did not sum to 1 because they were unnormalized. #34
+
+* Fixed another issue with the HDRDA classifier's `predict` function, where the
+  class names were incorrect when predicting a single observation. #34
 
 sparsediscrim 0.2.2
 -------------------

@@ -273,6 +273,10 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
   })
 
   if (is.vector(scores)) {
+    # When sapply above returns a vector, the naming is thrown off.
+    # Hence, we rename it to the groups.
+    names(scores) <- object$groups
+
     min_scores <- which.min(scores)
     posterior <- exp(-(scores - min(scores)))
     posterior <- posterior / sum(posterior)
