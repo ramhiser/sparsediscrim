@@ -9,6 +9,8 @@ UPDATES
 * Fixed another issue with the HDRDA classifier's `predict` function, where the
   class names were incorrect when predicting a single observation. #34
 
+* Improved docs throughout the package to pass `R CMD CHECK`. #35
+
 sparsediscrim 0.2.2
 -------------------
 
