@@ -367,7 +367,8 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
         # Updates Gamma, Q, and W_inv for each class in hdrda_out
         # If an error is thrown, we return 'NA'.
         hdrda_updated <- update_hdrda(hdrda_out, lambda, gamma)
-        sum(hdrda::predict(hdrda_updated, test_x, projected = TRUE)$class != test_y)
+        # Call to predict.hdrda is explicit to pass R CMD CHECK.
+        sum(predict.hdrda(hdrda_updated, test_x, projected = TRUE)$class != test_y)
       }, silent = TRUE)
 
       errors
@@ -414,7 +415,7 @@ plot.hdrda_cv <- function(x, ...) {
   })
 
   # Fixes NOTE from R CMD CHECK
-  # "no visible binding for global variable ‘error_rate’"
+  # "no visible binding for global variable 'error_rate'"
   error_rate <- 1
 
   p <- ggplot(cv_summary, aes(factor(gamma), factor(lambda)))

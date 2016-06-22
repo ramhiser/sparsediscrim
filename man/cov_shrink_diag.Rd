@@ -38,6 +38,6 @@ al. (2008) text.
 \references{
 Hastie, T., Tibshirani, R., and Friedman, J. (2008), "The
 Elements of Statistical Learning: Data Mining, Inference, and Prediction,"
-2nd edition. \url{http://www-stat.stanford.edu/~tibs/ElemStatLearn/}
+2nd edition. \url{http://statweb.stanford.edu/~tibs/ElemStatLearn/}
 }
 
