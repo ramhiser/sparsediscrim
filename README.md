@@ -1,5 +1,7 @@
 # sparsediscrim
 
+[![Build Status](https://travis-ci.org/ramhiser/sparsediscrim.svg?branch=master)](https://travis-ci.org/ramhiser/sparsediscrim)
+
 The R package `sparsediscrim` provides a collection of sparse and regularized discriminant
 analysis classifiers that are especially useful for when applied to
 small-sample, high-dimensional data sets.
