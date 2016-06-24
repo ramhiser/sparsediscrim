@@ -8,7 +8,7 @@
 
 ## R CMD check results
 * There were no ERRORs or WARNINGs.
-* There were no NOTES on the local (Mac) build.
+* There were no NOTES on the local (Mac) or travis-ci builds.
 * However, there was 1 NOTE from win-builder:
 
 Maintainer: 'John A. Ramey <johnramey@gmail.com>'
