@@ -1,6 +1,9 @@
 ## Test environments
 * local OS X install, R 3.3.1
-* ubuntu 12.04 (on travis-ci), R 3.1.3
+* ubuntu 12.04 (on travis-ci)
+  * R 3.2.5 (oldrel)
+  * R 3.3.0 (release)
+  * R 3.3.1 (devel)
 * win-builder (devel and release)
 
 ## R CMD check results
@@ -17,4 +20,5 @@ YEAR: 2016
   COPYRIGHT HOLDER: John A. Ramey <johnramey@gmail.com>
 
 ## Reverse dependencies
-* None.
+
+* The `mlr` package suggests `sparsediscrim`. There were no errors or warnings.
