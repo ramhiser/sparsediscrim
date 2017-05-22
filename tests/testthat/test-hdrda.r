@@ -2,6 +2,7 @@ library(testthat)
 library(sparsediscrim)
 library(MASS)
 library(mvtnorm)
+library(caret)
 
 context("The HDRDA Classifier from Ramey et al. (2014)")
 
@@ -478,8 +479,6 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0
 })
 
 test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
-  library(caret)
-
   set.seed(1)
   dat <- twoClassSim(106)
   trn <- dat[1:100,]
@@ -498,8 +497,6 @@ test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
 })
 
 test_that("HDRDA correctly predicts one observation. (Issue #34)", {
-  library(caret)
-
   set.seed(1)
   dat <- twoClassSim(101)
   trn <- dat[1:100,]

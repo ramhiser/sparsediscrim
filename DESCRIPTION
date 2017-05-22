@@ -1,7 +1,7 @@
 Package: sparsediscrim
 Title: Sparse and Regularized Discriminant Analysis
-Version: 0.2.3
-Date: 2016-06-21
+Version: 0.2.4
+Date: 2017-05-21
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of sparse and regularized discriminant analysis
@@ -13,6 +13,9 @@ Imports:
     dplyr,
     ggplot2,
     mvtnorm
+Suggests:
+    testthat,
+    caret
 License: MIT + file LICENSE
 URL: https://github.com/ramhiser/sparsediscrim,
     http://ramhiser.com
