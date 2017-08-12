@@ -4,7 +4,7 @@ library(MASS)
 library(mvtnorm)
 library(caret)
 
-context("The HDRDA Classifier from Ramey et al. (2014)")
+context("The HDRDA Classifier from Ramey et al. (2017)")
 
 test_that("The HDRDA classifier works properly on the iris data set", {
   set.seed(42)

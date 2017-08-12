@@ -32,7 +32,7 @@ inclusively.}
 
 \item{shrinkage_type}{the type of covariance-matrix shrinkage to apply. By
 default, a ridge-like shrinkage is applied. If \code{convex} is given, then
-shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
+shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2017) for
 details.}
 
 \item{prior}{vector with prior probabilities for each class. If \code{NULL}
@@ -66,7 +66,7 @@ classes
 }
 \description{
 Given a set of training data, this function builds the HDRDA classifier from
-Ramey, Stein, and Young (2014). Specially designed for small-sample,
+Ramey, Stein, and Young (2017). Specially designed for small-sample,
 high-dimensional data, the HDRDA classifier incorporates dimension reduction
 and covariance-matrix shrinkage to enable a computationally efficient
 classifier.
@@ -87,7 +87,7 @@ calculate the covariance-matrix estimator
 \deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda) + \gamma I_p,}
 where \eqn{I_p} is the \eqn{p \times p} identity matrix. The matrix
 \eqn{\tilde{\Sigma}_k} is substituted into the HDRDA classifier. See Ramey et
-al. (2014) for more details.
+al. (2017) for more details.
 
 The matrix of training observations are given in \code{x}. The rows of
 \code{x} contain the sample observations, and the columns contain the features
@@ -104,8 +104,9 @@ probabilities should be nonnegative and sum to one. The order of the prior
 probabilities is assumed to match the levels of \code{factor(y)}.
 }
 \references{
-Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
+Ramey, J. A., Stein, C. K., and Young, D. M. (2017),
 "High-Dimensional Regularized Discriminant Analysis."
+\url{https://arxiv.org/abs/1602.01182}.
 
 Friedman, J. H. (1989), "Regularized Discriminant Analysis,"
 Journal of American Statistical Association, 84, 405, 165-175.

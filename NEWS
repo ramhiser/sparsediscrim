@@ -4,6 +4,7 @@ sparsediscrim 0.2.4
 UPDATES
 
 * Added "Suggests: testthat, caret" to DESCRIPTION to pass `R CMD CHECK`. #38
+* Added [arXiv reference](https://arxiv.org/abs/1602.01182) to HDRDA paper
 
 sparsediscrim 0.2.3
 -------------------

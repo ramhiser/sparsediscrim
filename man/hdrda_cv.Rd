@@ -21,7 +21,7 @@ observations, and the columns are the features.}
 
 \item{shrinkage_type}{the type of covariance-matrix shrinkage to apply. By
 default, a ridge-like shrinkage is applied. If \code{convex} is given, then
-shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2014) for
+shrinkage similar to Friedman (1989) is applied. See Ramey et al. (2017) for
 details.}
 
 \item{verbose}{If set to \code{TRUE}, summary information will be outputted
