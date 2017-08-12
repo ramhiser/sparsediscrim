@@ -100,8 +100,8 @@ each class. If \code{prior} is \code{NULL} (default), the class membership
 probabilities are estimated as the sample proportion of observations
 belonging to each class. Otherwise, \code{prior} should be a vector with the
 same length as the number of classes in \code{y}. The \code{prior}
-probabilties should be nonnegative and sum to one. The order of the prior
-probabilties is assumed to match the levels of \code{factor(y)}.
+probabilities should be nonnegative and sum to one. The order of the prior
+probabilities is assumed to match the levels of \code{factor(y)}.
 }
 \references{
 Ramey, J. A., Stein, C. K., and Young, D. M. (2014),

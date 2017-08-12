@@ -23,7 +23,7 @@
 #' each class. If \code{prior} is NULL (default), the class membership
 #' probabilities are estimated as the sample proportion of observations belonging
 #' to each class. Otherwise, \code{prior} should be a vector with the same length
-#' as the number of classes in \code{y}. The \code{prior} probabilties should be
+#' as the number of classes in \code{y}. The \code{prior} probabilities should be
 #' nonnegative and sum to one.
 #'
 #' @param x matrix containing the training data. The rows are the sample
@@ -70,7 +70,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
     stop("There must be at least 2 observations in each class.")
   }
 
-  # By default, we estimate the 'a priori' probabilties of class membership with
+  # By default, we estimate the 'a priori' probabilities of class membership with
   # the MLEs (the sample proportions).
   if (is.null(prior)) {
     prior <- as.vector(table(y) / length(y))
@@ -130,7 +130,7 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
 #' each class. If \code{prior} is NULL (default), the class membership
 #' probabilities are estimated as the sample proportion of observations belonging
 #' to each class. Otherwise, \code{prior} should be a vector with the same length
-#' as the number of classes in \code{y}. The \code{prior} probabilties should be
+#' as the number of classes in \code{y}. The \code{prior} probabilities should be
 #' nonnegative and sum to one.
 #'
 #' @param x matrix containing the training data. The rows are the sample
@@ -167,7 +167,7 @@ regdiscrim_estimates <- function(x, y, cov = TRUE, prior = NULL) {
     stop("There must be at least 2 observations in each class.")
   }
 
-  # By default, we estimate the 'a priori' probabilties of class membership with
+  # By default, we estimate the 'a priori' probabilities of class membership with
   # the MLEs (the sample proportions).
   if (is.null(prior)) {
     prior <- as.vector(table(y) / length(y))

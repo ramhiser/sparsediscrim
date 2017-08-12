@@ -77,7 +77,7 @@ The vector, \code{prior}, contains the \emph{a priori} class membership for
 each class. If \code{prior} is NULL (default), the class membership
 probabilities are estimated as the sample proportion of observations belonging
 to each class. Otherwise, \code{prior} should be a vector with the same length
-as the number of classes in \code{y}. The \code{prior} probabilties should be
+as the number of classes in \code{y}. The \code{prior} probabilities should be
 nonnegative and sum to one.
 }
 \examples{

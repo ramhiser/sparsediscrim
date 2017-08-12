@@ -31,8 +31,8 @@
 #' probabilities are estimated as the sample proportion of observations
 #' belonging to each class. Otherwise, \code{prior} should be a vector with the
 #' same length as the number of classes in \code{y}. The \code{prior}
-#' probabilties should be nonnegative and sum to one. The order of the prior
-#' probabilties is assumed to match the levels of \code{factor(y)}.
+#' probabilities should be nonnegative and sum to one. The order of the prior
+#' probabilities is assumed to match the levels of \code{factor(y)}.
 #'
 #' @export
 #' @references Ramey, J. A., Stein, C. K., and Young, D. M. (2014),
@@ -209,7 +209,7 @@ print.hdrda <- function(x, ...) {
   print(x$p)
   cat("Classes:\n")
   print(x$groups)
-  cat("Prior Probabilties:\n")
+  cat("Prior Probabilities:\n")
   print(sapply(x$est, function(z) z$prior))
   cat("Reduced dimension, q:\n")
   print(x$q)

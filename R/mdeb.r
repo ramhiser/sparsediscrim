@@ -24,7 +24,7 @@
 #' each class. If \code{prior} is NULL (default), the class membership
 #' probabilities are estimated as the sample proportion of observations belonging
 #' to each class. Otherwise, \code{prior} should be a vector with the same length
-#' as the number of classes in \code{y}. The \code{prior} probabilties should be
+#' as the number of classes in \code{y}. The \code{prior} probabilities should be
 #' nonnegative and sum to one.
 #'
 #' @export
@@ -108,7 +108,7 @@ print.mdeb <- function(x, ...) {
   print(x$p)
   cat("Classes:\n")
   print(x$groups)
-  cat("Prior Probabilties:\n")
+  cat("Prior Probabilities:\n")
   print(sapply(x$est, function(z) z$prior))
 }
 
