@@ -8,7 +8,7 @@ small-sample, high-dimensional data sets.
 
 ## Installation
 
-You can install the stable version on [CRAN](http://cran.r-project.org/package=sparsediscrim):
+You can install the stable version on [CRAN](https://cran.r-project.org/package=sparsediscrim):
 
 ```r
 install.packages('sparsediscrim', dependencies = TRUE)
