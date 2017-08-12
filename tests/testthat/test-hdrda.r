@@ -38,30 +38,6 @@ test_that("HDRDA's calculations are correct for (lambda, gamma) = (1, 0)", {
   expect_equal(W_k$virginica, D_q)
 })
 
-test_that("HDRDA's calculations are correct for (lambda, gamma) = (0, 0)", {
-  hdrda_out <- hdrda(Species ~ ., data = iris, lambda=0, gamma=0)
-
-  Sigma <- cov_pool(x=iris[, -5], y=iris$Species)
-  Sigma_k <- tapply(seq_len(nrow(iris)), iris$Species, function(i) {
-    cov_mle(iris[i, -5])
-  })
-  Sigma_eigen <- eigen(Sigma, symmetric=TRUE)
-  U_1 <- Sigma_eigen$vectors
-
-  # For each class, calculate W_k.
-  W_k <- sapply(hdrda_out$est, function(est) {
-    solve(est$W_inv)
-  }, simplify=FALSE)
-
-  W_k_expected <- sapply(Sigma_k, function(class_cov) {
-    crossprod(U_1, class_cov) %*% U_1
-  }, simplify=FALSE)
-
-  expect_equal(W_k$setosa, W_k_expected$setosa)
-  expect_equal(W_k$versicolor, W_k_expected$versicolor)
-  expect_equal(W_k$virginica, W_k_expected$virginica)
-})
-
 test_that("LDA is a special case of HDRDA on the iris data set", {
   set.seed(42)
   n <- nrow(iris)
