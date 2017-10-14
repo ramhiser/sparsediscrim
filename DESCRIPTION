@@ -1,12 +1,16 @@
 Package: sparsediscrim
 Title: Sparse and Regularized Discriminant Analysis
-Version: 0.2.4
-Date: 2017-08-12
+Version: 0.2.5
+Date: 2017-10-14
 Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of sparse and regularized discriminant analysis
     methods intended for small-sample, high-dimensional data sets. The package
-    features the High-Dimensional Regularized Discriminant Analysis classifier.
+    features the High-Dimensional Regularized Discriminant Analysis classifier
+    from Ramey et al. (2017) <arXiv:1602.01182>. Other classifiers include
+    those from Dudoit et al. (2002) <doi:10.1198/016214502753479248>, Pang et
+    al. (2009) <doi:10.1111/j.1541-0420.2009.01200.x>, and Tong et al. (2012)
+    <doi:10.1093/bioinformatics/btr690>.
 Imports:
     bdsmatrix,
     corpcor,
