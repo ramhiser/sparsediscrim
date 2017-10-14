@@ -67,13 +67,17 @@ lda_pseudo.default <- function(x, y, prior = NULL, tol = 1e-8, ...) {
   evals_inv <- rep.int(0, times = length(evals))
   evals_inv[evals > tol] <- 1 / evals[evals > tol]
 
-  # Removes original pooled covariance matrix to reduce memory usage
-  obj$cov_pool <- with(cov_eigen,
-                       tcrossprod(vectors %*% diag(1 / evals_inv), vectors))
-
-  obj$cov_inv <- with(cov_eigen,
-                      tcrossprod(vectors %*% diag(evals_inv), vectors))
-
+  if (obj$p > 1) {
+    obj$cov_pool <- with(cov_eigen,
+                         tcrossprod(vectors %*% diag(1 / evals_inv), vectors))
+    obj$cov_inv <- with(cov_eigen,
+                        tcrossprod(vectors %*% diag(evals_inv), vectors))
+  } else {
+    obj$cov_pool <- with(cov_eigen,
+                         tcrossprod(vectors %*% as.matrix(1 / evals_inv), vectors))
+    obj$cov_inv <- with(cov_eigen,
+                        tcrossprod(vectors %*% as.matrix(evals_inv), vectors))
+  }
   # Creates an object of type 'lda_pseudo' and adds the 'match.call' to the object
   obj$call <- match.call()
   class(obj) <- "lda_pseudo"
