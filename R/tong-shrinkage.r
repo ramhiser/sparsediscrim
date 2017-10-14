@@ -45,7 +45,13 @@ tong_mean_shrinkage <- function(x, r_opt = NULL) {
   shrinkage_norm <- sum(centered_xbars^2 / diag_S)
 
   # Finally, we calculate the shrunken mean given in Equation 6.
-  grand_mean + (1 - r_opt / shrinkage_norm) * centered_xbars
+  if (shrinkage_norm == 0) {
+    shrunken_mean <- xbar
+  } else {
+    shrunken_mean <- grand_mean + (1 - r_opt / shrinkage_norm) * centered_xbars
+  }
+
+  shrunken_mean
 }
 
   
