@@ -1,3 +1,12 @@
+sparsediscrim 0.2.5
+-------------------
+
+UPDATES
+
+* Fixed issue where classifiers had errors when only 1 feature used. #41
+* Added arXiv reference for HDRDA to DESCRIPTION #40
+* Added doi references for other classifiers to DESCRIPTION #40
+
 sparsediscrim 0.2.4
 -------------------
 
