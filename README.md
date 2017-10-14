@@ -26,7 +26,7 @@ install_github('ramhiser/sparsediscrim')
 The `sparsediscrim` package features the following classifier (the R function
 is included within parentheses):
 
-* High-Dimensional Regularized Discriminant Analysis (`hdrda`) from Ramey et al. (2015)
+* [High-Dimensional Regularized Discriminant Analysis](https://arxiv.org/abs/1602.01182) (`hdrda`) from Ramey et al. (2015)
 
 The `sparsediscrim` package also includes a variety of additional classifiers
 intended for small-sample, high-dimensional data sets. These include:
