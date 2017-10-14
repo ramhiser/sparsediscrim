@@ -83,11 +83,11 @@ diag_estimates <- function(x, y, prior = NULL, pool = FALSE,
     stats <- list()
     stats$n <- length(i)
     if (est_mean == "mle") {
-      stats$xbar <- colMeans(x[i,])
+      stats$xbar <- colMeans(x[i, , drop = FALSE])
     } else if (est_mean == "tong") {
-      stats$xbar <- tong_mean_shrinkage(x[i, ])
+      stats$xbar <- tong_mean_shrinkage(x[i, , drop = FALSE])
     }
-    stats$var <- with(stats, (n - 1) / n * apply(x[i,], 2, var))
+    stats$var <- with(stats, (n - 1) / n * apply(x[i, , drop = FALSE], 2, var))
     stats
   })
 
@@ -179,9 +179,9 @@ regdiscrim_estimates <- function(x, y, cov = TRUE, prior = NULL) {
   obj$est <- tapply(seq_along(y), y, function(i) {
     stats <- list()
     stats$n <- length(i)
-    stats$xbar <- as.vector(colMeans(x[i, ]))
+    stats$xbar <- as.vector(colMeans(x[i, , drop = FALSE]))
     if (cov) {
-      stats$cov <- with(stats, cov_mle(x[i, ]))
+      stats$cov <- with(stats, cov_mle(x[i, , drop = FALSE]))
     }
     stats
   })

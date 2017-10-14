@@ -21,3 +21,19 @@ test_that("The DLDA classifier works properly on the iris data set", {
 
   expect_is(predicted$posterior, "matrix")
 })
+
+
+# Related to issue #41
+test_that("The DLDA classifier works properly when 1 feature used", {
+  require('MASS')
+
+  set.seed(42)
+  n <- nrow(iris)
+  train <- sample(seq_len(n), n / 2)
+
+  dlda_out <- dlda(x = iris[train, 1], y = iris[train, 5])
+  predicted <- predict(dlda_out, iris[-train, 1])
+
+  expect_equal(length(predicted$class), n - length(train))
+  expect_is(predicted$posterior, "matrix")
+})
