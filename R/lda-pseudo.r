@@ -151,9 +151,8 @@ predict.lda_pseudo <- function(object, newdata, ...) {
   if (!inherits(object, "lda_pseudo"))  {
     stop("object not of class 'lda_pseudo'")
   }
-  if (is.vector(newdata)) {
-    newdata <- matrix(newdata, nrow = 1)
-  }
+
+  newdata <- as.matrix(newdata)
 
   # Calculates the discriminant scores for each test observation
   scores <- apply(newdata, 1, function(obs) {

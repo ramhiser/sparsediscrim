@@ -162,9 +162,8 @@ predict.sdlda <- function(object, newdata, ...) {
   if (!inherits(object, "sdlda"))  {
     stop("object not of class 'sdlda'")
   }
-  if (is.vector(newdata)) {
-    newdata <- matrix(newdata, nrow = 1)
-  }
+
+  newdata <- as.matrix(newdata)
 
   scores <- apply(newdata, 1, function(obs) {
     sapply(object$est, function(class_est) {

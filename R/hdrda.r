@@ -240,9 +240,6 @@ print.hdrda <- function(x, ...) {
 #' @return list with predicted class and discriminant scores for each of the K
 #' classes
 predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
-  if (is.vector(newdata)) {
-    newdata <- matrix(newdata, nrow = 1)
-  }
   newdata <- as.matrix(newdata)
 
   scores <- sapply(object$est, function(class_est) {

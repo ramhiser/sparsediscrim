@@ -159,9 +159,8 @@ predict.mdmeb <- function(object, newdata, ...) {
   if (!inherits(object, "mdmeb"))  {
     stop("object not of class 'mdmeb'")
   }
-  if (is.vector(newdata)) {
-    newdata <- matrix(newdata, nrow = 1)
-  }
+
+  newdata <- as.matrix(newdata)
 
   # Calculates the discriminant scores for each test observation
   scores <- apply(newdata, 1, function(obs) {

@@ -137,9 +137,8 @@ predict.mdeb <- function(object, newdata, ...) {
   if (!inherits(object, "mdeb"))  {
     stop("object not of class 'mdeb'")
   }
-  if (is.vector(newdata)) {
-    newdata <- matrix(newdata, nrow = 1)
-  }
+
+  newdata <- as.matrix(newdata)
 
   # Calculates the MDEB shrinkage constant and then computes the inverse of the
   # MDEB covariance matrix estimator
