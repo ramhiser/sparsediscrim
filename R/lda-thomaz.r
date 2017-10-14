@@ -68,13 +68,19 @@ lda_thomaz.default <- function(x, y, prior = NULL, ...) {
   mean_eval <- mean(evals)
   evals[evals < mean_eval] <- mean_eval
 
-  # Removes original pooled covariance matrix to reduce memory usage
-  obj$cov_pool <- with(cov_eigen,
-                      tcrossprod(vectors %*% diag(evals), vectors))
+  if (obj$p > 1) {
+    obj$cov_pool <- with(cov_eigen,
+                         tcrossprod(vectors %*% diag(evals), vectors))
 
-  # Computes the inverse of the resulting covariance matrix estimator
-  obj$cov_inv <- with(cov_eigen,
-                      tcrossprod(vectors %*% diag(1 / evals), vectors))
+    # Computes the inverse of the resulting covariance matrix estimator
+    obj$cov_inv <- with(cov_eigen,
+                        tcrossprod(vectors %*% diag(1 / evals), vectors))
+  } else {
+    obj$cov_pool <- with(cov_eigen,
+                         tcrossprod(vectors %*% as.matrix(evals), vectors))
+    obj$cov_inv <- with(cov_eigen,
+                        tcrossprod(vectors %*% as.matrix(1 / evals), vectors))
+  }
 
   # Creates an object of type 'lda_thomaz' and adds the 'match.call' to the object
   obj$call <- match.call()
