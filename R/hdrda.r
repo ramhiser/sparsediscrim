@@ -110,12 +110,12 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   #   2. Q_k
   #   3. W_k^{-1}
   for (k in seq_len(K)) {
-    X_k <- x_centered[y == levels(y)[k], ]
+    X_k <- x_centered[y == levels(y)[k], , drop=FALSE]
     n_k <- nrow(X_k)
 
     # Extracts the transformed, centered data
     # No need to calculate it for the classes individually
-    XU_k <- XU[y == levels(y)[k], ]
+    XU_k <- XU[y == levels(y)[k], , drop=FALSE]
 
     # Transforms the sample mean to the lower dimension
     xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
