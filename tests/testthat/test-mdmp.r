@@ -21,3 +21,20 @@ test_that("The MDMP classifier works properly on the iris data set", {
 
   expect_is(predicted$posterior, "matrix")
 })
+
+# Related to issue #41
+test_that("The MDMP classifier works properly when 1 feature used", {
+  require('MASS')
+
+  set.seed(42)
+  n <- nrow(iris)
+  train <- sample(seq_len(n), n / 2)
+  n_test <- n - length(train)
+
+  mdmp_out <- mdmp(x = iris[train, 1], y = iris[train, 5])
+  predicted <- predict(mdmp_out, iris[-train, 1])
+
+  expect_equal(length(predicted$class), n_test)
+  expect_is(predicted$posterior, "matrix")
+  expect_equal(dim(predicted$posterior), c(n_test, nlevels(iris$Species)))
+})
