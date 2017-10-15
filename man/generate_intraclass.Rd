@@ -48,11 +48,11 @@ The intraclass covariance matrix for the \eqn{k}th class is defined as:
 where \eqn{J_p} is the \eqn{p \times p} matrix of ones and \eqn{I_p} is the
 \eqn{p \times p} identity matrix.
 
-By default, with \eqn{sigma_k^2 = 1}, the diagonal elements of the intraclass
+By default, with \eqn{\sigma_k^2 = 1}, the diagonal elements of the intraclass
 covariance matrix are all 1, while the off-diagonal elements of the matrix
 are all \code{rho}.
 
-The values of \code{rho} must be between \eqn{(1 - p)^(-1)} and 1,
+The values of \code{rho} must be between \eqn{1 / (1 - p)} and 1,
 exclusively, to ensure that the covariance matrix is positive definite.
 
 The number of classes \code{K} is determined with lazy evaluation as the

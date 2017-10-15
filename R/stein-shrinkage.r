@@ -1,6 +1,6 @@
 #' Bias correction function from Pang et al. (2009).
 #'
-#' This function computes the function \eqn{h_{nu, p}(t)} on page 1023 of Pang
+#' This function computes the function \eqn{h_{\nu, p}(t)} on page 1023 of Pang
 #' et al. (2009).
 #'
 #' @param nu a specified constant (nu = N - K)
@@ -29,7 +29,7 @@ h <- function(nu, p, t = -1) {
 
 #' Stein Risk function from Pang et al. (2009).
 #'
-#' This function finds the value for \eqn{alpha \in [0,1]} that empirically
+#' This function finds the value for \eqn{\alpha \in [0,1]} that empirically
 #' minimizes the average risk under a Stein loss function, which is given on
 #' page 1023 of Pang et al. (2009).
 #'

@@ -13,7 +13,7 @@
 #' \eqn{(k = 1, \ldots, K)}, we first define this convex combination as
 #' \deqn{\hat{\Sigma}_k(\lambda) = (1 - \lambda) \hat{\Sigma}_k
 #' + \lambda \hat{\Sigma},}
-#' where \eqn{lambda \in [0, 1]} is the \emph{pooling} parameter. We then
+#' where \eqn{\lambda \in [0, 1]} is the \emph{pooling} parameter. We then
 #' calculate the covariance-matrix estimator
 #' \deqn{\tilde{\Sigma}_k = \alpha_k \hat{\Sigma}_k(\lambda) + \gamma I_p,}
 #' where \eqn{I_p} is the \eqn{p \times p} identity matrix. The matrix

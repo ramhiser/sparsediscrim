@@ -19,7 +19,7 @@ paper for more details.}
 the bias correction value
 }
 \description{
-This function computes the function \eqn{h_{nu, p}(t)} on page 1023 of Pang
+This function computes the function \eqn{h_{\nu, p}(t)} on page 1023 of Pang
 et al. (2009).
 }
 \references{
