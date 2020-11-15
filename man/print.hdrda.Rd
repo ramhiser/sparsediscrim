@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained hdrda classifier in a nice manner.
 }
-

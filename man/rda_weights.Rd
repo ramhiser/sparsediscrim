@@ -26,4 +26,3 @@ classifier, implemented in \code{\link{hdrda}}.
 Ramey, J. A., Stein, C. K., and Young, D. M. (2013),
 "High-Dimensional Regularized Discriminant Analysis."
 }
-

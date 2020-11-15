@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained lda_schafer classifier in a nice manner.
 }
-

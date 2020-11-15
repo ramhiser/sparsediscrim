@@ -4,8 +4,7 @@
 \alias{diag_estimates}
 \title{Computes estimates and ancillary information for diagonal classifiers}
 \usage{
-diag_estimates(x, y, prior = NULL, pool = FALSE, est_mean = c("mle",
-  "tong"))
+diag_estimates(x, y, prior = NULL, pool = FALSE, est_mean = c("mle", "tong"))
 }
 \arguments{
 \item{x}{matrix containing the training data. The rows are the sample
@@ -61,4 +60,3 @@ Estimation and Its Application to Diagonal Discriminant Analysis,"
 Bioinformatics, 28, 4, 531-537.
 \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 }
-

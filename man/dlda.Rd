@@ -99,4 +99,3 @@ Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 Discrimination Methods for the Classification of Tumors Using Gene Expression
 Data," Journal of the American Statistical Association, 97, 457, 77-87.
 }
-

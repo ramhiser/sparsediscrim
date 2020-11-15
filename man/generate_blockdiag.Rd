@@ -82,4 +82,3 @@ rho = seq(.1, .9, length = 4), mu = means)
 data$x
 data$y
 }
-

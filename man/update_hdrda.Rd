@@ -22,4 +22,3 @@ updated values of \code{lambda} and \code{gamma}. The update can greatly
 expedite cross-validation to examine a large grid of values for \code{lambda}
 and \code{gamma}.
 }
-

@@ -27,4 +27,3 @@ Estimation and Its Application to Diagonal Discriminant Analysis,"
 Bioinformatics, 28, 4, 531-537.
 \url{http://bioinformatics.oxfordjournals.org/content/28/4/531.long}
 }
-

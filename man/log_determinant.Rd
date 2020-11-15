@@ -15,4 +15,3 @@ log determinant of \code{x}
 \description{
 Computes the log determinant of a matrix.
 }
-

@@ -21,4 +21,3 @@ matrix of posterior probabilities for each observation
 \description{
 Computes posterior probabilities via Bayes Theorem under normality
 }
-

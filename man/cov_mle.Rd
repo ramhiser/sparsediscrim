@@ -27,4 +27,3 @@ If the \code{diag} option is set to \code{TRUE}, then we assume the population
 covariance matrix is diagonal, and the MLE is computed under this assumption.
 In this case, we return a vector of length \code{p} instead.
 }
-

@@ -52,4 +52,3 @@ to each class. Otherwise, \code{prior} should be a vector with the same length
 as the number of classes in \code{y}. The \code{prior} probabilities should be
 nonnegative and sum to one.
 }
-

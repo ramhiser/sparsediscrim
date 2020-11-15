@@ -9,8 +9,16 @@
 \usage{
 hdrda(x, ...)
 
-\method{hdrda}{default}(x, y, lambda = 1, gamma = 0,
-  shrinkage_type = c("ridge", "convex"), prior = NULL, tol = 1e-06, ...)
+\method{hdrda}{default}(
+  x,
+  y,
+  lambda = 1,
+  gamma = 0,
+  shrinkage_type = c("ridge", "convex"),
+  prior = NULL,
+  tol = 1e-06,
+  ...
+)
 
 \method{hdrda}{formula}(formula, data, ...)
 
@@ -112,4 +120,3 @@ Friedman, J. H. (1989), "Regularized Discriminant Analysis,"
 Journal of American Statistical Association, 84, 405, 165-175.
 \url{http://www.jstor.org/pss/2289860} (Requires full-text access).
 }
-

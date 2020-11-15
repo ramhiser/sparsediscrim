@@ -41,4 +41,3 @@ the covariance matrix is positive definite.
 The size of the resulting matrix is \eqn{p \times p}, where
 \code{p = num_blocks * block_size}.
 }
-

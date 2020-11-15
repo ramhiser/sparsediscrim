@@ -27,4 +27,3 @@ inefficient. We provide a more efficient method below.
 Note that we have adapted the code from:
 \url{http://tolstoy.newcastle.edu.au/R/help/05/11/14989.html}
 }
-

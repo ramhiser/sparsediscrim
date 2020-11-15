@@ -34,4 +34,3 @@ are all \code{rho}.
 The value of \code{rho} must be between \eqn{1 / (1 - p)} and 1,
 exclusively, to ensure that the covariance matrix is positive definite.
 }
-

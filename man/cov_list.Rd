@@ -20,4 +20,3 @@ each class given in \code{y}.
 For a sample matrix, \code{x}, we compute the MLE for the covariance matrix
 for each class given in the vector, \code{y}.
 }
-

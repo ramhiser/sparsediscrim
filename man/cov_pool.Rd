@@ -23,4 +23,3 @@ multivariate normal populations having equal covariance matrices.
 \examples{
 cov_pool(iris[, -5], iris$Species)
 }
-

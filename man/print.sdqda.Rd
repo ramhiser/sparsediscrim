@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained SDQDA classifier in a nice manner.
 }
-

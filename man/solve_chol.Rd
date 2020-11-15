@@ -20,4 +20,3 @@ See, for example:
 and
 \url{http://stats.stackexchange.com/questions/14951/efficient-calculation-of-matrix-inverse-in-r}.
 }
-

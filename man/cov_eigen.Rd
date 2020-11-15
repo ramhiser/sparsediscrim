@@ -57,4 +57,3 @@ y <- gl(num_classes, n)
 cov_eigen(x = x, y = y, fast = TRUE)
 cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE)
 }
-

@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained DLDA classifier in a nice manner.
 }
-

@@ -71,4 +71,3 @@ data <- generate_intraclass(n = 3:6, p = 4, rho = seq(0, .9, length = 4),
 data$x
 data$y
 }
-

@@ -28,4 +28,3 @@ Discriminant Analysis and Its Applications in High-Dimensional Data,"
 Biometrics, 65, 4, 1021-1029.
 \url{http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract}
 }
-

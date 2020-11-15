@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained mdmp classifier in a nice manner.
 }
-

@@ -19,4 +19,3 @@ mean
 \description{
 Centers the observations in a matrix by their respective class sample means
 }
-

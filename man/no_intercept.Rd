@@ -25,4 +25,3 @@ intercept is included in the model.
 iris_formula <- formula(Species ~ .)
 sparsediscrim:::no_intercept(iris_formula, data = iris)
 }
-

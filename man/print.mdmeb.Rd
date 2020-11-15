@@ -14,4 +14,3 @@
 \description{
 Summarizes the trained mdmeb classifier in a nice manner.
 }
-

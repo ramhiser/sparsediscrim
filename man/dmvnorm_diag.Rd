@@ -19,4 +19,3 @@ multivariate normal density
 \description{
 Alternative to \code{mvtnorm::dmvnorm}
 }
-

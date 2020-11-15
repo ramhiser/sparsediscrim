@@ -99,4 +99,3 @@ Schafer, J., and Strimmer, K. (2005). "A shrinkage approach to
 large-scale covariance estimation and implications for functional genomics,"
 Statist. Appl. Genet. Mol. Biol. 4, 32.
 }
-
