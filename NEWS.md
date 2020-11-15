@@ -1,24 +1,15 @@
-sparsediscrim 0.2.5
--------------------
-
-UPDATES
+# sparsediscrim 0.2.5
 
 * Fixed issue where classifiers had errors when only 1 feature used. #41
 * Added arXiv reference for HDRDA to DESCRIPTION #40
 * Added doi references for other classifiers to DESCRIPTION #40
 
-sparsediscrim 0.2.4
--------------------
-
-UPDATES
+# sparsediscrim 0.2.4
 
 * Added "Suggests: testthat, caret" to DESCRIPTION to pass `R CMD CHECK`. #38
 * Added [arXiv reference](https://arxiv.org/abs/1602.01182) to HDRDA paper
 
-sparsediscrim 0.2.3
--------------------
-
-UPDATES
+# sparsediscrim 0.2.3
 
 * Fixed an issue with the HDRDA classifier's `predict` function. The posterior
   probabilities did not sum to 1 because they were unnormalized. #34
@@ -28,10 +19,7 @@ UPDATES
 
 * Improved docs throughout the package to pass `R CMD CHECK`. #35
 
-sparsediscrim 0.2.2
--------------------
-
-UPDATES
+# sparsediscrim 0.2.2
 
 * The `predict` function now returns posterior-probability estimates for each
   classifier.
@@ -43,10 +31,8 @@ UPDATES
 * The `predict` function for the HDRDA classifier is now substantially faster
   when classifying a large number of observations. #33
 
-sparsediscrim 0.2.1
--------------------
+# sparsediscrim 0.2.1
 
-UPDATES
 
 * The cross-validation helper function `cv_hdrda()` for the HDRDA classifier now
   returns a trained classifier rather than the optimal model.
@@ -54,15 +40,11 @@ UPDATES
 * `cv_hdrda()` also has an optional `verbose` argument to dump summary
   information while the cross-validation is running.
 
-FIXES
-
 * Fixed issue with classifiers' documentation not appearing in help index. #26
 
 * Better handling of HDRDA when its tuning parameters are both 0.
 
 * Corrected calculation of W_k and Q_k in HDRDA classifier.
-
-MISCELLANEOUS
 
 * Added unit tests for HDRDA.
 
@@ -75,16 +57,12 @@ MISCELLANEOUS
 * Added `log_determinant()` helper function to calculate the log-determinant of
   a matrix.
 
-sparsediscrim 0.2
------------------
+# sparsediscrim 0.2
 
-UPDATES
 
 * The High-Dimensional Regularized Discriminant Analysis (HDRDA) classifier from
   Ramey, Stein, and Young (2014) implemented in `hdrda()` has been revamped to
   improve its computational performance.
-
-CLASSIFIERS
 
 * `lda_pseudo()` is an implementation of Linear Discriminant Analysis (LDA) with
   the Moore-Penrose Pseudo-Inverse
@@ -110,20 +88,13 @@ CLASSIFIERS
 * `smdqda()` is an implementation of the Shrinkage-mean-based Diagonal Quadratic
   Discriminant Analysis (SmDQDA) from Tong, Chen, and Zhao (2012)
 
-MISCELLANEOUS
-
 * Added a summary function for `hdrda` classifiers
 
-sparsediscrim 0.1
------------------
-
-NEW FEATURES
+# sparsediscrim 0.1
 
 * First version of the `sparsediscrim` package. With this package, we aim to
   provide a large collection of regularized and sparse discriminant analysis
   classifiers intended for high-dimensional classification.
-
-CLASSIFIERS
 
 * `hdrda()` is an implementation of the High-Dimensional Regularized
   Discriminant Analysis classifier from Ramey, Stein, and Young (2014).
@@ -140,8 +111,6 @@ CLASSIFIERS
 * `sdqda()` is an implementation of the Shrinkage-based Diagonal Quadratic
   Discriminant Analysis classifier from Pang, Tong, and Zhao (2009).
 
-SIMULATED DATA SETS
-
 * `generate_blockdiag()` generates random variates from K multivariate normal
   populations, where each class is generated with a constant mean vector and a
   covariance matrix consisting of block-diagonal autocorrelation matrices.
@@ -149,8 +118,6 @@ SIMULATED DATA SETS
 * `generate_intraclass()` generates random variates from K multivariate normal
   populations, where class is generated with a constant mean vector and an
   intraclass covariance matrix.
-
-MISCELLANEOUS
 
 * `cv_partition()` randomly partitions data for cross-validation.
 
