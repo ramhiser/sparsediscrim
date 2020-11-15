@@ -19,9 +19,11 @@ Imports:
     mvtnorm
 Suggests:
     testthat,
-    caret,
     MASS
 License: MIT + file LICENSE
 URL: https://github.com/ramhiser/sparsediscrim,
     http://ramhiser.com
 RoxygenNote: 7.1.1.9000
+Depends: 
+    R (>= 2.10)
+Encoding: UTF-8

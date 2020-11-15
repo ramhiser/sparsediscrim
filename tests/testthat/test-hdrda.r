@@ -2,7 +2,8 @@ library(testthat)
 library(sparsediscrim)
 library(MASS)
 library(mvtnorm)
-library(caret)
+
+data(two_class_sim_data)
 
 context("The HDRDA Classifier from Ramey et al. (2017)")
 
@@ -455,10 +456,8 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0
 })
 
 test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
-  set.seed(1)
-  dat <- twoClassSim(106)
-  trn <- dat[1:100,]
-  tst <- dat[101:105,]
+  trn <- two_class_sim_data[1:100,]
+  tst <- two_class_sim_data[101:105,]
 
   mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
@@ -468,15 +467,13 @@ test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
 
   ones <- rep(1, nrow(tst))
   expect_equal(as.vector(rowSums(posterior_probs)), ones)
-  expect_equal(colnames(posterior_probs), levels(dat$Class))
-  expect_equal(colnames(scores), levels(dat$Class))
+  expect_equal(colnames(posterior_probs), levels(two_class_sim_data$Class))
+  expect_equal(colnames(scores), levels(two_class_sim_data$Class))
 })
 
 test_that("HDRDA correctly predicts one observation. (Issue #34)", {
-  set.seed(1)
-  dat <- twoClassSim(101)
-  trn <- dat[1:100,]
-  tst <- dat[101,]
+  trn <- two_class_sim_data[1:100,]
+  tst <- two_class_sim_data[101,]
 
   mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
@@ -485,8 +482,8 @@ test_that("HDRDA correctly predicts one observation. (Issue #34)", {
   scores <- predict_out$scores
 
   expect_equal(sum(posterior_probs), 1)
-  expect_equal(names(posterior_probs), levels(dat$Class))
-  expect_equal(names(scores), levels(dat$Class))
+  expect_equal(names(posterior_probs), levels(two_class_sim_data$Class))
+  expect_equal(names(scores), levels(two_class_sim_data$Class))
 })
 
 # Related to issue #41
