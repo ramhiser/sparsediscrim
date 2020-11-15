@@ -49,7 +49,7 @@ Given a set of training data, this function builds the Shrinkage-mean-based
 Diagonal Linear Discriminant Analysis (SmDLDA) classifier from Tong, Chen,
 and Zhao (2012). The SmDLDA classifier incorporates a Lindley-type shrunken
 mean estimator into the DLDA classifier from Dudoit et al. (2002). For more
-about the DLDA classifier, see \code{\link{dlda}}.
+about the DLDA classifier, see \code{\link{lda_diag}}.
 
 The SmDLDA classifier is a modification to LDA, where the off-diagonal
 elements of the pooled sample covariance matrix are set to zero.

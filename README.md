@@ -33,7 +33,7 @@ intended for small-sample, high-dimensional data sets. These include:
 
 | Classifier                                                    | Author                                                                                             | R Function |
 |---------------------------------------------------------------|----------------------------------------------------------------------------------------------------|------------|
-| Diagonal Linear Discriminant Analysis                         | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `dlda`     |
+| Diagonal Linear Discriminant Analysis                         | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `lda_diag`     |
 | Diagonal Quadratic Discriminant Analysis                      | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `dqda`     |
 | Shrinkage-based Diagonal Linear Discriminant Analysis         | [Pang et al. (2009)](http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract) | `sdlda`    |
 | Shrinkage-based Diagonal Quadratic Discriminant Analysis      | [Pang et al. (2009)](http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract) | `sdqda`    |

@@ -5,7 +5,7 @@
 #' Diagonal Linear Discriminant Analysis (SmDLDA) classifier from Tong, Chen,
 #' and Zhao (2012). The SmDLDA classifier incorporates a Lindley-type shrunken
 #' mean estimator into the DLDA classifier from Dudoit et al. (2002). For more
-#' about the DLDA classifier, see \code{\link{dlda}}.
+#' about the DLDA classifier, see \code{\link{lda_diag}}.
 #'
 #' The DLDA classifier belongs to the family of Naive Bayes classifiers, where
 #' the distributions of each class are assumed to be multivariate normal and to

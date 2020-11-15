@@ -40,7 +40,7 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{dlda} object that contains the trained DLDA classifier
+#' @return \code{lda_diag} object that contains the trained DLDA classifier
 #'
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
@@ -48,27 +48,27 @@
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' dlda_out <- dlda(Species ~ ., data = iris[train, ])
+#' dlda_out <- lda_diag(Species ~ ., data = iris[train, ])
 #' predicted <- predict(dlda_out, iris[-train, -5])$class
 #'
-#' dlda_out2 <- dlda(x = iris[train, -5], y = iris[train, 5])
+#' dlda_out2 <- lda_diag(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(dlda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-dlda <- function(x, ...) {
-  UseMethod("dlda")
+lda_diag <- function(x, ...) {
+  UseMethod("lda_diag")
 }
 
-#' @rdname dlda
+#' @rdname lda_diag
 #' @export
-dlda.default <- function(x, y, prior = NULL, ...) {
+lda_diag.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- diag_estimates(x = x, y = y, prior = prior, pool = TRUE)
 
-  # Creates an object of type 'dlda' and adds the 'match.call' to the object
+  # Creates an object of type 'lda_diag' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "dlda"
+  class(obj) <- "lda_diag"
 
   obj
 }
@@ -78,10 +78,10 @@ dlda.default <- function(x, y, prior = NULL, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname dlda
+#' @rdname lda_diag
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-dlda.formula <- function(formula, data, prior = NULL, ...) {
+lda_diag.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -93,7 +93,7 @@ dlda.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- dlda.default(x = x, y = y, prior = prior)
+  est <- lda_diag.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -106,7 +106,7 @@ dlda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.dlda <- function(x, ...) {
+print.lda_diag <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -124,7 +124,7 @@ print.dlda <- function(x, ...) {
 #' The DLDA classifier is a modification to LDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
 #'
-#' @rdname dlda
+#' @rdname lda_diag
 #' @export
 #'
 #' @param object trained DLDA object
@@ -134,9 +134,9 @@ print.dlda <- function(x, ...) {
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
-predict.dlda <- function(object, newdata, ...) {
-  if (!inherits(object, "dlda"))  {
-    stop("object not of class 'dlda'")
+predict.lda_diag <- function(object, newdata, ...) {
+  if (!inherits(object, "lda_diag"))  {
+    stop("object not of class 'lda_diag'")
   }
   if (is.vector(newdata)) {
     newdata <- as.matrix(newdata)
