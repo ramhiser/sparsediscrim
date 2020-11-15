@@ -45,7 +45,7 @@
 #' (default), then equal probabilities are used. See details.
 #' @param num_alphas the number of values used to find the optimal amount of
 #' shrinkage
-#' @return \code{sdqda} object that contains the trained SDQDA classifier
+#' @return \code{qda_shrink_cov} object that contains the trained SDQDA classifier
 #'
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
@@ -57,19 +57,19 @@
 #' set.seed(42)
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' sdqda_out <- sdqda(Species ~ ., data = iris[train, ])
+#' sdqda_out <- qda_shrink_cov(Species ~ ., data = iris[train, ])
 #' predicted <- predict(sdqda_out, iris[-train, -5])$class
 #'
-#' sdqda_out2 <- sdqda(x = iris[train, -5], y = iris[train, 5])
+#' sdqda_out2 <- qda_shrink_cov(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(sdqda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-sdqda <- function(x, ...) {
-  UseMethod("sdqda")
+qda_shrink_cov <- function(x, ...) {
+  UseMethod("qda_shrink_cov")
 }
 
-#' @rdname sdqda
+#' @rdname qda_shrink_cov
 #' @export
-sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
+qda_shrink_cov.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -87,9 +87,9 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
     )
   }
 
-  # Creates an object of type 'sdqda' and adds the 'match.call' to the object
+  # Creates an object of type 'qda_shrink_cov' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "sdqda"
+  class(obj) <- "qda_shrink_cov"
 
   obj
 }
@@ -100,9 +100,9 @@ sdqda.default <- function(x, y, prior = NULL, num_alphas = 101, ...) {
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
 #' @importFrom stats model.frame model.matrix model.response
-#' @rdname sdqda
+#' @rdname qda_shrink_cov
 #' @export
-sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
+qda_shrink_cov.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -114,7 +114,7 @@ sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- sdqda.default(x = x, y = y, prior = prior, num_alphas = num_alphas)
+  est <- qda_shrink_cov.default(x = x, y = y, prior = prior, num_alphas = num_alphas)
 
   est$call <- match.call()
   est$formula <- formula
@@ -128,7 +128,7 @@ sdqda.formula <- function(formula, data, prior = NULL, num_alphas = 101, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.sdqda <- function(x, ...) {
+print.qda_shrink_cov <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -148,7 +148,7 @@ print.sdqda <- function(x, ...) {
 #' the estimation of the pooled variances, we use a shrinkage method from Pang
 #' et al.  (2009).
 #'
-#' @rdname sdqda
+#' @rdname qda_shrink_cov
 #' @export
 #'
 #' @param object trained SDQDA object
@@ -162,9 +162,9 @@ print.sdqda <- function(x, ...) {
 #' Discriminant Analysis and Its Applications in High-Dimensional Data,"
 #' Biometrics, 65, 4, 1021-1029.
 #' @return list predicted class memberships of each row in newdata
-predict.sdqda <- function(object, newdata, ...) {
-  if (!inherits(object, "sdqda"))  {
-    stop("object not of class 'sdqda'")
+predict.qda_shrink_cov <- function(object, newdata, ...) {
+  if (!inherits(object, "qda_shrink_cov"))  {
+    stop("object not of class 'qda_shrink_cov'")
   }
 
   newdata <- as.matrix(newdata)
