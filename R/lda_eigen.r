@@ -35,26 +35,26 @@
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
 #' @param eigen_pct the percentage of eigenvalues kept
-#' @return \code{mdmp} object that contains the trained MDMP classifier
+#' @return \code{lda_eigen} object that contains the trained MDMP classifier
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' mdmp_out <- mdmp(Species ~ ., data = iris[train, ])
+#' mdmp_out <- lda_eigen(Species ~ ., data = iris[train, ])
 #' predicted <- predict(mdmp_out, iris[-train, -5])$class
 #'
-#' mdmp_out2 <- mdmp(x = iris[train, -5], y = iris[train, 5])
+#' mdmp_out2 <- lda_eigen(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(mdmp_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-mdmp <- function(x, ...) {
-  UseMethod("mdmp")
+lda_eigen <- function(x, ...) {
+  UseMethod("lda_eigen")
 }
 
-#' @rdname mdmp
+#' @rdname lda_eigen
 #' @export
-mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
+lda_eigen.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -76,9 +76,9 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
                       tcrossprod(vectors[, kept_evals] %*% diag(evals_inv),
                                  vectors[, kept_evals]))
 
-  # Creates an object of type 'mdmp' and adds the 'match.call' to the object
+  # Creates an object of type 'lda_eigen' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "mdmp"
+  class(obj) <- "lda_eigen"
 
   obj
 }
@@ -88,10 +88,10 @@ mdmp.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname mdmp
+#' @rdname lda_eigen
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-mdmp.formula <- function(formula, data, prior = NULL, ...) {
+lda_eigen.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -103,7 +103,7 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- mdmp.default(x = x, y = y, prior = prior)
+  est <- lda_eigen.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -111,12 +111,12 @@ mdmp.formula <- function(formula, data, prior = NULL, ...) {
 
 #' Outputs the summary for a MDMP classifier object.
 #'
-#' Summarizes the trained mdmp classifier in a nice manner.
+#' Summarizes the trained lda_eigen classifier in a nice manner.
 #'
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.mdmp <- function(x, ...) {
+print.lda_eigen <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -139,19 +139,19 @@ print.mdmp <- function(x, ...) {
 #' pooled covariance matrix, where only the largest 95% of the eigenvalues and
 #' their corresponding eigenvectors are kept.
 #'
-#' @rdname mdmp
+#' @rdname lda_eigen
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-#' @param object trained mdmp object
+#' @param object trained lda_eigen object
 #' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdmp <- function(object, newdata, ...) {
-  if (!inherits(object, "mdmp"))  {
-    stop("object not of class 'mdmp'")
+predict.lda_eigen <- function(object, newdata, ...) {
+  if (!inherits(object, "lda_eigen"))  {
+    stop("object not of class 'lda_eigen'")
   }
 
   newdata <- as.matrix(newdata)
