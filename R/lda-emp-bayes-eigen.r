@@ -36,26 +36,26 @@
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
 #' @param eigen_pct the percentage of eigenvalues kept
-#' @return \code{mdmeb} object that contains the trained MDMEB classifier
+#' @return \code{lda_emp_bayes_eigen} object that contains the trained MDMEB classifier
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' mdmeb_out <- mdmeb(Species ~ ., data = iris[train, ])
+#' mdmeb_out <- lda_emp_bayes_eigen(Species ~ ., data = iris[train, ])
 #' predicted <- predict(mdmeb_out, iris[-train, -5])$class
 #'
-#' mdmeb_out2 <- mdmeb(x = iris[train, -5], y = iris[train, 5])
+#' mdmeb_out2 <- lda_emp_bayes_eigen(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(mdmeb_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-mdmeb <- function(x, ...) {
-  UseMethod("mdmeb")
+lda_emp_bayes_eigen <- function(x, ...) {
+  UseMethod("lda_emp_bayes_eigen")
 }
 
-#' @rdname mdmeb
+#' @rdname lda_emp_bayes_eigen
 #' @export
-mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
+lda_emp_bayes_eigen.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
@@ -80,9 +80,9 @@ mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
                       tcrossprod(vectors[, kept_evals] %*% diag(evals_inv),
                                  vectors[, kept_evals]))
 
-  # Creates an object of type 'mdmeb' and adds the 'match.call' to the object
+  # Creates an object of type 'lda_emp_bayes_eigen' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "mdmeb"
+  class(obj) <- "lda_emp_bayes_eigen"
 
   obj
 }
@@ -92,10 +92,10 @@ mdmeb.default <- function(x, y, prior = NULL, eigen_pct = 0.95, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname mdmeb
+#' @rdname lda_emp_bayes_eigen
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-mdmeb.formula <- function(formula, data, prior = NULL, ...) {
+lda_emp_bayes_eigen.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -107,7 +107,7 @@ mdmeb.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- mdmeb.default(x = x, y = y, prior = prior)
+  est <- lda_emp_bayes_eigen.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -115,12 +115,12 @@ mdmeb.formula <- function(formula, data, prior = NULL, ...) {
 
 #' Outputs the summary for a MDMEB classifier object.
 #'
-#' Summarizes the trained mdmeb classifier in a nice manner.
+#' Summarizes the trained lda_emp_bayes_eigen classifier in a nice manner.
 #'
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.mdmeb <- function(x, ...) {
+print.lda_emp_bayes_eigen <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -144,20 +144,20 @@ print.mdmeb <- function(x, ...) {
 #' are kept. The resulting covariance matrix is then shrunken towards a scaled
 #' identity matrix.
 #'
-#' @rdname mdmeb
+#' @rdname lda_emp_bayes_eigen
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-#' @param object trained mdmeb object
+#' @param object trained lda_emp_bayes_eigen object
 #' @param newdata matrix of observations to predict. Each row corresponds to a
 #' new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdmeb <- function(object, newdata, ...) {
-  if (!inherits(object, "mdmeb"))  {
-    stop("object not of class 'mdmeb'")
+predict.lda_emp_bayes_eigen <- function(object, newdata, ...) {
+  if (!inherits(object, "lda_emp_bayes_eigen"))  {
+    stop("object not of class 'lda_emp_bayes_eigen'")
   }
 
   newdata <- as.matrix(newdata)

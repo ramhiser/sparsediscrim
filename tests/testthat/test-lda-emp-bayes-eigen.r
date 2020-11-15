@@ -9,10 +9,10 @@ test_that("The MDMEB classifier works properly on the iris data set", {
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
-  mdmeb_out <- mdmeb(Species ~ ., data = iris[train, ])
+  mdmeb_out <- lda_emp_bayes_eigen(Species ~ ., data = iris[train, ])
   predicted <- predict(mdmeb_out, iris[-train, -5])
 
-  mdmeb_out2 <- mdmeb(x = iris[train, -5], y = iris[train, 5])
+  mdmeb_out2 <- lda_emp_bayes_eigen(x = iris[train, -5], y = iris[train, 5])
   predicted2 <- predict(mdmeb_out2, iris[-train, -5])
 
   # Tests that the same labels result from the matrix and formula versions of
@@ -31,7 +31,7 @@ test_that("The MDMEB classifier works properly when 1 feature used", {
   train <- sample(seq_len(n), n / 2)
   n_test <- n - length(train)
 
-  mdmeb_out <- mdmeb(x = iris[train, 1], y = iris[train, 5])
+  mdmeb_out <- lda_emp_bayes_eigen(x = iris[train, 1], y = iris[train, 5])
   predicted <- predict(mdmeb_out, iris[-train, 1])
 
   expect_equal(length(predicted$class), n_test)
