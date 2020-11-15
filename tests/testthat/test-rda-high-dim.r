@@ -11,10 +11,10 @@ test_that("The HDRDA classifier works properly on the iris data set", {
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
-  hdrda_out <- hdrda(Species ~ ., data = iris[train, ])
+  hdrda_out <- rda_high_dim(Species ~ ., data = iris[train, ])
   predicted <- predict(hdrda_out, iris[-train, -5])$class
 
-  hdrda_out2 <- hdrda(x = iris[train, -5], y = iris[train, 5])
+  hdrda_out2 <- rda_high_dim(x = iris[train, -5], y = iris[train, 5])
   predicted2 <- predict(hdrda_out2, iris[-train, -5])$class
 
   # Tests that the same labels result from the matrix and formula versions of
@@ -23,7 +23,7 @@ test_that("The HDRDA classifier works properly on the iris data set", {
 })
 
 test_that("HDRDA's calculations are correct for (lambda, gamma) = (1, 0)", {
-  hdrda_out <- hdrda(Species ~ ., data = iris, lambda=1, gamma=0)
+  hdrda_out <- rda_high_dim(Species ~ ., data = iris, lambda=1, gamma=0)
 
   Sigma <- cov_pool(x=iris[, -5], y=iris$Species)
   Sigma_eigen <- eigen(Sigma, symmetric=TRUE)
@@ -43,7 +43,7 @@ test_that("LDA is a special case of HDRDA on the iris data set", {
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
-  hdrda_out <- hdrda(Species ~ ., data = iris[train, ], lambda=1, gamma=0)
+  hdrda_out <- rda_high_dim(Species ~ ., data = iris[train, ], lambda=1, gamma=0)
   predicted_hdrda <- predict(hdrda_out, iris[-train, -5])$class
 
   lda_out <- lda(x = iris[train, -5], grouping = iris[train, 5])
@@ -58,7 +58,7 @@ test_that("QDA is a special case of HDRDA on the iris data set", {
   set.seed(42)
   n <- nrow(iris)
   train <- sample(seq_len(n), n / 2)
-  hdrda_out <- hdrda(Species ~ ., data = iris[train, ], lambda=0, gamma=0)
+  hdrda_out <- rda_high_dim(Species ~ ., data = iris[train, ], lambda=0, gamma=0)
   predicted_hdrda <- predict(hdrda_out, iris[-train, -5])$class
 
   qda_out <- qda(x = iris[train, -5], grouping = iris[train, 5])
@@ -127,7 +127,7 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0, 0)"
   W2_inv <- solve_chol(W_2 + diag(0.001, nrow=nrow(W_2), ncol=ncol(W_2)))
   W3_inv <- solve_chol(W_3 + diag(0.001, nrow=nrow(W_3), ncol=ncol(W_3)))
 
-  hdrda_out <- hdrda(x=x, y=y, lambda=0, gamma=0)
+  hdrda_out <- rda_high_dim(x=x, y=y, lambda=0, gamma=0)
 
   expect_equal(hdrda_out$q, q)
   expect_equal(hdrda_out$D_q, D_q)
@@ -214,7 +214,7 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (1, 0)"
   xbar2_U1 <- crossprod(U1, xbar2)
   xbar3_U1 <- crossprod(U1, xbar3)
 
-  hdrda_out <- hdrda(x=x, y=y, lambda=1, gamma=0)
+  hdrda_out <- rda_high_dim(x=x, y=y, lambda=1, gamma=0)
 
   expect_equal(hdrda_out$q, q)
   expect_equal(hdrda_out$D_q, D_q)
@@ -316,7 +316,7 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0
   Q2 <- diag(n2) + 0.5 / n2 * XU_2 %*% tcrossprod(Gamma_inv, XU_2)
   Q3 <- diag(n3) + 0.5 / n3 * XU_3 %*% tcrossprod(Gamma_inv, XU_3)
 
-  hdrda_out <- hdrda(x=x, y=y, lambda=0.5, gamma=0.5)
+  hdrda_out <- rda_high_dim(x=x, y=y, lambda=0.5, gamma=0.5)
 
   expect_equal(hdrda_out$q, q)
   expect_equal(hdrda_out$D_q, D_q)
@@ -418,7 +418,7 @@ test_that("HDRDA's statistics match manual values when (lambda, gamma) = (0.5, 0
   Q2 <- diag(n2) + 0.125 / n2 * XU_2 %*% tcrossprod(Gamma_inv, XU_2)
   Q3 <- diag(n3) + 0.125 / n3 * XU_3 %*% tcrossprod(Gamma_inv, XU_3)
 
-  hdrda_out <- hdrda(x=x, y=y, lambda=0.5, gamma=0.75, shrinkage_type="convex")
+  hdrda_out <- rda_high_dim(x=x, y=y, lambda=0.5, gamma=0.75, shrinkage_type="convex")
 
   expect_equal(hdrda_out$q, q)
   expect_equal(hdrda_out$D_q, D_q)
@@ -459,7 +459,7 @@ test_that("HDRDA posterior probabilities sum to one. (Issue #34)", {
   trn <- two_class_sim_data[1:100,]
   tst <- two_class_sim_data[101:105,]
 
-  mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
+  mod <- rda_high_dim(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
   predict_out <- predict(mod, newdata=tst[, -ncol(tst)])
   posterior_probs <- predict_out$posterior
@@ -475,7 +475,7 @@ test_that("HDRDA correctly predicts one observation. (Issue #34)", {
   trn <- two_class_sim_data[1:100,]
   tst <- two_class_sim_data[101,]
 
-  mod <- hdrda(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
+  mod <- rda_high_dim(x = as.matrix(trn[, -ncol(trn)]), y = trn$Class)
 
   predict_out <- predict(mod, newdata=tst[, -ncol(tst)])
   posterior_probs <- predict_out$posterior
@@ -495,7 +495,7 @@ test_that("The HDRDA classifier works properly when 1 feature used", {
   train <- sample(seq_len(n), n / 2)
   n_test <- n - length(train)
 
-  hdrda_out <- hdrda(x = iris[train, 1], y = iris[train, 5], lambda=0.5, gamma=0.5)
+  hdrda_out <- rda_high_dim(x = iris[train, 1], y = iris[train, 5], lambda=0.5, gamma=0.5)
   predicted <- predict(hdrda_out, iris[-train, 1])
 
   expect_equal(length(predicted$class), n_test)

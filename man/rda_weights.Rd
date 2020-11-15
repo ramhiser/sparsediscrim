@@ -20,7 +20,7 @@ list containing the observations for each class given in \code{y}
 \description{
 This function calculates the weight for each observation in the data matrix
 \code{x} in order to calculate the covariance matrices employed in the HDRDA
-classifier, implemented in \code{\link{hdrda}}.
+classifier, implemented in \code{\link{rda_high_dim}}.
 }
 \references{
 Ramey, J. A., Stein, C. K., and Young, D. M. (2013),

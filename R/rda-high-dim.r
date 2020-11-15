@@ -55,55 +55,55 @@
 #' (default), then the sample proportion of observations belonging to each class
 #' equal probabilities are used. See details.
 #' @param tol a threshold for determining nonzero eigenvalues.
-#' @return \code{hdrda} object that contains the trained HDRDA classifier
-hdrda <- function(x, ...) {
-  UseMethod("hdrda")
+#' @return \code{rda_high_dim} object that contains the trained HDRDA classifier
+rda_high_dim <- function(x, ...) {
+  UseMethod("rda_high_dim")
 }
 
-#' @rdname hdrda
+#' @rdname rda_high_dim
 #' @export
-hdrda.default <- function(x, y, lambda = 1, gamma = 0,
-                          shrinkage_type = c("ridge", "convex"), prior = NULL,
-                          tol = 1e-6, ...) {
+rda_high_dim.default <- function(x, y, lambda = 1, gamma = 0,
+                                 shrinkage_type = c("ridge", "convex"), prior = NULL,
+                                 tol = 1e-6, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   lambda <- as.numeric(lambda)
   gamma <- as.numeric(gamma)
   shrinkage_type <- match.arg(shrinkage_type)
-
+  
   if (lambda < 0 || lambda > 1) {
     stop("The value for 'lambda' must be between 0 and 1, inclusively.")
   }
-
+  
   if (gamma < 0) {
     stop("The value for 'gamma' must be nonnegative.")
   }
-
+  
   obj <- regdiscrim_estimates(x = x, y = y, cov = FALSE, prior = prior, ...)
   x_centered <- center_data(x = x, y = y)
   K <- obj$num_groups
-
+  
   # Computes the eigenvalue decomposition of the pooled sample covariance matrix
   # using the Fast SVD approach.
   cov_pool_eigen <- cov_eigen(x = x, y = y, pool = TRUE, fast = TRUE, tol = tol)
-
+  
   obj$D_q <- cov_pool_eigen$values
   obj$U1 <- cov_pool_eigen$vectors
   obj$q <- length(obj$D_q)
   obj$shrinkage_type <- shrinkage_type
   obj$lambda <- lambda
   obj$gamma <- gamma
-
+  
   if (shrinkage_type == "ridge") {
     alpha <- 1
   } else {
     # shinkage_family == "convex"
     alpha <- 1 - gamma
   }
-
+  
   # Transforms the centered data
   XU <- x_centered %*% obj$U1
-
+  
   # For each class, we calculate the following quantities necessary to train the
   # HDRDA classifier.
   #   1. \Gamma_k
@@ -112,14 +112,14 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
   for (k in seq_len(K)) {
     X_k <- x_centered[y == levels(y)[k], , drop=FALSE]
     n_k <- nrow(X_k)
-
+    
     # Extracts the transformed, centered data
     # No need to calculate it for the classes individually
     XU_k <- XU[y == levels(y)[k], , drop=FALSE]
-
+    
     # Transforms the sample mean to the lower dimension
     xbar_U1 <- crossprod(obj$U1, obj$est[[k]]$xbar)
-
+    
     # In the special case that (lambda, gamma) = (0, 0), the improvements to
     # HDRDA's speed via the Sherman-Woodbury formula are not applicable because
     # Gamma = 0. In this case, we calculate W_inv directly. If the matrix is
@@ -127,12 +127,12 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     if (lambda == 0 && gamma == 0) {
       W_k <- cov_mle(XU_k)
       W_inv <- try(solve_chol(W_k), silent=TRUE)
-
+      
       if (inherits(W_inv, "try-error")) {
         W_k <- W_k + diag(0.001, nrow=nrow(W_k), ncol=ncol(W_k))
         W_inv <- solve_chol(W_k)
       }
-
+      
       Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
       Q <- diag(n_k)
     } else {
@@ -140,7 +140,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
       # elements.
       Gamma <- alpha * lambda * obj$D_q + gamma
       Gamma_inv <- diag(Gamma^(-1))
-
+      
       # X_k %*% U_1 %*% Gamma^{-1} is computed repeatedly in the equations.
       # We compute the matrix once and use it where necessary to avoid
       # unnecessary computations.
@@ -149,7 +149,7 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
       W_inv <- alpha * (1 - lambda) / n_k * crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
       W_inv <- Gamma_inv - W_inv
     }
-
+    
     obj$est[[k]]$n_k <- n_k
     obj$est[[k]]$alpha <- alpha
     obj$est[[k]]$XU <- XU_k
@@ -158,11 +158,11 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
     obj$est[[k]]$Q <- Q
     obj$est[[k]]$W_inv <- W_inv
   }
-
-  # Creates an object of type 'hdrda' and adds the 'match.call' to the object
+  
+  # Creates an object of type 'rda_high_dim' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "hdrda"
-
+  class(obj) <- "rda_high_dim"
+  
   obj
 }
 
@@ -173,22 +173,22 @@ hdrda.default <- function(x, y, lambda = 1, gamma = 0,
 #' preferentially to be taken.
 #' @param ... arguments passed from the \code{formula} to the \code{default}
 #' method
-#' @rdname hdrda
+#' @rdname rda_high_dim
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-hdrda.formula <- function(formula, data, ...) {
+rda_high_dim.formula <- function(formula, data, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
   # To remove the intercept, we update the formula, like so:
   # (NOTE: The terms must be collected in case the dot (.) notation is used)
   formula <- no_intercept(formula, data)
-
+  
   mf <- model.frame(formula = formula, data = data)
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
-
-  est <- hdrda.default(x = x, y = y, ...)
+  
+  est <- rda_high_dim.default(x = x, y = y, ...)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -196,12 +196,12 @@ hdrda.formula <- function(formula, data, ...) {
 
 #' Outputs the summary for a HDRDA classifier object.
 #'
-#' Summarizes the trained hdrda classifier in a nice manner.
+#' Summarizes the trained rda_high_dim classifier in a nice manner.
 #'
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.hdrda <- function(x, ...) {
+print.rda_high_dim <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -225,12 +225,12 @@ print.hdrda <- function(x, ...) {
 #' Predicts the class membership of a matrix of unlabeled observations with a
 #' trained HDRDA classifier.
 #'
-#' For a given \code{hdrda} object, we predict the class of each observation
+#' For a given \code{rda_high_dim} object, we predict the class of each observation
 #' (row) of the the matrix given in \code{newdata}.
 #'
-#' @rdname hdrda
+#' @rdname rda_high_dim
 #' @export
-#' @param object object of type \code{hdrda} that contains the trained HDRDA
+#' @param object object of type \code{rda_high_dim} that contains the trained HDRDA
 #' classifier
 #' @param newdata matrix containing the unlabeled observations to classify. Each
 #' row corresponds to a new observation.
@@ -239,9 +239,9 @@ print.hdrda <- function(x, ...) {
 #' speed when the linear transformation has already been performed.
 #' @return list with predicted class and discriminant scores for each of the K
 #' classes
-predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
+predict.rda_high_dim <- function(object, newdata, projected = FALSE, ...) {
   newdata <- as.matrix(newdata)
-
+  
   scores <- sapply(object$est, function(class_est) {
     if (object$lambda == 0 && object$gamma == 0) {
       # Want: log(det(W_k)) = -log(det(W_k_inv))
@@ -249,32 +249,32 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
     } else {
       log_det <- log_determinant(class_est$Q)
     }
-
+    
     if (projected) {
       # The newdata have already been projected. Yay for speed!
       # Center the 'newdata' by the projected class sample mean
       U1_x <- scale(newdata, center = class_est$xbar_U1, scale = FALSE)
-
+      
       quad_forms <- diag(drop(tcrossprod(U1_x %*% class_est$W_inv, U1_x)))
     } else {
       # Center the 'newdata' by the class sample mean
       x_centered <- scale(newdata, center = class_est$xbar, scale = FALSE)
-
+      
       U1_x <- crossprod(object$U1, t(x_centered))
-
+      
       quad_forms <- apply(U1_x, 2, function(z) {
         quadform(class_est$W_inv, z)
       })
     }
-
+    
     quad_forms + log_det - 2 * log(class_est$prior)
   })
-
+  
   if (is.vector(scores)) {
     # When sapply above returns a vector, the naming is thrown off.
     # Hence, we rename it to the groups.
     names(scores) <- object$groups
-
+    
     min_scores <- which.min(scores)
     posterior <- exp(-(scores - min(scores)))
     posterior <- posterior / sum(posterior)
@@ -286,9 +286,9 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
     posterior <- exp(-(scores - apply(scores, 1, min)))
     posterior <- posterior / rowSums(posterior)
   }
-
+  
   class <- with(object, factor(groups[min_scores], levels = groups))
-
+  
   list(class = class, scores = scores, posterior = posterior)
 }
 
@@ -313,33 +313,33 @@ predict.hdrda <- function(object, newdata, projected = FALSE, ...) {
 #' details.
 #' @param verbose If set to \code{TRUE}, summary information will be outputted
 #' as the optimal model is being determined.
-#' @param ... Additional arguments passed to \code{\link{hdrda}}.
+#' @param ... Additional arguments passed to \code{\link{rda_high_dim}}.
 #' @return list containing the HDRDA model that minimizes cross-validation as
 #' well as a \code{data.frame} that summarizes the cross-validation results.
-hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
-                     shrinkage_type=c("ridge", "convex"), verbose=FALSE, ...) {
+rda_high_dim_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
+                            shrinkage_type=c("ridge", "convex"), verbose=FALSE, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
   shrinkage_type <- match.arg(shrinkage_type)
-
+  
   cv_folds <- cv_partition(y = y, num_folds = num_folds)
-
+  
   # The grid of tuning parameters
   # We sort the grid by model preference. Models with lambda = 0 are most
   # preferred because they assume that the covariance matrices are equal. This
   # preference is further based on model parsimony.
   seq_lambda <- seq(0, 1, length = num_lambda)
-
+  
   if (shrinkage_type == "ridge") {
     seq_gamma <- c(0, 10^seq.int(-2, num_gamma - 4))
   } else  {
     # shrinkage_type == "convex"
     seq_gamma <- seq(0, 1, length = num_gamma)
   }
-
+  
   tuning_grid <- expand.grid(lambda = seq_lambda, gamma = seq_gamma)
   tuning_grid <- dplyr::arrange(tuning_grid, lambda, gamma)
-
+  
   cv_errors <- sapply(seq_along(cv_folds), function(fold_i) {
     if (verbose) {
       cat("CV Fold: ", fold_i, " of ", num_folds, "\n")
@@ -349,14 +349,14 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
     train_y <- y[fold$training]
     test_x <- x[fold$test, ]
     test_y <- y[fold$test]
-
-    hdrda_out <- hdrda(x = train_x, y = train_y, lambda = 1, gamma = 0, ...)
-
+    
+    hdrda_out <- rda_high_dim(x = train_x, y = train_y, lambda = 1, gamma = 0, ...)
+    
     # Projects the test data to the q-dimensional subspace.
     # No need to do this for each lambda/gamma pair.
     # NOTE: It's not centered yet.
     test_x <- test_x %*% hdrda_out$U1
-
+    
     # For each value of lambda and gamma, we train the HDRDA classifier,
     # classify the test observations, and record the number of classification
     # errors.
@@ -364,34 +364,34 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
       errors <- try({
         # Updates Gamma, Q, and W_inv for each class in hdrda_out
         # If an error is thrown, we return 'NA'.
-        hdrda_updated <- update_hdrda(hdrda_out, lambda, gamma)
-        # Call to predict.hdrda is explicit to pass R CMD CHECK.
-        sum(predict.hdrda(hdrda_updated, test_x, projected = TRUE)$class != test_y)
+        hdrda_updated <- update_rda_high_dim(hdrda_out, lambda, gamma)
+        # Call to predict.rda_high_dim is explicit to pass R CMD CHECK.
+        sum(predict.rda_high_dim(hdrda_updated, test_x, projected = TRUE)$class != test_y)
       }, silent = TRUE)
-
+      
       errors
     }, tuning_grid$lambda, tuning_grid$gamma)
     fold_errors
   })
   cv_errors <- rowSums(cv_errors)
   error_rate <- cv_errors / nrow(x)
-
+  
   cv_summary <- cbind(tuning_grid, cv_errors, error_rate)
-
+  
   optimal <- which.min(cv_errors)
   lambda <- tuning_grid$lambda[optimal]
   gamma <- tuning_grid$gamma[optimal]
-
+  
   # Trains a classifier based on optimal model
-  hdrda_out <- hdrda(x=x, y=y, lambda=lambda, gamma=gamma,
-                     shrinkage_type=shrinkage_type)
-
+  hdrda_out <- rda_high_dim(x=x, y=y, lambda=lambda, gamma=gamma,
+                            shrinkage_type=shrinkage_type)
+  
   # Adds optimal parameters and cv_summary to classifier object
   hdrda_out$lambda <- lambda
   hdrda_out$gamma <- gamma
   hdrda_out$cv_summary <- cv_summary
-  class(hdrda_out) <- c("hdrda_cv", "hdrda")
-
+  class(hdrda_out) <- c("hdrda_cv", "rda_high_dim")
+  
   hdrda_out
 }
 
@@ -405,17 +405,17 @@ hdrda_cv <- function(x, y, num_folds = 10, num_lambda = 21, num_gamma = 8,
 #' @export
 #' @importFrom ggplot2 ggplot aes scale_fill_gradient labs scale_x_discrete
 #' @importFrom ggplot2 scale_y_discrete theme labs geom_tile element_blank
-plot.hdrda_cv <- function(x, ...) {
+plot.rda_high_dim_cv <- function(x, ...) {
   cv_summary <- x$cv_summary
   cv_summary <- within(cv_summary, {
     lambda <- round(lambda, 3)
     gamma <- round(gamma, 3)
   })
-
+  
   # Fixes NOTE from R CMD CHECK
   # "no visible binding for global variable 'error_rate'"
   error_rate <- 1
-
+  
   p <- ggplot(cv_summary, aes(factor(gamma), factor(lambda)))
   p <- p + geom_tile(aes(fill=error_rate), colour="white")
   p <- p + scale_fill_gradient(low="white",
@@ -435,16 +435,16 @@ plot.hdrda_cv <- function(x, ...) {
 #' expedite cross-validation to examine a large grid of values for \code{lambda}
 #' and \code{gamma}.
 #'
-#' @param obj a \code{hdrda} object
+#' @param obj a \code{rda_high_dim} object
 #' @param lambda a numeric value between 0 and 1, inclusively
 #' @param gamma a numeric value (nonnegative)
-#' @return a \code{hdrda} object with updated estimates
-update_hdrda <- function(obj, lambda = 1, gamma = 0) {
+#' @return a \code{rda_high_dim} object with updated estimates
+update_rda_high_dim <- function(obj, lambda = 1, gamma = 0) {
   # In the special case that (lambda, gamma) = (0, 0), the improvements to
   # HDRDA's speed via the Sherman-Woodbury formula are not applicable because
   # Gamma = 0. In this case, we calculate W_inv directly.
   if (lambda == 0 && gamma == 0) {
-      Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
+    Gamma <- matrix(0, nrow=obj$q, ncol=obj$q)
   } else {
     # NOTE: alpha_k is constant across all classes, so that alpha_k = alpha_1
     # for all k. As a result, Gamma and Gamma_inv are constant across all k. We
@@ -452,12 +452,12 @@ update_hdrda <- function(obj, lambda = 1, gamma = 0) {
     Gamma <- obj$est[[1]]$alpha * lambda * obj$D_q + gamma
     Gamma_inv <- diag(Gamma^(-1))
   }
-
+  
   for (k in seq_len(obj$num_groups)) {
     n_k <- obj$est[[k]]$n_k
     if (lambda == 0 && gamma == 0) {
       Q <- diag(n_k)
-
+      
       W_k <- cov_mle(obj$est[[k]]$XU)
       W_inv <- try(solve_chol(W_k), silent=TRUE)
       if (inherits(W_inv, "try-error")) {
@@ -472,9 +472,9 @@ update_hdrda <- function(obj, lambda = 1, gamma = 0) {
       XU_Gamma_inv <- obj$est[[k]]$XU %*% Gamma_inv
       Q <- diag(n_k) +
         obj$est[[k]]$alpha * (1 - lambda) / n_k * tcrossprod(XU_Gamma_inv, obj$est[[k]]$XU)
-
+      
       W_inv <- obj$est[[k]]$alpha * (1 - lambda) / n_k *
-          crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
+        crossprod(XU_Gamma_inv, solve(Q, XU_Gamma_inv))
       W_inv <- Gamma_inv - W_inv
     }
     obj$est[[k]]$Gamma <- Gamma

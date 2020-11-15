@@ -156,7 +156,7 @@ cov_eigen <- function(x, y, pool = FALSE, fast = FALSE, tol = 1e-6) {
 #'
 #' This function calculates the weight for each observation in the data matrix
 #' \code{x} in order to calculate the covariance matrices employed in the HDRDA
-#' classifier, implemented in \code{\link{hdrda}}.
+#' classifier, implemented in \code{\link{rda_high_dim}}.
 #'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
@@ -181,7 +181,7 @@ rda_weights <- function(x, y, lambda = 1) {
 #'
 #' For the classes given in the vector \code{y}, this function calculates the
 #' class covariance-matrix estimators employed in the HDRDA classifier,
-#' implemented in \code{\link{hdrda}}.
+#' implemented in \code{\link{rda_high_dim}}.
 #'
 #' @param x matrix containing the training data. The rows are the sample
 #' observations, and the columns are the features.
