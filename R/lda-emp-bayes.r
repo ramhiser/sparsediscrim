@@ -34,34 +34,34 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{mdeb} object that contains the trained MDEB classifier
+#' @return \code{lda_emp_bayes} object that contains the trained MDEB classifier
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' mdeb_out <- mdeb(Species ~ ., data = iris[train, ])
+#' mdeb_out <- lda_emp_bayes(Species ~ ., data = iris[train, ])
 #' predicted <- predict(mdeb_out, iris[-train, -5])$class
 #'
-#' mdeb_out2 <- mdeb(x = iris[train, -5], y = iris[train, 5])
+#' mdeb_out2 <- lda_emp_bayes(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(mdeb_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-mdeb <- function(x, ...) {
-  UseMethod("mdeb")
+lda_emp_bayes <- function(x, ...) {
+  UseMethod("lda_emp_bayes")
 }
 
-#' @rdname mdeb
+#' @rdname lda_emp_bayes
 #' @export
-mdeb.default <- function(x, y, prior = NULL, ...) {
+lda_emp_bayes.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- regdiscrim_estimates(x = x, y = y, prior = prior, cov = TRUE)
 
-  # Creates an object of type 'mdeb' and adds the 'match.call' to the object
+  # Creates an object of type 'lda_emp_bayes' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "mdeb"
+  class(obj) <- "lda_emp_bayes"
 
   obj
 }
@@ -71,10 +71,10 @@ mdeb.default <- function(x, y, prior = NULL, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname mdeb
+#' @rdname lda_emp_bayes
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-mdeb.formula <- function(formula, data, prior = NULL, ...) {
+lda_emp_bayes.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -86,7 +86,7 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- mdeb.default(x = x, y = y, prior = prior)
+  est <- lda_emp_bayes.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -94,12 +94,12 @@ mdeb.formula <- function(formula, data, prior = NULL, ...) {
 
 #' Outputs the summary for a MDEB classifier object.
 #'
-#' Summarizes the trained mdeb classifier in a nice manner.
+#' Summarizes the trained lda_emp_bayes classifier in a nice manner.
 #'
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.mdeb <- function(x, ...) {
+print.lda_emp_bayes <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -123,19 +123,19 @@ print.mdeb <- function(x, ...) {
 #' the pooled sample covariance matrix are shrunken towards the identity matrix:
 #' the shrinkage constant has a closed form and is quick to calculate
 #'
-#' @rdname mdeb
+#' @rdname lda_emp_bayes
 #' @export
 #'
 #' @references Srivastava, M. and Kubokawa, T. (2007). "Comparison of
 #' Discrimination Methods for High Dimensional Data," Journal of the Japanese
 #' Statistical Association, 37, 1, 123-134.
-#' @param object trained mdeb object
+#' @param object trained lda_emp_bayes object
 #' @param newdata matrix of observations to predict. Each row corresponds to a new observation.
 #' @param ... additional arguments
 #' @return list predicted class memberships of each row in newdata
-predict.mdeb <- function(object, newdata, ...) {
-  if (!inherits(object, "mdeb"))  {
-    stop("object not of class 'mdeb'")
+predict.lda_emp_bayes <- function(object, newdata, ...) {
+  if (!inherits(object, "lda_emp_bayes"))  {
+    stop("object not of class 'lda_emp_bayes'")
   }
 
   newdata <- as.matrix(newdata)
