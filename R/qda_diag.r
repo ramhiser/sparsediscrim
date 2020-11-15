@@ -41,7 +41,7 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{dqda} object that contains the trained DQDA classifier
+#' @return \code{qda_diag} object that contains the trained DQDA classifier
 #'
 #' @references Dudoit, S., Fridlyand, J., & Speed, T. P. (2002). "Comparison of
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
@@ -49,27 +49,27 @@
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' dqda_out <- dqda(Species ~ ., data = iris[train, ])
+#' dqda_out <- qda_diag(Species ~ ., data = iris[train, ])
 #' predicted <- predict(dqda_out, iris[-train, -5])$class
 #'
-#' dqda_out2 <- dqda(x = iris[train, -5], y = iris[train, 5])
+#' dqda_out2 <- qda_diag(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(dqda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-dqda <- function(x, ...) {
-  UseMethod("dqda")
+qda_diag <- function(x, ...) {
+  UseMethod("qda_diag")
 }
 
-#' @rdname dqda
+#' @rdname qda_diag
 #' @export
-dqda.default <- function(x, y, prior = NULL, ...) {
+qda_diag.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- diag_estimates(x = x, y = y, prior = prior, pool = FALSE)
 
-  # Creates an object of type 'dqda' and adds the 'match.call' to the object
+  # Creates an object of type 'qda_diag' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "dqda"
+  class(obj) <- "qda_diag"
 
   obj
 }
@@ -79,10 +79,10 @@ dqda.default <- function(x, y, prior = NULL, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname dqda
+#' @rdname qda_diag
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-dqda.formula <- function(formula, data, prior = NULL, ...) {
+qda_diag.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -94,7 +94,7 @@ dqda.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- dqda.default(x = x, y = y, prior = prior)
+  est <- qda_diag.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -107,7 +107,7 @@ dqda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.dqda <- function(x, ...) {
+print.qda_diag <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -125,7 +125,7 @@ print.dqda <- function(x, ...) {
 #' The DQDA classifier is a modification to QDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
 #'
-#' @rdname dqda
+#' @rdname qda_diag
 #' @export
 #'
 #' @param object trained DQDA object
@@ -136,9 +136,9 @@ print.dqda <- function(x, ...) {
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
-predict.dqda <- function(object, newdata, ...) {
-  if (!inherits(object, "dqda"))  {
-    stop("object not of class 'dqda'")
+predict.qda_diag <- function(object, newdata, ...) {
+  if (!inherits(object, "qda_diag"))  {
+    stop("object not of class 'qda_diag'")
   }
 
   newdata <- as.matrix(newdata)

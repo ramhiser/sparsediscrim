@@ -5,7 +5,7 @@
 #' Diagonal Quadratic Discriminant Analysis (SmDQDA) classifier from Tong, Chen,
 #' and Zhao (2012). The SmDQDA classifier incorporates a Lindley-type shrunken
 #' mean estimator into the DQDA classifier from Dudoit et al. (2002). For more
-#' about the DQDA classifier, see \code{\link{dqda}}.
+#' about the DQDA classifier, see \code{\link{qda_diag}}.
 #'
 #' The DQDA classifier is a modification to the well-known QDA classifier, where
 #' the off-diagonal elements of each class covariance matrix are assumed

@@ -49,7 +49,7 @@ Given a set of training data, this function builds the Shrinkage-mean-based
 Diagonal Quadratic Discriminant Analysis (SmDQDA) classifier from Tong, Chen,
 and Zhao (2012). The SmDQDA classifier incorporates a Lindley-type shrunken
 mean estimator into the DQDA classifier from Dudoit et al. (2002). For more
-about the DQDA classifier, see \code{\link{dqda}}.
+about the DQDA classifier, see \code{\link{qda_diag}}.
 
 The SmDQDA classifier is a modification to QDA, where the off-diagonal elements
 of the pooled sample covariance matrix are set to zero.
