@@ -45,7 +45,7 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{smdlda} object that contains the trained SmDLDA classifier
+#' @return \code{lda_shrink_mean} object that contains the trained SmDLDA classifier
 #'
 #' @references Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
 #' Estimation and Its Application to Diagonal Discriminant Analysis,"
@@ -57,28 +57,28 @@
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' smdlda_out <- smdlda(Species ~ ., data = iris[train, ])
+#' smdlda_out <- lda_shrink_mean(Species ~ ., data = iris[train, ])
 #' predicted <- predict(smdlda_out, iris[-train, -5])$class
 #'
-#' smdlda_out2 <- smdlda(x = iris[train, -5], y = iris[train, 5])
+#' smdlda_out2 <- lda_shrink_mean(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(smdlda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-smdlda <- function(x, ...) {
-  UseMethod("smdlda")
+lda_shrink_mean <- function(x, ...) {
+  UseMethod("lda_shrink_mean")
 }
 
-#' @rdname smdlda
+#' @rdname lda_shrink_mean
 #' @export
-smdlda.default <- function(x, y, prior = NULL, ...) {
+lda_shrink_mean.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- diag_estimates(x = x, y = y, prior = prior, pool = TRUE,
                         est_mean = "tong")
 
-  # Creates an object of type 'smdlda' and adds the 'match.call' to the object
+  # Creates an object of type 'lda_shrink_mean' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "smdlda"
+  class(obj) <- "lda_shrink_mean"
 
   obj
 }
@@ -88,10 +88,10 @@ smdlda.default <- function(x, y, prior = NULL, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname smdlda
+#' @rdname lda_shrink_mean
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-smdlda.formula <- function(formula, data, prior = NULL, ...) {
+lda_shrink_mean.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -103,7 +103,7 @@ smdlda.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- smdlda.default(x = x, y = y, prior = prior)
+  est <- lda_shrink_mean.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -116,7 +116,7 @@ smdlda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.smdlda <- function(x, ...) {
+print.lda_shrink_mean <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -134,7 +134,7 @@ print.smdlda <- function(x, ...) {
 #' The SmDLDA classifier is a modification to LDA, where the off-diagonal
 #' elements of the pooled sample covariance matrix are set to zero.
 #'
-#' @rdname smdlda
+#' @rdname lda_shrink_mean
 #' @export
 #'
 #' @param object trained SmDLDA object
@@ -145,9 +145,9 @@ print.smdlda <- function(x, ...) {
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
-predict.smdlda <- function(object, newdata, ...) {
-  if (!inherits(object, "smdlda"))  {
-    stop("object not of class 'smdlda'")
+predict.lda_shrink_mean <- function(object, newdata, ...) {
+  if (!inherits(object, "lda_shrink_mean"))  {
+    stop("object not of class 'lda_shrink_mean'")
   }
 
   newdata <- as.matrix(newdata)
