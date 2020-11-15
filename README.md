@@ -34,11 +34,11 @@ intended for small-sample, high-dimensional data sets. These include:
 | Classifier                                                    | Author                                                                                             | R Function |
 |---------------------------------------------------------------|----------------------------------------------------------------------------------------------------|------------|
 | Diagonal Linear Discriminant Analysis                         | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `lda_diag`     |
-| Diagonal Quadratic Discriminant Analysis                      | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `dqda`     |
+| Diagonal Quadratic Discriminant Analysis                      | [Dudoit et al. (2002)](http://www.tandfonline.com/doi/abs/10.1198/016214502753479248)              | `qda_diag`     |
 | Shrinkage-based Diagonal Linear Discriminant Analysis         | [Pang et al. (2009)](http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract) | `sdlda`    |
 | Shrinkage-based Diagonal Quadratic Discriminant Analysis      | [Pang et al. (2009)](http://onlinelibrary.wiley.com/doi/10.1111/j.1541-0420.2009.01200.x/abstract) | `sdqda`    |
-| Shrinkage-mean-based Diagonal Linear Discriminant Analysis    | [Tong et al. (2012)](http://bioinformatics.oxfordjournals.org/content/28/4/531.long)               | `smdlda`   |
-| Shrinkage-mean-based Diagonal Quadratic Discriminant Analysis | [Tong et al. (2012)](http://bioinformatics.oxfordjournals.org/content/28/4/531.long)               | `smdqda`   |
+| Shrinkage-mean-based Diagonal Linear Discriminant Analysis    | [Tong et al. (2012)](http://bioinformatics.oxfordjournals.org/content/28/4/531.long)               | `lda_shrink_mean`   |
+| Shrinkage-mean-based Diagonal Quadratic Discriminant Analysis | [Tong et al. (2012)](http://bioinformatics.oxfordjournals.org/content/28/4/531.long)               | `qda_shrink_mean`   |
 | Minimum Distance Empirical Bayesian Estimator (MDEB)          | [Srivistava and Kubokawa (2007)](http://www.utstat.utoronto.ca/~srivasta/exp1.pdf)                 | `mdeb`     |
 | Minimum Distance Rule using Modified Empirical Bayes (MDMEB)  | [Srivistava and Kubokawa (2007)](http://www.utstat.utoronto.ca/~srivasta/exp1.pdf)                 | `mdmeb`    |
 | Minimum Distance Rule using Moore-Penrose Inverse (MDMP)      | [Srivistava and Kubokawa (2007)](http://www.utstat.utoronto.ca/~srivasta/exp1.pdf)                 | `mdmp`     |
