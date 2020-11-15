@@ -41,7 +41,7 @@
 #' @param y vector of class labels for each training observation
 #' @param prior vector with prior probabilities for each class. If NULL
 #' (default), then equal probabilities are used. See details.
-#' @return \code{smdqda} object that contains the trained SmDQDA classifier
+#' @return \code{qda_shrink_mean} object that contains the trained SmDQDA classifier
 #'
 #' @references Tong, T., Chen, L., and Zhao, H. (2012), "Improved Mean
 #' Estimation and Its Application to Diagonal Discriminant Analysis,"
@@ -53,28 +53,28 @@
 #' @examples
 #' n <- nrow(iris)
 #' train <- sample(seq_len(n), n / 2)
-#' smdqda_out <- smdqda(Species ~ ., data = iris[train, ])
+#' smdqda_out <- qda_shrink_mean(Species ~ ., data = iris[train, ])
 #' predicted <- predict(smdqda_out, iris[-train, -5])$class
 #'
-#' smdqda_out2 <- smdqda(x = iris[train, -5], y = iris[train, 5])
+#' smdqda_out2 <- qda_shrink_mean(x = iris[train, -5], y = iris[train, 5])
 #' predicted2 <- predict(smdqda_out2, iris[-train, -5])$class
 #' all.equal(predicted, predicted2)
-smdqda <- function(x, ...) {
-  UseMethod("smdqda")
+qda_shrink_mean <- function(x, ...) {
+  UseMethod("qda_shrink_mean")
 }
 
-#' @rdname smdqda
+#' @rdname qda_shrink_mean
 #' @export
-smdqda.default <- function(x, y, prior = NULL, ...) {
+qda_shrink_mean.default <- function(x, y, prior = NULL, ...) {
   x <- as.matrix(x)
   y <- as.factor(y)
 
   obj <- diag_estimates(x = x, y = y, prior = prior, pool = FALSE,
                         est_mean = "tong")
 
-  # Creates an object of type 'smdqda' and adds the 'match.call' to the object
+  # Creates an object of type 'qda_shrink_mean' and adds the 'match.call' to the object
   obj$call <- match.call()
-  class(obj) <- "smdqda"
+  class(obj) <- "qda_shrink_mean"
 
   obj
 }
@@ -84,10 +84,10 @@ smdqda.default <- function(x, y, prior = NULL, ...) {
 #' (non-factor) discriminators.
 #' @param data data frame from which variables specified in \code{formula} are
 #' preferentially to be taken.
-#' @rdname smdqda
+#' @rdname qda_shrink_mean
 #' @importFrom stats model.frame model.matrix model.response
 #' @export
-smdqda.formula <- function(formula, data, prior = NULL, ...) {
+qda_shrink_mean.formula <- function(formula, data, prior = NULL, ...) {
   # The formula interface includes an intercept. If the user includes the
   # intercept in the model, it should be removed. Otherwise, errors and doom
   # happen.
@@ -99,7 +99,7 @@ smdqda.formula <- function(formula, data, prior = NULL, ...) {
   x <- model.matrix(attr(mf, "terms"), data = mf)
   y <- model.response(mf)
 
-  est <- smdqda.default(x = x, y = y, prior = prior)
+  est <- qda_shrink_mean.default(x = x, y = y, prior = prior)
   est$call <- match.call()
   est$formula <- formula
   est
@@ -112,7 +112,7 @@ smdqda.formula <- function(formula, data, prior = NULL, ...) {
 #' @param x object to print
 #' @param ... unused
 #' @export
-print.smdqda <- function(x, ...) {
+print.qda_shrink_mean <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Sample Size:\n")
@@ -130,7 +130,7 @@ print.smdqda <- function(x, ...) {
 #' The SmDQDA classifier is a modification to QDA, where the off-diagonal elements
 #' of the pooled sample covariance matrix are set to zero.
 #' 
-#' @rdname smdqda
+#' @rdname qda_shrink_mean
 #' @export
 #'
 #' @param object trained SmDQDA object
@@ -141,9 +141,9 @@ print.smdqda <- function(x, ...) {
 #' Discrimination Methods for the Classification of Tumors Using Gene Expression
 #' Data," Journal of the American Statistical Association, 97, 457, 77-87.
 #' @return list predicted class memberships of each row in newdata
-predict.smdqda <- function(object, newdata, ...) {
-  if (!inherits(object, "smdqda"))  {
-    stop("object not of class 'smdqda'")
+predict.qda_shrink_mean <- function(object, newdata, ...) {
+  if (!inherits(object, "qda_shrink_mean"))  {
+    stop("object not of class 'qda_shrink_mean'")
   }
 
   newdata <- as.matrix(newdata)
